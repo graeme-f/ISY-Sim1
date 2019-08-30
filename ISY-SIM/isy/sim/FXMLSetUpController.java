@@ -28,7 +28,11 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 
 /**
  *
@@ -36,15 +40,18 @@ import javafx.scene.control.Label;
  */
 public class FXMLSetUpController implements Initializable {
     
-    @FXML
-    private Label label;
+    @FXML private TextField txtOceanWidth;
+    @FXML private TextField txtOceanHeight;
+    @FXML private Slider sldOceanWidth;
+    @FXML private Slider sldOceanHeight;
+    @FXML private Canvas Canvas;
+    @FXML private Button btnPlay;
+    @FXML private Button btnWaste;
+    @FXML private Button btnLand;
+    @FXML private Button btnCurrent;
+
     
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
-    
+     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
