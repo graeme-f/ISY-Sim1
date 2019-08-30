@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" maxHeight="600.0" minHeight="600.0" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="sim.FXMLSetUpController">
+   <children>
+      <HBox maxHeight="600.0" minHeight="600.0" prefHeight="600.0" prefWidth="800.0">
+         <children>
+            <VBox maxHeight="600.0" minHeight="600.0" prefHeight="200.0" prefWidth="40.0">
+               <children>
+                  <Pane maxHeight="30.0" maxWidth="40.0" minHeight="30.0" prefHeight="30.0" prefWidth="40.0" />
+                  <TextField minWidth="40.0" prefHeight="25.0" prefWidth="70.0" />
+                  <Slider blockIncrement="50.0" majorTickUnit="50.0" max="1000.0" min="100.0" minorTickCount="10" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="544.0" prefWidth="14.0" showTickMarks="true" translateX="12.0" value="500.0" />
+               </children>
+            </VBox>
+            <VBox prefHeight="800.0" prefWidth="1308.0">
+               <children>
+                  <HBox prefHeight="30.0" prefWidth="1266.0">
+                     <children>
+                        <TextField maxWidth="40.0" minWidth="40.0" />
+                        <Slider blockIncrement="50.0" majorTickUnit="50.0" max="1000.0" min="100.0" minorTickCount="10" prefWidth="720.0" showTickMarks="true" translateY="5.0" value="500.0" />
+                     </children>
+                  </HBox>
+                  <Canvas height="500.0" width="500.0" />
+                  <Canvas height="200.0" width="200.0" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
