@@ -29,10 +29,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -44,17 +46,22 @@ public class FXMLSetUpController implements Initializable {
     @FXML private TextField txtOceanHeight;
     @FXML private Slider sldOceanWidth;
     @FXML private Slider sldOceanHeight;
-    @FXML private Canvas Canvas;
+    @FXML private Canvas cnvOcean;
     @FXML private Button btnPlay;
     @FXML private Button btnWaste;
     @FXML private Button btnLand;
     @FXML private Button btnCurrent;
 
-    
-     
+    private GraphicsContext gc ;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        gc = cnvOcean.getGraphicsContext2D();
+        drawOcean();
     }    
     
+    private void drawOcean(){
+        gc.setFill(Color.AQUAMARINE);
+        gc.fillRect(0, 0, 500, 500);
+    }
 }
