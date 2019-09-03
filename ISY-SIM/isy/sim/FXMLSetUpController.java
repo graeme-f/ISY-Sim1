@@ -73,22 +73,26 @@ public class FXMLSetUpController implements Initializable {
         });
         sldOceanHeight.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setOceanHeight(newValue.doubleValue());
-                txtOceanHeight.setText(String.format("%d", (1000-newValue.intValue())));
+                setOceanHeight(1100-newValue.doubleValue());
+                txtOceanHeight.setText(String.format("%d", (1100-newValue.intValue())));
             }
         });
     }
     
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
-        gc.fillRect(0, 0, 500, 500);
+        gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
     }
 
     private void setOceanWidth(double width) {
-        cnvOcean.setWidth(width);
+        double scale = sldOceanWidth.getWidth() / 900;
+        cnvOcean.setWidth((width-100)*scale+40);
+        drawOcean();
     }
 
     private void setOceanHeight(double height) {
-        cnvOcean.setHeight(height);
+        double scale = sldOceanHeight.getHeight() / 900;
+        cnvOcean.setHeight((height-100)*scale+25);
+        drawOcean();
     }
 }
