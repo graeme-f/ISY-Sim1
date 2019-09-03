@@ -24,6 +24,7 @@
 package sim;
 
 import java.net.URL;
+import javafx.scene.layout.StackPane;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,6 +34,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.*;
+import javafx.scene.canvas.*;
+import javafx.scene.*;
 
 /**
  *
@@ -55,6 +59,15 @@ public class FXMLSetUpController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        Group root = new Group();
+
+        Canvas = new Canvas(250,250);
+        GraphicsContext gc = Canvas.getGraphicsContext2D();
+
+        gc.setFill(Color.BLUE);
+        gc.fillRect(75,75,100,100);
+
+        root.getChildren().add(Canvas);
     }    
     
 }
