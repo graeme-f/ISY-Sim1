@@ -25,6 +25,9 @@ package sim;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -58,10 +61,34 @@ public class FXMLSetUpController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         gc = cnvOcean.getGraphicsContext2D();
         drawOcean();
-    }    
+        initializeSliders();
+    }
+
+    private void initializeSliders() {
+        sldOceanWidth.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                setOceanWidth(newValue.doubleValue());
+                txtOceanWidth.setText(String.format("%d", newValue.intValue()));
+            }
+        });
+        sldOceanHeight.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                setOceanHeight(newValue.doubleValue());
+                txtOceanHeight.setText(String.format("%d", (1000-newValue.intValue())));
+            }
+        });
+    }
     
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, 500, 500);
+    }
+
+    private void setOceanWidth(double width) {
+        cnvOcean.setWidth(width);
+    }
+
+    private void setOceanHeight(double height) {
+        cnvOcean.setHeight(height);
     }
 }
