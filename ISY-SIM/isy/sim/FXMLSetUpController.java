@@ -24,19 +24,20 @@
 package sim;
 
 import java.net.URL;
-import javafx.scene.layout.StackPane;
 import java.util.ResourceBundle;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.*;
-import javafx.scene.canvas.*;
-import javafx.scene.*;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -48,26 +49,50 @@ public class FXMLSetUpController implements Initializable {
     @FXML private TextField txtOceanHeight;
     @FXML private Slider sldOceanWidth;
     @FXML private Slider sldOceanHeight;
-    @FXML private Canvas Canvas;
+    @FXML private Canvas cnvOcean;
     @FXML private Button btnPlay;
     @FXML private Button btnWaste;
     @FXML private Button btnLand;
     @FXML private Button btnCurrent;
 
-    
-     
+    private GraphicsContext gc ;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        Group root = new Group();
+        gc = cnvOcean.getGraphicsContext2D();
+        drawOcean();
+        initializeSliders();
+    }
 
-        Canvas = new Canvas(250,250);
-        GraphicsContext gc = Canvas.getGraphicsContext2D();
-
-        gc.setFill(Color.BLUE);
-        gc.fillRect(75,75,100,100);
-
-        root.getChildren().add(Canvas);
-    }    
+    private void initializeSliders() {
+        sldOceanWidth.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                setOceanWidth(newValue.doubleValue());
+                txtOceanWidth.setText(String.format("%d", newValue.intValue()));
+            }
+        });
+        sldOceanHeight.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                setOceanHeight(1100-newValue.doubleValue());
+                txtOceanHeight.setText(String.format("%d", (1100-newValue.intValue())));
+            }
+        });
+    }
     
+    private void drawOcean(){
+        gc.setFill(Color.AQUAMARINE);
+        gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
+    }
+
+    private void setOceanWidth(double width) {
+        double scale = sldOceanWidth.getWidth() / 900;
+        cnvOcean.setWidth((width-100)*scale+40);
+        drawOcean();
+    }
+
+    private void setOceanHeight(double height) {
+        double scale = sldOceanHeight.getHeight() / 900;
+        cnvOcean.setHeight((height-100)*scale+25);
+        drawOcean();
+    }
 }
