@@ -33,8 +33,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 
 /**
  *
@@ -50,7 +56,7 @@ public class FXMLSetUpController implements Initializable {
     @FXML private Button btnPlay;
     @FXML private Button btnWaste;
     @FXML private Button btnLand;
-    @FXML private Toggle btnCurrent;
+    @FXML private ToggleButton btnCurrent;
 
     private GraphicsContext gc ;
 
@@ -79,6 +85,8 @@ public class FXMLSetUpController implements Initializable {
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
+        arwCurrentUpSize(gc);
+        arwCurrentRightSize(gc);
     }
 
     private void setOceanWidth(double width) {
@@ -92,4 +100,26 @@ public class FXMLSetUpController implements Initializable {
         cnvOcean.setHeight((height-100)*scale+25);
         drawOcean();
     }
+    
+    private void arwCurrentUpSize(GraphicsContext gc) {
+        double scaleHeight = cnvOcean.getHeight();
+        gc.strokeLine(10, 20, 10, scaleHeight);
+        
+        double[] xPoints = {0,10,20};
+        double[] yPoints = {20,0,20};
+        gc.setFill(Color.BLACK);
+        gc.fillPolygon(xPoints, yPoints, 3);
+
+    }
+    private void arwCurrentRightSize(GraphicsContext gc) {
+        double scaleWidth = cnvOcean.getWidth();
+        gc.strokeLine(20, 10, scaleWidth, 10);
+        
+        double[] xPoints = {scaleWidth-20,scaleWidth,scaleWidth-20};
+        double[] yPoints = {0,10,20};
+        gc.setFill(Color.BLACK);
+        gc.fillPolygon(xPoints, yPoints, 3);
+
+    }
+    
 }
