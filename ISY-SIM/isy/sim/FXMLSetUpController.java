@@ -33,10 +33,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 
 /**
@@ -45,15 +42,15 @@ import javafx.scene.paint.Color;
  */
 public class FXMLSetUpController implements Initializable {
     
-    @FXML private TextField txtOceanWidth;
-    @FXML private TextField txtOceanHeight;
-    @FXML private Slider sldOceanWidth;
-    @FXML private Slider sldOceanHeight;
+    @FXML private TextField txtHorizontal;
+    @FXML private TextField txtVertical;
+    @FXML private Slider sldHorizontal;
+    @FXML private Slider sldVertical;
     @FXML private Canvas cnvOcean;
     @FXML private Button btnPlay;
     @FXML private Button btnWaste;
     @FXML private Button btnLand;
-    @FXML private Button btnCurrent;
+    @FXML private Toggle btnCurrent;
 
     private GraphicsContext gc ;
 
@@ -65,16 +62,16 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void initializeSliders() {
-        sldOceanWidth.valueProperty().addListener(new ChangeListener<Number>() {
+        sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 setOceanWidth(newValue.doubleValue());
-                txtOceanWidth.setText(String.format("%d", newValue.intValue()));
+                txtHorizontal.setText(String.format("%d", newValue.intValue()));
             }
         });
-        sldOceanHeight.valueProperty().addListener(new ChangeListener<Number>() {
+        sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 setOceanHeight(1100-newValue.doubleValue());
-                txtOceanHeight.setText(String.format("%d", (1100-newValue.intValue())));
+                txtVertical.setText(String.format("%d", (1100-newValue.intValue())));
             }
         });
     }
@@ -85,13 +82,13 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void setOceanWidth(double width) {
-        double scale = sldOceanWidth.getWidth() / 900;
+        double scale = sldHorizontal.getWidth() / 900;
         cnvOcean.setWidth((width-100)*scale+40);
         drawOcean();
     }
 
     private void setOceanHeight(double height) {
-        double scale = sldOceanHeight.getHeight() / 900;
+        double scale = sldVertical.getHeight() / 900;
         cnvOcean.setHeight((height-100)*scale+25);
         drawOcean();
     }
