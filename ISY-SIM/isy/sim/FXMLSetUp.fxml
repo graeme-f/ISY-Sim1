@@ -21,16 +21,16 @@
                   <VBox maxHeight="600.0" minHeight="600.0" prefHeight="200.0" prefWidth="40.0">
                      <children>
                         <Pane maxHeight="30.0" maxWidth="40.0" minHeight="30.0" prefHeight="30.0" prefWidth="40.0" />
-                        <TextField fx:id="txtOceanHeight" minWidth="40.0" prefHeight="25.0" prefWidth="70.0" translateX="2.0" />
-                        <Slider fx:id="sldOceanHeight" blockIncrement="50.0" majorTickUnit="50.0" max="1000.0" min="100.0" minorTickCount="10" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="514.0" prefWidth="14.0" showTickMarks="true" translateX="12.0" value="500.0" />
+                        <TextField fx:id="txtVertical" minWidth="40.0" prefHeight="25.0" prefWidth="70.0" translateX="2.0" />
+                        <Slider fx:id="sldVertical" blockIncrement="50.0" majorTickUnit="50.0" max="1000.0" min="100.0" minorTickCount="10" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="514.0" prefWidth="14.0" showTickMarks="true" translateX="12.0" value="500.0" />
                      </children>
                   </VBox>
                   <VBox prefHeight="800.0" prefWidth="1308.0">
                      <children>
                         <HBox prefHeight="30.0" prefWidth="1266.0">
                            <children>
-                              <TextField fx:id="txtOceanWidth" maxWidth="40.0" minWidth="40.0" />
-                              <Slider fx:id="sldOceanWidth" blockIncrement="50.0" majorTickUnit="50.0" max="1000.0" min="100.0" minorTickCount="10" prefWidth="720.0" showTickMarks="true" translateY="5.0" value="500.0" />
+                              <TextField fx:id="txtHorizontal" maxWidth="40.0" minWidth="40.0" />
+                              <Slider fx:id="sldHorizontal" blockIncrement="50.0" majorTickUnit="50.0" max="1000.0" min="100.0" minorTickCount="10" prefWidth="720.0" showTickMarks="true" translateY="5.0" value="500.0" />
                            </children>
                         </HBox>
                         <Canvas fx:id="cnvOcean" height="311.0" width="362.0" />
