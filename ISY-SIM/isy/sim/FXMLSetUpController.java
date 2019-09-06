@@ -91,13 +91,13 @@ public class FXMLSetUpController implements Initializable {
 
     private void setOceanWidth(double width) {
         double scale = sldHorizontal.getWidth() / 900;
-        cnvOcean.setWidth((width-100)*scale+40);
+        cnvOcean.setWidth((width-100)*scale+80);
         drawOcean();
     }
 
     private void setOceanHeight(double height) {
         double scale = sldVertical.getHeight() / 900;
-        cnvOcean.setHeight((height-100)*scale+25);
+        cnvOcean.setHeight((height-100)*scale+60);
         drawOcean();
     }
     
