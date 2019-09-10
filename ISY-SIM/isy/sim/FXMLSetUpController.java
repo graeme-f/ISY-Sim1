@@ -37,7 +37,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 
 /**
  *
@@ -45,15 +48,15 @@ import javafx.scene.paint.Color;
  */
 public class FXMLSetUpController implements Initializable {
     
-    @FXML private TextField txtOceanWidth;
-    @FXML private TextField txtOceanHeight;
-    @FXML private Slider sldOceanWidth;
-    @FXML private Slider sldOceanHeight;
+    @FXML private TextField txtHorizontal;
+    @FXML private TextField txtVertical;
+    @FXML private Slider sldHorizontal;
+    @FXML private Slider sldVertical;
     @FXML private Canvas cnvOcean;
     @FXML private Button btnPlay;
     @FXML private Button btnWaste;
     @FXML private Button btnLand;
-    @FXML private Button btnCurrent;
+    @FXML private ToggleButton btnCurrent;
 
     private GraphicsContext gc ;
 
@@ -65,16 +68,16 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void initializeSliders() {
-        sldOceanWidth.valueProperty().addListener(new ChangeListener<Number>() {
+        sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 setOceanWidth(newValue.doubleValue());
-                txtOceanWidth.setText(String.format("%d", newValue.intValue()));
+                txtHorizontal.setText(String.format("%d", newValue.intValue()));
             }
         });
-        sldOceanHeight.valueProperty().addListener(new ChangeListener<Number>() {
+        sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 setOceanHeight(1100-newValue.doubleValue());
-                txtOceanHeight.setText(String.format("%d", (1100-newValue.intValue())));
+                txtVertical.setText(String.format("%d", (1100-newValue.intValue())));
             }
         });
     }
@@ -82,17 +85,41 @@ public class FXMLSetUpController implements Initializable {
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
+        arwCurrentUpSize(gc);
+        arwCurrentRightSize(gc);
     }
 
     private void setOceanWidth(double width) {
-        double scale = sldOceanWidth.getWidth() / 900;
-        cnvOcean.setWidth((width-100)*scale+40);
+        double scale = sldHorizontal.getWidth() / 900;
+        cnvOcean.setWidth((width-100)*scale+80);
         drawOcean();
     }
 
     private void setOceanHeight(double height) {
-        double scale = sldOceanHeight.getHeight() / 900;
-        cnvOcean.setHeight((height-100)*scale+25);
+        double scale = sldVertical.getHeight() / 900;
+        cnvOcean.setHeight((height-100)*scale+60);
         drawOcean();
     }
+    
+    private void arwCurrentUpSize(GraphicsContext gc) {
+        double scaleHeight = cnvOcean.getHeight();
+        gc.strokeLine(10, 20, 10, scaleHeight);
+        
+        double[] xPoints = {0,10,20};
+        double[] yPoints = {20,0,20};
+        gc.setFill(Color.BLACK);
+        gc.fillPolygon(xPoints, yPoints, 3);
+
+    }
+    private void arwCurrentRightSize(GraphicsContext gc) {
+        double scaleWidth = cnvOcean.getWidth();
+        gc.strokeLine(20, 10, scaleWidth, 10);
+        
+        double[] xPoints = {scaleWidth-20,scaleWidth,scaleWidth-20};
+        double[] yPoints = {0,10,20};
+        gc.setFill(Color.BLACK);
+        gc.fillPolygon(xPoints, yPoints, 3);
+
+    }
+    
 }
