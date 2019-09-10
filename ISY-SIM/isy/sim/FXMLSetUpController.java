@@ -26,6 +26,10 @@ package sim;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.sun.deploy.panel.TextFieldProperty;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -41,6 +45,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.util.StringConverter;
+import javafx.util.converter.NumberStringConverter;
 
 /**
  *
@@ -68,16 +74,27 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void initializeSliders() {
+        StringProperty txtHor = txtHorizontal.textProperty();
+        DoubleProperty sldHor = sldHorizontal.valueProperty();
+        StringConverter<Number> convHorizontal = new NumberStringConverter();
+        Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
+
+        // TODO: Get Vertical Slider to work
+//        StringProperty txtVer = txtVertical.textProperty();
+//        DoubleProperty sldVer = sldVertical.valueProperty();
+//        StringConverter<Number> convVertical = new NumberStringConverter();
+//        Bindings.bindBidirectional(txtVer, sldVer, convVertical);
+
         sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setOceanWidth(newValue.doubleValue());
-                txtHorizontal.setText(String.format("%d", newValue.intValue()));
+                setOceanWidth(1100-newValue.doubleValue());
+                txtHorizontal.setText(String.format("%d", 1100-newValue.intValue()));
             }
         });
         sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setOceanHeight(1100-newValue.doubleValue());
-                txtVertical.setText(String.format("%d", (1100-newValue.intValue())));
+                setOceanHeight(newValue.doubleValue());
+                txtVertical.setText(String.format("%d", (newValue.intValue())));
             }
         });
     }
