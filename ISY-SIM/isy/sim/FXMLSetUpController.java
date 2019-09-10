@@ -80,15 +80,15 @@ public class FXMLSetUpController implements Initializable {
         Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
 
         // TODO: Get Vertical Slider to work
-//        StringProperty txtVer = txtVertical.textProperty();
-//        DoubleProperty sldVer = sldVertical.valueProperty();
-//        StringConverter<Number> convVertical = new NumberStringConverter();
-//        Bindings.bindBidirectional(txtVer, sldVer, convVertical);
+        StringProperty txtVer = txtVertical.textProperty();
+        DoubleProperty sldVer = sldVertical.valueProperty();
+        StringConverter<Number> convVertical = new NumberStringConverter();
+        Bindings.bindBidirectional(txtVer, sldVer, convVertical);
 
         sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setOceanWidth(1100-newValue.doubleValue());
-                txtHorizontal.setText(String.format("%d", 1100-newValue.intValue()));
+                setOceanWidth(newValue.doubleValue());
+                txtHorizontal.setText(String.format("%d", newValue.intValue()));
             }
         });
         sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
@@ -108,13 +108,16 @@ public class FXMLSetUpController implements Initializable {
 
     private void setOceanWidth(double width) {
         double scale = sldHorizontal.getWidth() / 900;
-        cnvOcean.setWidth((width-100)*scale+80);
+        double oWidth = (width-100)*scale+60;
+        cnvOcean.setWidth(oWidth);
         drawOcean();
     }
 
     private void setOceanHeight(double height) {
         double scale = sldVertical.getHeight() / 900;
-        cnvOcean.setHeight((height-100)*scale+60);
+        double oHeight = (height-100)*scale+50;
+        cnvOcean.setHeight(oHeight);
+        cnvOcean.setTranslateY(525-oHeight);
         drawOcean();
     }
     
