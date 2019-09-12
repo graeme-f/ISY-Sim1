@@ -26,6 +26,7 @@ package sim;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -67,6 +68,18 @@ public class FXMLSetUpController implements Initializable {
         initializeSliders();
     }
 
+    private boolean current = false;
+    private DoubleProperty oceanWidth;
+    private DoubleProperty oceanHeight;
+
+    private void currentToggle() {
+        current = !current;
+        oceanWidth = sldHorizontal.valueProperty();
+        oceanHeight = sldVertical.valueProperty();
+
+
+    }
+
     private void initializeSliders() {
         sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -92,6 +105,12 @@ public class FXMLSetUpController implements Initializable {
     private void setOceanWidth(double width) {
         double scale = sldHorizontal.getWidth() / 900;
         cnvOcean.setWidth((width-100)*scale+80);
+        drawOcean();
+    }
+
+    private void setCurrentSide(double speed) {
+        double scale = sldHorizontal.getWidth() / 900;
+        cnvOcean.setWidth((speed-100)*scale+80);
         drawOcean();
     }
 
@@ -121,5 +140,6 @@ public class FXMLSetUpController implements Initializable {
         gc.fillPolygon(xPoints, yPoints, 3);
 
     }
+
     
 }
