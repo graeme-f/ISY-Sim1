@@ -81,7 +81,6 @@ public class FXMLSetUpController implements Initializable {
         StringConverter<Number> convHorizontal = new NumberStringConverter();
         Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
 
-        // TODO: Get Vertical Slider to work
         StringProperty txtVer = txtVertical.textProperty();
         DoubleProperty sldVer = sldVertical.valueProperty();
         StringConverter<Number> convVertical = new NumberStringConverter();
@@ -110,6 +109,8 @@ public class FXMLSetUpController implements Initializable {
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
         arwCurrentUpSize(gc);
         arwCurrentRightSize(gc);
+        arwCurrentLeftSize(gc);
+        arwCurrentDownSize(gc);
     }
 
     private void setOceanWidth(double width) {
@@ -129,7 +130,7 @@ public class FXMLSetUpController implements Initializable {
     
     private void arwCurrentUpSize(GraphicsContext gc) {
         double scaleHeight = cnvOcean.getHeight();
-        gc.strokeLine(10, 20, 10, scaleHeight);
+        gc.strokeLine(10, 20, 10, scaleHeight-20);
         
         double[] xPoints = {0,10,20};
         double[] yPoints = {20,0,20};
@@ -139,30 +140,54 @@ public class FXMLSetUpController implements Initializable {
     }
     private void arwCurrentRightSize(GraphicsContext gc) {
         double scaleWidth = cnvOcean.getWidth();
-        gc.strokeLine(20, 10, scaleWidth, 10);
+        gc.strokeLine(20, 10, scaleWidth-20, 10);
         
         double[] xPoints = {scaleWidth-20,scaleWidth,scaleWidth-20};
         double[] yPoints = {0,10,20};
         gc.setFill(Color.BLACK);
         gc.fillPolygon(xPoints, yPoints, 3);
+    }
 
+    private void arwCurrentLeftSize(GraphicsContext gc) {
+        double scaleWidth = cnvOcean.getWidth();
+        double scaleHeight = cnvOcean.getHeight();
+        gc.strokeLine(scaleWidth-20, scaleHeight-10, 20, scaleHeight-10);
+
+        double[] xPoints = {20, 0, 20};
+        double[] yPoints = {scaleHeight, scaleHeight-10, scaleHeight-20};
+        gc.setFill(Color.BLACK);
+        gc.fillPolygon(xPoints, yPoints, 3);
+    }
+
+    private void arwCurrentDownSize(GraphicsContext gc) {
+        double scaleWidth = cnvOcean.getWidth();
+        double scaleHeight = cnvOcean.getHeight();
+        gc.strokeLine(scaleWidth-10, scaleHeight-20, scaleWidth-10, 20);
+
+        double[] xPoints = {scaleWidth, scaleWidth-10, scaleWidth-20};
+        double[] yPoints = {scaleHeight-20, scaleHeight, scaleHeight-20};
+        gc.setFill(Color.BLACK);
+        gc.fillPolygon(xPoints, yPoints, 3);
     }
 
 
     private boolean currentToggle = false;
-    private DoubleProperty oceanWidth;
-    private DoubleProperty oceanHeight;
+    private double oceanWidth;
+    private double oceanHeight;
     private double horizontalSpeed = 0;
 
     private void toggleCurrent() {
         btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             currentToggle = !currentToggle;
             if (currentToggle){
-                oceanWidth = sldHorizontal.valueProperty();
-                oceanHeight = sldVertical.valueProperty();
+                oceanWidth = sldHorizontal.getValue();
+                oceanHeight = sldVertical.getValue();
+                txtHorizontal.setText(String.valueOf(horizontalSpeed));
             } else {
                 horizontalSpeed = sldHorizontal.getValue();
                 System.out.println(horizontalSpeed);
+                txtHorizontal.setText(String.valueOf(oceanWidth));
+                txtVertical.setText(String.valueOf(oceanHeight));
             }
         }));
     }
