@@ -98,7 +98,11 @@ public class FXMLSetUpController implements Initializable {
         });
         sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setOceanHeight(newValue.doubleValue());
+                if (currentToggle) {
+                    setCurrentVertical(newValue.doubleValue());
+                }else {
+                    setOceanHeight(newValue.doubleValue());
+                }
                 txtVertical.setText(String.format("%d", (newValue.intValue())));
             }
         });
@@ -175,6 +179,7 @@ public class FXMLSetUpController implements Initializable {
     private double oceanWidth;
     private double oceanHeight;
     private double horizontalSpeed = 0;
+    private double verticalSpeed = 0;
 
     private void toggleCurrent() {
         btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
@@ -183,6 +188,7 @@ public class FXMLSetUpController implements Initializable {
                 oceanWidth = sldHorizontal.getValue();
                 oceanHeight = sldVertical.getValue();
                 txtHorizontal.setText(String.valueOf(horizontalSpeed));
+                txtVertical.setText(String.valueOf(verticalSpeed));
             } else {
                 horizontalSpeed = sldHorizontal.getValue();
                 System.out.println(horizontalSpeed);
@@ -194,6 +200,10 @@ public class FXMLSetUpController implements Initializable {
 
     private void setCurrentHorizontal(double speed) {
         horizontalSpeed = speed;
+    }
+
+    private void setCurrentVertical(double speed) {
+        verticalSpeed = speed;
     }
 
 
