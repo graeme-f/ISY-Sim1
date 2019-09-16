@@ -26,7 +26,10 @@ package sim;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.sun.deploy.panel.TextFieldProperty;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -42,6 +45,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import javafx.util.StringConverter;
+import javafx.util.converter.NumberStringConverter;
 
 /**
  *
@@ -66,31 +71,36 @@ public class FXMLSetUpController implements Initializable {
         gc = cnvOcean.getGraphicsContext2D();
         drawOcean();
         initializeSliders();
-    }
-
-    private boolean current = false;
-    private DoubleProperty oceanWidth;
-    private DoubleProperty oceanHeight;
-
-    private void currentToggle() {
-        current = !current;
-        oceanWidth = sldHorizontal.valueProperty();
-        oceanHeight = sldVertical.valueProperty();
-
-
+        toggleCurrent();
+        System.out.println(horizontalSpeed);
     }
 
     private void initializeSliders() {
+        StringProperty txtHor = txtHorizontal.textProperty();
+        DoubleProperty sldHor = sldHorizontal.valueProperty();
+        StringConverter<Number> convHorizontal = new NumberStringConverter();
+        Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
+
+        // TODO: Get Vertical Slider to work
+        StringProperty txtVer = txtVertical.textProperty();
+        DoubleProperty sldVer = sldVertical.valueProperty();
+        StringConverter<Number> convVertical = new NumberStringConverter();
+        Bindings.bindBidirectional(txtVer, sldVer, convVertical);
+
         sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setOceanWidth(newValue.doubleValue());
+                if (currentToggle) {
+                    setCurrentHorizontal(newValue.doubleValue());
+                }else {
+                    setOceanWidth(newValue.doubleValue());
+                }
                 txtHorizontal.setText(String.format("%d", newValue.intValue()));
             }
         });
         sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setOceanHeight(1100-newValue.doubleValue());
-                txtVertical.setText(String.format("%d", (1100-newValue.intValue())));
+                setOceanHeight(newValue.doubleValue());
+                txtVertical.setText(String.format("%d", (newValue.intValue())));
             }
         });
     }
@@ -104,19 +114,16 @@ public class FXMLSetUpController implements Initializable {
 
     private void setOceanWidth(double width) {
         double scale = sldHorizontal.getWidth() / 900;
-        cnvOcean.setWidth((width-100)*scale+80);
-        drawOcean();
-    }
-
-    private void setCurrentSide(double speed) {
-        double scale = sldHorizontal.getWidth() / 900;
-        cnvOcean.setWidth((speed-100)*scale+80);
+        double oWidth = (width-100)*scale+60;
+        cnvOcean.setWidth(oWidth);
         drawOcean();
     }
 
     private void setOceanHeight(double height) {
         double scale = sldVertical.getHeight() / 900;
-        cnvOcean.setHeight((height-100)*scale+60);
+        double oHeight = (height-100)*scale+50;
+        cnvOcean.setHeight(oHeight);
+        cnvOcean.setTranslateY(525-oHeight);
         drawOcean();
     }
     
@@ -141,5 +148,28 @@ public class FXMLSetUpController implements Initializable {
 
     }
 
-    
+
+    private boolean currentToggle = false;
+    private DoubleProperty oceanWidth;
+    private DoubleProperty oceanHeight;
+    private double horizontalSpeed = 0;
+
+    private void toggleCurrent() {
+        btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            currentToggle = !currentToggle;
+            if (currentToggle){
+                oceanWidth = sldHorizontal.valueProperty();
+                oceanHeight = sldVertical.valueProperty();
+            } else {
+                horizontalSpeed = sldHorizontal.getValue();
+                System.out.println(horizontalSpeed);
+            }
+        }));
+    }
+
+    private void setCurrentHorizontal(double speed) {
+        horizontalSpeed = speed;
+    }
+
+
 }
