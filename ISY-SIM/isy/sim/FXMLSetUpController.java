@@ -71,6 +71,8 @@ public class FXMLSetUpController implements Initializable {
         gc = cnvOcean.getGraphicsContext2D();
         drawOcean();
         initializeSliders();
+        toggleCurrent();
+        System.out.println(horizontalSpeed);
     }
 
     private void initializeSliders() {
@@ -86,7 +88,11 @@ public class FXMLSetUpController implements Initializable {
 
         sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setOceanWidth(newValue.doubleValue());
+                if (currentToggle) {
+                    setCurrentHorizontal(newValue.doubleValue());
+                }else {
+                    setOceanWidth(newValue.doubleValue());
+                }
                 txtHorizontal.setText(String.format("%d", newValue.intValue()));
             }
         });
@@ -163,5 +169,32 @@ public class FXMLSetUpController implements Initializable {
         gc.setFill(Color.BLACK);
         gc.fillPolygon(xPoints, yPoints, 3);
     }
-    
+
+
+    private boolean currentToggle = false;
+    private double oceanWidth;
+    private double oceanHeight;
+    private double horizontalSpeed = 0;
+
+    private void toggleCurrent() {
+        btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            currentToggle = !currentToggle;
+            if (currentToggle){
+                oceanWidth = sldHorizontal.getValue();
+                oceanHeight = sldVertical.getValue();
+                txtHorizontal.setText(String.valueOf(horizontalSpeed));
+            } else {
+                horizontalSpeed = sldHorizontal.getValue();
+                System.out.println(horizontalSpeed);
+                txtHorizontal.setText(String.valueOf(oceanWidth));
+                txtVertical.setText(String.valueOf(oceanHeight));
+            }
+        }));
+    }
+
+    private void setCurrentHorizontal(double speed) {
+        horizontalSpeed = speed;
+    }
+
+
 }
