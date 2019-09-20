@@ -23,6 +23,7 @@
  */
 package sim;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -61,10 +62,16 @@ public class FXMLSetUpController implements Initializable {
     @FXML private Canvas cnvOcean;
     @FXML private Button btnPlay;
     @FXML private Button btnWaste;
-    @FXML private Button btnLand;
+    @FXML private ToggleButton btnLand;
     @FXML private ToggleButton btnCurrent;
 
     private GraphicsContext gc ;
+    private boolean currentToggle = false;
+    private boolean landToggle = false;
+    private double oceanWidth;
+    private double oceanHeight;
+    private double horizontalSpeed = 0;
+    private double verticalSpeed = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -72,7 +79,6 @@ public class FXMLSetUpController implements Initializable {
         drawOcean();
         initializeSliders();
         toggleCurrent();
-        System.out.println(horizontalSpeed);
     }
 
     private void initializeSliders() {
@@ -107,23 +113,18 @@ public class FXMLSetUpController implements Initializable {
             }
         });
     }
-    
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
-        arwCurrentUpSize(gc);
-        arwCurrentRightSize(gc);
-        arwCurrentLeftSize(gc);
-        arwCurrentDownSize(gc);
+        drawGridLines(gc, 20);
+        initializeArrows(gc);
     }
-
     private void setOceanWidth(double width) {
         double scale = sldHorizontal.getWidth() / 900;
         double oWidth = (width-100)*scale+60;
         cnvOcean.setWidth(oWidth);
         drawOcean();
     }
-
     private void setOceanHeight(double height) {
         double scale = sldVertical.getHeight() / 900;
         double oHeight = (height-100)*scale+50;
@@ -131,7 +132,26 @@ public class FXMLSetUpController implements Initializable {
         cnvOcean.setTranslateY(525-oHeight);
         drawOcean();
     }
-    
+    private void drawGridLines(GraphicsContext gc, int length) {
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(0.4);
+        int cnvWidth = (int) cnvOcean.getWidth();
+        int cnvHeight = (int) cnvOcean.getHeight();
+        for (int width = 0; width < cnvWidth; width += length) {
+            for (int height = cnvHeight; height > 0; height -= length) {
+                gc.strokeLine(width, height, width+length, height);
+                gc.strokeLine(width, height, width, height-length);
+            }
+        }
+    }
+    private void initializeArrows(GraphicsContext gc) {
+        gc.setLineWidth(4.0);
+        gc.setStroke(Color.BLACK);
+        arwCurrentUpSize(gc);
+        arwCurrentRightSize(gc);
+        arwCurrentLeftSize(gc);
+        arwCurrentDownSize(gc);
+    }
     private void arwCurrentUpSize(GraphicsContext gc) {
         double scaleHeight = cnvOcean.getHeight();
         gc.strokeLine(10, 20, 10, scaleHeight-20);
@@ -151,7 +171,6 @@ public class FXMLSetUpController implements Initializable {
         gc.setFill(Color.BLACK);
         gc.fillPolygon(xPoints, yPoints, 3);
     }
-
     private void arwCurrentLeftSize(GraphicsContext gc) {
         double scaleWidth = cnvOcean.getWidth();
         double scaleHeight = cnvOcean.getHeight();
@@ -162,7 +181,6 @@ public class FXMLSetUpController implements Initializable {
         gc.setFill(Color.BLACK);
         gc.fillPolygon(xPoints, yPoints, 3);
     }
-
     private void arwCurrentDownSize(GraphicsContext gc) {
         double scaleWidth = cnvOcean.getWidth();
         double scaleHeight = cnvOcean.getHeight();
@@ -173,14 +191,6 @@ public class FXMLSetUpController implements Initializable {
         gc.setFill(Color.BLACK);
         gc.fillPolygon(xPoints, yPoints, 3);
     }
-
-
-    private boolean currentToggle = false;
-    private double oceanWidth;
-    private double oceanHeight;
-    private double horizontalSpeed = 0;
-    private double verticalSpeed = 0;
-
     private void toggleCurrent() {
         btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             currentToggle = !currentToggle;
@@ -191,20 +201,15 @@ public class FXMLSetUpController implements Initializable {
                 txtVertical.setText(String.valueOf(verticalSpeed));
             } else {
                 horizontalSpeed = sldHorizontal.getValue();
-                System.out.println(horizontalSpeed);
                 txtHorizontal.setText(String.valueOf(oceanWidth));
                 txtVertical.setText(String.valueOf(oceanHeight));
             }
         }));
     }
-
     private void setCurrentHorizontal(double speed) {
         horizontalSpeed = speed;
     }
-
     private void setCurrentVertical(double speed) {
         verticalSpeed = speed;
     }
-
-
 }

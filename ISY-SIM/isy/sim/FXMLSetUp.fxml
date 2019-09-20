@@ -44,7 +44,7 @@
                         <HBox prefHeight="29.0" prefWidth="727.0">
                            <children>
                               <Pane maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="378.0" />
-                              <Button fx:id="btnLand" minWidth="60.0" mnemonicParsing="false" text="Land" />
+                              <ToggleButton fx:id="btnLand" minWidth="60.0" mnemonicParsing="false" text="Land" />
                               <Button fx:id="btnWaste" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Waste" />
                               <MenuButton minWidth="100.0" mnemonicParsing="false" text="WastePref">
                                  <items>
