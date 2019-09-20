@@ -47,6 +47,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
+import javafx.scene.control.ToggleGroup;
+
 
 /**
  *
@@ -60,9 +62,10 @@ public class FXMLSetUpController implements Initializable {
     @FXML private Slider sldVertical;
     @FXML private Canvas cnvOcean;
     @FXML private Button btnPlay;
-    @FXML private Button btnWaste;
+    @FXML private ToggleButton btnWaste;
     @FXML private Button btnLand;
     @FXML private ToggleButton btnCurrent;
+    @FXML private ToggleGroup wasteLand;
 
     private GraphicsContext gc ;
 
@@ -72,7 +75,6 @@ public class FXMLSetUpController implements Initializable {
         drawOcean();
         initializeSliders();
         toggleCurrent();
-        System.out.println(horizontalSpeed);
     }
 
     private void initializeSliders() {
@@ -176,6 +178,8 @@ public class FXMLSetUpController implements Initializable {
 
 
     private boolean currentToggle = false;
+    private boolean landToggle = false;
+    private boolean wasteToggle = false;
     private double oceanWidth;
     private double oceanHeight;
     private double horizontalSpeed = 0;
@@ -197,6 +201,25 @@ public class FXMLSetUpController implements Initializable {
             }
         }));
     }
+
+    private void toggleLand() {
+        btnLand.pressedProperty().addListener(((observable, oldValue, newValue) -> {
+            untoggle();
+            landToggle = !landToggle;
+        }));
+    }
+    private void toggleWaste() {
+        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
+            untoggle();
+            landToggle = !landToggle;
+        }));
+    }
+
+    private void untoggle() {
+        landToggle = false;
+        wasteToggle = false;
+    }
+
 
     private void setCurrentHorizontal(double speed) {
         horizontalSpeed = speed;
