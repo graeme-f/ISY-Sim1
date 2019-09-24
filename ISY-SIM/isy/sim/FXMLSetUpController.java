@@ -25,6 +25,7 @@ package sim;
 
 import java.awt.*;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import com.sun.deploy.panel.TextFieldProperty;
@@ -34,6 +35,8 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -116,7 +119,7 @@ public class FXMLSetUpController implements Initializable {
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
-        drawGridLines(gc, 20);
+        drawGridLines(gc, 5, 50);
         initializeArrows(gc);
     }
     private void setOceanWidth(double width) {
@@ -132,15 +135,32 @@ public class FXMLSetUpController implements Initializable {
         cnvOcean.setTranslateY(525-oHeight);
         drawOcean();
     }
-    private void drawGridLines(GraphicsContext gc, int length) {
+    private void drawGridLines(GraphicsContext gc, int minorGL, int majorGL) {
         gc.setStroke(Color.BLUE);
-        gc.setLineWidth(0.4);
         int cnvWidth = (int) cnvOcean.getWidth();
         int cnvHeight = (int) cnvOcean.getHeight();
-        for (int width = 0; width < cnvWidth; width += length) {
-            for (int height = cnvHeight; height > 0; height -= length) {
-                gc.strokeLine(width, height, width+length, height);
-                gc.strokeLine(width, height, width, height-length);
+        for (int width = 0; width < cnvWidth; width += minorGL) {
+            for (int height = cnvHeight; height > 0; height -= minorGL) {
+                // TODO: Find  a more concise way of doing this
+                if (width % majorGL == 0 && (cnvHeight-height) % majorGL != 0) {
+                    gc.setLineWidth(0.4);
+                    gc.strokeLine(width, height, width+minorGL, height);
+                    gc.setLineWidth(3.0);
+                    gc.strokeLine(width, height, width, height-minorGL);
+                } else if ((cnvHeight-height) % majorGL == 0 && width % majorGL != 0) {
+                    gc.setLineWidth(3.0);
+                    gc.strokeLine(width, height, width+minorGL, height);
+                    gc.setLineWidth(0.4);
+                    gc.strokeLine(width, height, width, height-minorGL);
+                } else if ((cnvHeight-height) % majorGL == 0 && width % majorGL == 0) {
+                    gc.setLineWidth(3.0);
+                    gc.strokeLine(width, height, width+minorGL, height);
+                    gc.strokeLine(width, height, width, height-minorGL);
+                } else {
+                    gc.setLineWidth(0.4);
+                    gc.strokeLine(width, height, width+minorGL, height);
+                    gc.strokeLine(width, height, width, height-minorGL);
+                }
             }
         }
     }
@@ -212,4 +232,15 @@ public class FXMLSetUpController implements Initializable {
     private void setCurrentVertical(double speed) {
         verticalSpeed = speed;
     }
+    private void generateRandomIsland(GraphicsContext gc, int length) {
+        Random random = new Random();
+        int cnvHeight = (int) cnvOcean.getHeight();
+        int cnvWidth = (int) cnvOcean.getWidth();
+        int heightCoef = cnvHeight/length;
+        int widthCoef = cnvWidth/length;
+        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
+        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
+
+    }
+
 }
