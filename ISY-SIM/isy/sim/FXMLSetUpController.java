@@ -27,8 +27,8 @@ import java.awt.*;
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
-
 import com.sun.deploy.panel.TextFieldProperty;
+import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
@@ -73,8 +73,17 @@ public class FXMLSetUpController implements Initializable {
     private boolean landToggle = false;
     private double oceanWidth;
     private double oceanHeight;
-    private double horizontalSpeed = 0;
-    private double verticalSpeed = 0;
+    private double horizontalSpeed = 0.0;
+    private double verticalSpeed = 0.0;
+
+    private StringProperty txtHor;
+    private DoubleProperty sldHor;
+    private StringConverter<Number> convHorizontal;
+
+    private StringProperty txtVer;
+    private DoubleProperty sldVer;
+    private StringConverter<Number> convVertical;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -85,31 +94,32 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void initializeSliders() {
-        StringProperty txtHor = txtHorizontal.textProperty();
-        DoubleProperty sldHor = sldHorizontal.valueProperty();
-        StringConverter<Number> convHorizontal = new NumberStringConverter();
-        Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
+        txtHor = txtHorizontal.textProperty();
+        sldHor = sldHorizontal.valueProperty();
+        convHorizontal = new NumberStringConverter();
+        txtVer = txtVertical.textProperty();
+        sldVer = sldVertical.valueProperty();
+        convVertical = new NumberStringConverter();
 
-        StringProperty txtVer = txtVertical.textProperty();
-        DoubleProperty sldVer = sldVertical.valueProperty();
-        StringConverter<Number> convVertical = new NumberStringConverter();
+        Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
         Bindings.bindBidirectional(txtVer, sldVer, convVertical);
 
         sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (currentToggle) {
                     setCurrentHorizontal(newValue.doubleValue());
-                }else {
+                } else {
                     setOceanWidth(newValue.doubleValue());
                 }
                 txtHorizontal.setText(String.format("%d", newValue.intValue()));
             }
         });
+
         sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (currentToggle) {
                     setCurrentVertical(newValue.doubleValue());
-                }else {
+                } else {
                     setOceanHeight(newValue.doubleValue());
                 }
                 txtVertical.setText(String.format("%d", (newValue.intValue())));
@@ -211,6 +221,7 @@ public class FXMLSetUpController implements Initializable {
         gc.setFill(Color.BLACK);
         gc.fillPolygon(xPoints, yPoints, 3);
     }
+
     private void toggleCurrent() {
         btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             currentToggle = !currentToggle;
@@ -219,7 +230,9 @@ public class FXMLSetUpController implements Initializable {
                 oceanHeight = sldVertical.getValue();
                 txtHorizontal.setText(String.valueOf(horizontalSpeed));
                 txtVertical.setText(String.valueOf(verticalSpeed));
+                setSldMinMax(1, 10);
             } else {
+                setSldMinMax(100, 1000);
                 horizontalSpeed = sldHorizontal.getValue();
                 txtHorizontal.setText(String.valueOf(oceanWidth));
                 txtVertical.setText(String.valueOf(oceanHeight));
@@ -232,15 +245,21 @@ public class FXMLSetUpController implements Initializable {
     private void setCurrentVertical(double speed) {
         verticalSpeed = speed;
     }
-    private void generateRandomIsland(GraphicsContext gc, int length) {
-        Random random = new Random();
-        int cnvHeight = (int) cnvOcean.getHeight();
-        int cnvWidth = (int) cnvOcean.getWidth();
-        int heightCoef = cnvHeight/length;
-        int widthCoef = cnvWidth/length;
-        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
-        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
 
+    private void setSldMinMax(int min, int max) {
+        sldHorizontal.setMin(min);
+        sldVertical.setMin(min);
+        sldHorizontal.setMax(max);
+        sldVertical.setMax(max);
     }
+//    private void generateRandomIsland(GraphicsContext gc, int length) {
+//        Random random = new Random();
+//        int cnvHeight = (int) cnvOcean.getHeight();
+//        int cnvWidth = (int) cnvOcean.getWidth();
+//        int heightCoef = cnvHeight/length;
+//        int widthCoef = cnvWidth/length;
+//        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
+//        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
+//    }
 
 }
