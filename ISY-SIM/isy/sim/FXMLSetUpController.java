@@ -26,12 +26,16 @@ package sim;
 import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
-
+import com.sun.deploy.panel.TextFieldProperty;
+import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -39,11 +43,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
-
 
 /**
  *
@@ -66,8 +73,17 @@ public class FXMLSetUpController implements Initializable {
     private GraphicsContext gc;
     private double oceanWidth;
     private double oceanHeight;
-    private double horizontalSpeed = 0;
-    private double verticalSpeed = 0;
+    private double horizontalSpeed = 2;
+    private double verticalSpeed = 2;
+
+    private StringProperty txtHor;
+    private DoubleProperty sldHor;
+    private StringConverter<Number> convHorizontal;
+
+    private StringProperty txtVer;
+    private DoubleProperty sldVer;
+    private StringConverter<Number> convVertical;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -83,31 +99,32 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void initializeSliders() {
-        StringProperty txtHor = txtHorizontal.textProperty();
-        DoubleProperty sldHor = sldHorizontal.valueProperty();
-        StringConverter<Number> convHorizontal = new NumberStringConverter();
-        Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
+        txtHor = txtHorizontal.textProperty();
+        sldHor = sldHorizontal.valueProperty();
+        convHorizontal = new NumberStringConverter();
+        txtVer = txtVertical.textProperty();
+        sldVer = sldVertical.valueProperty();
+        convVertical = new NumberStringConverter();
 
-        StringProperty txtVer = txtVertical.textProperty();
-        DoubleProperty sldVer = sldVertical.valueProperty();
-        StringConverter<Number> convVertical = new NumberStringConverter();
+        Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
         Bindings.bindBidirectional(txtVer, sldVer, convVertical);
 
         sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (btnCurrent.selectedProperty().getValue()) {
                     setCurrentHorizontal(newValue.doubleValue());
-                }else {
+                } else {
                     setOceanWidth(newValue.doubleValue());
                 }
                 txtHorizontal.setText(String.format("%d", newValue.intValue()));
             }
         });
+
         sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (btnCurrent.selectedProperty().getValue()) {
                     setCurrentVertical(newValue.doubleValue());
-                }else {
+                } else {
                     setOceanHeight(newValue.doubleValue());
                 }
                 txtVertical.setText(String.format("%d", (newValue.intValue())));
@@ -117,7 +134,7 @@ public class FXMLSetUpController implements Initializable {
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
-        drawGridLines(gc, 10);
+        drawGridLines(gc, 5, 50);
         initializeArrows(gc);
     }
     private void setOceanWidth(double width) {
@@ -133,15 +150,32 @@ public class FXMLSetUpController implements Initializable {
         cnvOcean.setTranslateY(525-oHeight);
         drawOcean();
     }
-    private void drawGridLines(GraphicsContext gc, int length) {
+    private void drawGridLines(GraphicsContext gc, int minorGL, int majorGL) {
         gc.setStroke(Color.BLUE);
-        gc.setLineWidth(0.4);
         int cnvWidth = (int) cnvOcean.getWidth();
         int cnvHeight = (int) cnvOcean.getHeight();
-        for (int width = 0; width < cnvWidth; width += length) {
-            for (int height = cnvHeight; height > 0; height -= length) {
-                gc.strokeLine(width, height, width+length, height);
-                gc.strokeLine(width, height, width, height-length);
+        for (int width = 0; width < cnvWidth; width += minorGL) {
+            for (int height = cnvHeight; height > 0; height -= minorGL) {
+                // TODO: Find  a more concise way of doing this
+                if (width % majorGL == 0 && (cnvHeight-height) % majorGL != 0) {
+                    gc.setLineWidth(0.4);
+                    gc.strokeLine(width, height, width+minorGL, height);
+                    gc.setLineWidth(3.0);
+                    gc.strokeLine(width, height, width, height-minorGL);
+                } else if ((cnvHeight-height) % majorGL == 0 && width % majorGL != 0) {
+                    gc.setLineWidth(3.0);
+                    gc.strokeLine(width, height, width+minorGL, height);
+                    gc.setLineWidth(0.4);
+                    gc.strokeLine(width, height, width, height-minorGL);
+                } else if ((cnvHeight-height) % majorGL == 0 && width % majorGL == 0) {
+                    gc.setLineWidth(3.0);
+                    gc.strokeLine(width, height, width+minorGL, height);
+                    gc.strokeLine(width, height, width, height-minorGL);
+                } else {
+                    gc.setLineWidth(0.4);
+                    gc.strokeLine(width, height, width+minorGL, height);
+                    gc.strokeLine(width, height, width, height-minorGL);
+                }
             }
         }
     }
@@ -195,15 +229,23 @@ public class FXMLSetUpController implements Initializable {
 
 
 
+
     private void toggleCurrent() {
         btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             if (btnCurrent.selectedProperty().getValue()){
                 oceanWidth = sldHorizontal.getValue();
                 oceanHeight = sldVertical.getValue();
+                System.out.println(String.valueOf(horizontalSpeed));
+                setSldMinMax(1, 3);
+                setSldMinMax(1, 10);
                 txtHorizontal.setText(String.valueOf(horizontalSpeed));
                 txtVertical.setText(String.valueOf(verticalSpeed));
+
+                System.out.println(horizontalSpeed);
             } else {
                 horizontalSpeed = sldHorizontal.getValue();
+                verticalSpeed = sldVertical.getValue();
+                setSldMinMax(100, 1000);
                 txtHorizontal.setText(String.valueOf(oceanWidth));
                 txtVertical.setText(String.valueOf(oceanHeight));
             }
@@ -230,12 +272,27 @@ public class FXMLSetUpController implements Initializable {
         }));
     }
 
-
-
     private void setCurrentHorizontal(double speed) {
         horizontalSpeed = speed;
     }
     private void setCurrentVertical(double speed) {
         verticalSpeed = speed;
     }
+
+    private void setSldMinMax(int min, int max) {
+        sldHorizontal.setMin(min);
+        sldVertical.setMin(min);
+        sldHorizontal.setMax(max);
+        sldVertical.setMax(max);
+    }
+//    private void generateRandomIsland(GraphicsContext gc, int length) {
+//        Random random = new Random();
+//        int cnvHeight = (int) cnvOcean.getHeight();
+//        int cnvWidth = (int) cnvOcean.getWidth();
+//        int heightCoef = cnvHeight/length;
+//        int widthCoef = cnvWidth/length;
+//        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
+//        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
+//    }
+
 }
