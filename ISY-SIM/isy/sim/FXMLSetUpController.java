@@ -23,32 +23,23 @@
  */
 package sim;
 
-import java.awt.*;
 import java.net.URL;
-import java.util.Random;
 import java.util.ResourceBundle;
-import com.sun.deploy.panel.TextFieldProperty;
-import javafx.beans.binding.Binding;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 
@@ -73,8 +64,8 @@ public class FXMLSetUpController implements Initializable {
     private boolean landToggle = false;
     private double oceanWidth;
     private double oceanHeight;
-    private double horizontalSpeed = 0.0;
-    private double verticalSpeed = 0.0;
+    private double horizontalSpeed = 2.0;
+    private double verticalSpeed = 2.0;
 
     private StringProperty txtHor;
     private DoubleProperty sldHor;
@@ -228,12 +219,15 @@ public class FXMLSetUpController implements Initializable {
             if (currentToggle){
                 oceanWidth = sldHorizontal.getValue();
                 oceanHeight = sldVertical.getValue();
-                txtHorizontal.setText(String.valueOf(horizontalSpeed));
-                txtVertical.setText(String.valueOf(verticalSpeed));
-                setSldMinMax(1, 10);
+                setSldHorMinMax(1, horizontalSpeed);
+                setSldHorMinMax(1, 10);
+                setSldVerMinMax(1, verticalSpeed);
+                setSldVerMinMax(1, 10);
+                sldHorizontal.setValue(horizontalSpeed);
+                sldVertical.setValue(verticalSpeed);
             } else {
-                setSldMinMax(100, 1000);
-                horizontalSpeed = sldHorizontal.getValue();
+                setSldHorMinMax(100, 1000);
+                setSldVerMinMax(100, 1000);
                 txtHorizontal.setText(String.valueOf(oceanWidth));
                 txtVertical.setText(String.valueOf(oceanHeight));
             }
@@ -246,11 +240,14 @@ public class FXMLSetUpController implements Initializable {
         verticalSpeed = speed;
     }
 
-    private void setSldMinMax(int min, int max) {
-        sldHorizontal.setMin(min);
+    private void setSldVerMinMax(double min, double max) {
         sldVertical.setMin(min);
-        sldHorizontal.setMax(max);
         sldVertical.setMax(max);
+    }
+
+    private void setSldHorMinMax(double min, double max) {
+        sldHorizontal.setMin(min);
+        sldHorizontal.setMax(max);
     }
 //    private void generateRandomIsland(GraphicsContext gc, int length) {
 //        Random random = new Random();
