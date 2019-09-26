@@ -83,7 +83,7 @@ public class FXMLSetUpController implements Initializable {
     private StringProperty txtVer;
     private DoubleProperty sldVer;
     private StringConverter<Number> convVertical;
-
+//asdf
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
