@@ -99,6 +99,7 @@ public class FXMLSetUpController implements Initializable {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (currentToggle) {
                     setCurrentHorizontal(newValue.doubleValue());
+                    drawOcean();
                 } else {
                     setOceanWidth(newValue.doubleValue());
                 }
@@ -110,6 +111,7 @@ public class FXMLSetUpController implements Initializable {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (currentToggle) {
                     setCurrentVertical(newValue.doubleValue());
+                    drawOcean();
                 } else {
                     setOceanHeight(newValue.doubleValue());
                 }
@@ -166,12 +168,13 @@ public class FXMLSetUpController implements Initializable {
         }
     }
     private void initializeArrows(GraphicsContext gc) {
-        gc.setLineWidth(4.0);
         gc.setStroke(Color.BLACK);
+        gc.setLineWidth(verticalSpeed);
         arwCurrentUpSize(gc);
+        arwCurrentDownSize(gc);
+        gc.setLineWidth(horizontalSpeed);
         arwCurrentRightSize(gc);
         arwCurrentLeftSize(gc);
-        arwCurrentDownSize(gc);
     }
     private void arwCurrentUpSize(GraphicsContext gc) {
         double scaleHeight = cnvOcean.getHeight();
