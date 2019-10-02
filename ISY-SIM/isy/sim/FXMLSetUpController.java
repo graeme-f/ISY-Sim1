@@ -86,6 +86,7 @@ public class FXMLSetUpController implements Initializable {
     private DoubleProperty sldVer;
     private StringConverter<Number> convVertical;
 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         wastePref.setVisible(false);
@@ -113,22 +114,26 @@ public class FXMLSetUpController implements Initializable {
 
         sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (btnCurrent.selectedProperty().getValue()) {
+                if (currentToggle) {
                     setCurrentHorizontal(newValue.doubleValue());
+                    drawOcean();
+                    sldHorizontal.setValue(horizontalSpeed);
+
                 } else {
                     setOceanWidth(newValue.doubleValue());
                     updateStatus();
                     oceanWidth = sldHorizontal.getValue();
                 }
                 txtHorizontal.setText(String.format("%d", newValue.intValue()));
-
             }
         });
 
         sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (btnCurrent.selectedProperty().getValue()) {
+                if (currentToggle) {
                     setCurrentVertical(newValue.doubleValue());
+                    drawOcean();
+                    sldVertical.setValue(verticalSpeed);
                 } else {
                     setOceanHeight(newValue.doubleValue());
                     updateStatus();
@@ -188,12 +193,13 @@ public class FXMLSetUpController implements Initializable {
         }
     }
     private void initializeArrows(GraphicsContext gc) {
-        gc.setLineWidth(horizontalSpeed);
         gc.setStroke(Color.BLACK);
+        gc.setLineWidth(verticalSpeed);
         arwCurrentUpSize(gc);
+        arwCurrentDownSize(gc);
+        gc.setLineWidth(horizontalSpeed);
         arwCurrentRightSize(gc);
         arwCurrentLeftSize(gc);
-        arwCurrentDownSize(gc);
     }
     private void arwCurrentUpSize(GraphicsContext gc) {
         double scaleHeight = cnvOcean.getHeight();
@@ -235,20 +241,14 @@ public class FXMLSetUpController implements Initializable {
         gc.fillPolygon(xPoints, yPoints, 3);
     }
 
-
-
-
     private void toggleCurrent() {
         btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             currentToggle = !currentToggle;
             if (currentToggle) {
-
                 setSldHorMinMax(1, horizontalSpeed);
                 setSldHorMinMax(1, 10);
                 setSldVerMinMax(1, verticalSpeed);
                 setSldVerMinMax(1, 10);
-                sldHorizontal.setValue(horizontalSpeed);
-                sldVertical.setValue(verticalSpeed);
             } else {
                 setSldHorMinMax(100, 1000);
                 setSldVerMinMax(100, 1000);
@@ -297,7 +297,13 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void updateStatus(){
-        statusBar.setText("Size: "+(int)oceanWidth+"x"+(int)oceanHeight+'\t');
+        String action;
+        if (currentToggle){
+            action="Changing Current";
+        } else {
+            action="Changing Size";
+        }
+        statusBar.setText("Action: " + action + "\t Size: "+(int)oceanWidth+"x"+(int)oceanHeight+'\t' + "Current Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "\nLand amount:" + "\tWaste amount:");
     }
 
 

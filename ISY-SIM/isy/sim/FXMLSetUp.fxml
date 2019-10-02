@@ -41,7 +41,7 @@
                            </children>
                         </HBox>
                         <HBox prefHeight="60.0" prefWidth="740.0" />
-                        <HBox prefHeight="29.0" prefWidth="200.0">
+                        <HBox minHeight="40.0" prefWidth="200.0">
                            <children>
                               <Label fx:id="statusBar" minWidth="365" text="Size: 500x500" />
                               <ToggleButton fx:id="btnCurrent" mnemonicParsing="false" prefHeight="25.0" prefWidth="91.0" text="Current" />
