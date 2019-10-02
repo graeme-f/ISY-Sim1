@@ -70,9 +70,11 @@ public class FXMLSetUpController implements Initializable {
     @FXML private MenuButton wastePref;
     @FXML private Label statusBar;
 
+    private boolean currentToggle = false;
+    private boolean landToggle = false;
     private GraphicsContext gc;
-    private double oceanWidth;
-    private double oceanHeight;
+    private double oceanWidth=500;
+    private double oceanHeight=500;
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
 
@@ -83,7 +85,6 @@ public class FXMLSetUpController implements Initializable {
     private StringProperty txtVer;
     private DoubleProperty sldVer;
     private StringConverter<Number> convVertical;
-//asdf
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -91,6 +92,7 @@ public class FXMLSetUpController implements Initializable {
         wastePref.setMinWidth(1);
         wastePref.setPrefWidth(1);
         statusBar.setMinWidth(450);
+        updateStatus();
         toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
         drawOcean();
@@ -115,8 +117,11 @@ public class FXMLSetUpController implements Initializable {
                     setCurrentHorizontal(newValue.doubleValue());
                 } else {
                     setOceanWidth(newValue.doubleValue());
+                    updateStatus();
+                    oceanWidth = sldHorizontal.getValue();
                 }
                 txtHorizontal.setText(String.format("%d", newValue.intValue()));
+
             }
         });
 
@@ -126,6 +131,8 @@ public class FXMLSetUpController implements Initializable {
                     setCurrentVertical(newValue.doubleValue());
                 } else {
                     setOceanHeight(newValue.doubleValue());
+                    updateStatus();
+                    oceanHeight = sldVertical.getValue();
                 }
                 txtVertical.setText(String.format("%d", (newValue.intValue())));
             }
@@ -136,6 +143,7 @@ public class FXMLSetUpController implements Initializable {
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
         drawGridLines(gc, 5, 50);
         initializeArrows(gc);
+        updateStatus();
     }
     private void setOceanWidth(double width) {
         double scale = sldHorizontal.getWidth() / 900;
@@ -180,7 +188,7 @@ public class FXMLSetUpController implements Initializable {
         }
     }
     private void initializeArrows(GraphicsContext gc) {
-        gc.setLineWidth(4.0);
+        gc.setLineWidth(horizontalSpeed);
         gc.setStroke(Color.BLACK);
         arwCurrentUpSize(gc);
         arwCurrentRightSize(gc);
@@ -232,27 +240,26 @@ public class FXMLSetUpController implements Initializable {
 
     private void toggleCurrent() {
         btnCurrent.selectedProperty().addListener(((observable, oldValue, newValue) -> {
-            if (btnCurrent.selectedProperty().getValue()){
-                oceanWidth = sldHorizontal.getValue();
-                oceanHeight = sldVertical.getValue();
-                System.out.println(String.valueOf(horizontalSpeed));
-                setSldMinMax(1, 3);
-                setSldMinMax(1, 10);
-                txtHorizontal.setText(String.valueOf(horizontalSpeed));
-                txtVertical.setText(String.valueOf(verticalSpeed));
+            currentToggle = !currentToggle;
+            if (currentToggle) {
 
-                System.out.println(horizontalSpeed);
+                setSldHorMinMax(1, horizontalSpeed);
+                setSldHorMinMax(1, 10);
+                setSldVerMinMax(1, verticalSpeed);
+                setSldVerMinMax(1, 10);
+                sldHorizontal.setValue(horizontalSpeed);
+                sldVertical.setValue(verticalSpeed);
             } else {
-                horizontalSpeed = sldHorizontal.getValue();
-                verticalSpeed = sldVertical.getValue();
-                setSldMinMax(100, 1000);
+                setSldHorMinMax(100, 1000);
+                setSldVerMinMax(100, 1000);
                 txtHorizontal.setText(String.valueOf(oceanWidth));
                 txtVertical.setText(String.valueOf(oceanHeight));
             }
         }));
     }
 
-    private void toggleLand() {
+
+        private void toggleLand() {
         btnLand.pressedProperty().addListener(((observable, oldValue, newValue) -> {
         }));
     }
@@ -279,12 +286,21 @@ public class FXMLSetUpController implements Initializable {
         verticalSpeed = speed;
     }
 
-    private void setSldMinMax(int min, int max) {
-        sldHorizontal.setMin(min);
+    private void setSldVerMinMax(double min, double max) {
         sldVertical.setMin(min);
-        sldHorizontal.setMax(max);
         sldVertical.setMax(max);
     }
+
+    private void setSldHorMinMax(double min, double max) {
+        sldHorizontal.setMin(min);
+        sldHorizontal.setMax(max);
+    }
+
+    private void updateStatus(){
+        statusBar.setText("Size: "+(int)oceanWidth+"x"+(int)oceanHeight+'\t');
+    }
+
+
 //    private void generateRandomIsland(GraphicsContext gc, int length) {
 //        Random random = new Random();
 //        int cnvHeight = (int) cnvOcean.getHeight();
