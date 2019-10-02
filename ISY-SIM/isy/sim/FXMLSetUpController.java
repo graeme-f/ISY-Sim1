@@ -316,5 +316,23 @@ public class FXMLSetUpController implements Initializable {
 //        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
 //        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
 //    }
-
+    private double[] convertMouseToGrid(double mouseX, double mouseY) {
+        double canvasX = mouseX - 60;
+        double canvasY = 525 - mouseY;
+        double gridX = canvasX * 1.35135;
+        double gridY = canvasY * 1.90476;
+        return new double[]{gridX, gridY};
+    }
+    private double[] convertGridToMouse(double gridX, double gridY) {
+        double canvasX = gridX/1.35135;
+        double canvasY = gridY/1.90476;
+        double mouseX = canvasX + 60;
+        double mouseY = 525 - canvasY;
+        return new double[]{mouseX, mouseY};
+    }
+    private double[] convertMouseToCanvas(double mouseX, double mouseY) {
+        double canvasX = mouseX - 60;
+        double canvasY = 525 - mouseY;
+        return new double[]{canvasX, canvasY};
+    }
 }
