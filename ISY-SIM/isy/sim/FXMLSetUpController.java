@@ -119,11 +119,11 @@ public class FXMLSetUpController implements Initializable {
                 setCurrentVertical(newValue.doubleValue());
                 drawOcean();
                 sldVertical.setValue(verticalSpeed);
-                txtHorizontal.setText(""+horizontalSpeed);
+                txtVertical.setText(""+(int)horizontalSpeed);
             } else {
                 setOceanHeight(newValue.doubleValue());
                 oceanHeight = sldVertical.getValue();
-                txtVertical.setText(String.format("%d", (int) oceanHeight));
+                txtVertical.setText(String.format("%d", (int)oceanHeight));
                 updateStatus();
             }
 
