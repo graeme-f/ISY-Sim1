@@ -89,16 +89,21 @@ public class FXMLSetUpController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        wastePref.setVisible(false);
-        wastePref.setMinWidth(1);
-        wastePref.setPrefWidth(1);
-        statusBar.setMinWidth(450);
+        initializeWastePrefs();
         updateStatus();
         toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
         drawOcean();
         initializeSliders();
         toggleCurrent();
+        toggleLand();
+    }
+
+    private void initializeWastePrefs() {
+        wastePref.setVisible(false);
+        wastePref.setMinWidth(1);
+        wastePref.setPrefWidth(1);
+        statusBar.setMinWidth(450);
     }
 
     private void initializeSliders() {
@@ -257,12 +262,21 @@ public class FXMLSetUpController implements Initializable {
             }
         }));
     }
-
-
-        private void toggleLand() {
-        btnLand.pressedProperty().addListener(((observable, oldValue, newValue) -> {
+    private void toggleLand() {
+        btnLand.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            landToggle = !landToggle;
+            if (landToggle) {
+                System.out.println("Point 1 Reached.");
+                cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        generateIsland(gc, event, 50);
+                    }
+                });
+            }
         }));
     }
+
     private void toggleWaste() {
         btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
             if (btnWaste.selectedProperty().getValue()) {
@@ -306,6 +320,16 @@ public class FXMLSetUpController implements Initializable {
         statusBar.setText("Action: " + action + "\t Size: "+(int)oceanWidth+"x"+(int)oceanHeight+'\t' + "Current Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "\nLand amount:" + "\tWaste amount:");
     }
 
+    private void generateIsland(GraphicsContext gc, MouseEvent mouseEvent, int size) {
+        double xCoordinate = mouseEvent.getX();
+        double yCoordinate = mouseEvent.getY();
+
+        double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+size, xCoordinate+size};
+        double[] yCoordinates = {yCoordinate, yCoordinate+size, yCoordinate+size, yCoordinate};
+
+        gc.setFill(Color.GREEN);
+        gc.fillPolygon(xCoordinates, yCoordinates, 4);
+    }
 
 //    private void generateRandomIsland(GraphicsContext gc, int length) {
 //        Random random = new Random();
@@ -329,10 +353,5 @@ public class FXMLSetUpController implements Initializable {
         double mouseX = canvasX + 60;
         double mouseY = 525 - canvasY;
         return new double[]{mouseX, mouseY};
-    }
-    private double[] convertMouseToCanvas(double mouseX, double mouseY) {
-        double canvasX = mouseX - 60;
-        double canvasY = 525 - mouseY;
-        return new double[]{canvasX, canvasY};
     }
 }
