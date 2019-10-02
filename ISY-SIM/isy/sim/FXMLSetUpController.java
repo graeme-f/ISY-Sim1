@@ -105,7 +105,7 @@ public class FXMLSetUpController implements Initializable {
                 setCurrentHorizontal(newValue.doubleValue());
                 drawOcean();
                 sldHorizontal.setValue(horizontalSpeed);
-                txtHorizontal.setText(""+horizontalSpeed);
+                txtHorizontal.setText(""+(int)horizontalSpeed);
             } else {
                 setOceanWidth(newValue.doubleValue());
                 oceanWidth = sldHorizontal.getValue();
@@ -119,7 +119,7 @@ public class FXMLSetUpController implements Initializable {
                 setCurrentVertical(newValue.doubleValue());
                 drawOcean();
                 sldVertical.setValue(verticalSpeed);
-                txtVertical.setText(""+(int)horizontalSpeed);
+                txtVertical.setText(""+(int)verticalSpeed);
             } else {
                 setOceanHeight(newValue.doubleValue());
                 oceanHeight = sldVertical.getValue();
