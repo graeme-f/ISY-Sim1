@@ -23,7 +23,9 @@
  */
 package sim;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.beans.binding.Bindings;
@@ -31,8 +33,11 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -42,6 +47,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
+import javafx.scene.input.MouseEvent;
 
 /**
  *
@@ -75,6 +81,9 @@ public class FXMLSetUpController implements Initializable {
     private DoubleProperty sldVer;
     private StringConverter<Number> convVertical;
 
+    public FXMLSetUpController() throws IOException {
+    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -82,6 +91,7 @@ public class FXMLSetUpController implements Initializable {
         drawOcean();
         initializeSliders();
         toggleCurrent();
+//        toggleLand();
     }
 
     private void initializeSliders() {
@@ -236,30 +246,49 @@ public class FXMLSetUpController implements Initializable {
             }
         }));
     }
+//    private void toggleLand() {
+//        btnLand.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+//            landToggle = !landToggle;
+//            if (landToggle) {
+//                generateIsland(gc, new MouseEvent());
+//            }
+//        }));
+//    }
     private void setCurrentHorizontal(double speed) {
         horizontalSpeed = speed;
     }
     private void setCurrentVertical(double speed) {
         verticalSpeed = speed;
     }
-
     private void setSldVerMinMax(double min, double max) {
         sldVertical.setMin(min);
         sldVertical.setMax(max);
     }
-
     private void setSldHorMinMax(double min, double max) {
         sldHorizontal.setMin(min);
         sldHorizontal.setMax(max);
     }
-//    private void generateRandomIsland(GraphicsContext gc, int length) {
+//    private void generateIsland(GraphicsContext gc, MouseEvent mouse) {
 //        Random random = new Random();
-//        int cnvHeight = (int) cnvOcean.getHeight();
-//        int cnvWidth = (int) cnvOcean.getWidth();
-//        int heightCoef = cnvHeight/length;
-//        int widthCoef = cnvWidth/length;
-//        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
-//        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
+//        double definedXPoint = mouse.getX()-60;
+//        double definedYPoint = 525-mouse.getY();
+//        double[] xPoints = {definedXPoint*random.nextDouble(), definedXPoint*random.nextDouble(), definedXPoint*random.nextDouble(), definedXPoint*random.nextDouble()};
+//        double[] yPoints = {definedYPoint*random.nextDouble(), definedYPoint*random.nextDouble(), definedYPoint*random.nextDouble(), definedYPoint*random.nextDouble()};
+//        gc.setFill(Color.GREEN);
+//        gc.fillPolygon(xPoints, yPoints, 4);
 //    }
-
+    private double[] convertMouseToGrid(double mouseX, double mouseY) {
+        double canvasX = mouseX - 60;
+        double canvasY = 525 - mouseY;
+        double gridX = canvasX * 1.35135;
+        double gridY = canvasY * 1.90476;
+        return new double[]{gridX, gridY};
+    }
+    private double[] convertGridToMouse(double gridX, double gridY) {
+        double canvasX = gridX/1.35135;
+        double canvasY = gridY/1.90476;
+        double mouseX = canvasX + 60;
+        double mouseY = 525 - canvasY;
+        return new double[]{mouseX, mouseY};
+    }
 }
