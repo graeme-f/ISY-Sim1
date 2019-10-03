@@ -250,6 +250,8 @@ public class FXMLSetUpController implements Initializable {
                 setSldVerMinMax(1, verticalSpeed);
                 setSldVerMinMax(1, 10);
             } else {
+                txtHorizontal.setText(String.valueOf(oceanWidth));
+                txtVertical.setText(String.valueOf(oceanHeight));
                 setSldHorMinMax(100, 1000);
                 setSldVerMinMax(100, 1000);
                 txtHorizontal.setText(String.valueOf(oceanWidth));
