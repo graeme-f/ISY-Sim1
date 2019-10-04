@@ -340,8 +340,20 @@ public class FXMLSetUpController implements Initializable {
         double[] xCoordinates = {xCoordinate-size/2.0, xCoordinate-size/2.0, xCoordinate+size/2.0, xCoordinate+size/2.0};
         double[] yCoordinates = {yCoordinate-size/2.0, yCoordinate+size/2.0, yCoordinate+size/2.0, yCoordinate-size/2.0};
 
-        gc.setFill(Color.GREEN);
+        gc.setFill(Color.YELLOW);
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
+        
+          double xCoordinate1 = mouseEvent.getX();
+        double yCoordinate1 = mouseEvent.getY();
+
+        double[] xCoordinates1 = {xCoordinate1-size/4.0, xCoordinate1-size/4.0, xCoordinate1+size/4.0, xCoordinate1+size/4.0};
+        double[] yCoordinates1 = {yCoordinate1-size/4.0, yCoordinate1+size/4.0, yCoordinate1+size/4.0, yCoordinate1-size/4.0};
+        
+        gc.setFill(Color.GREEN);
+        gc.fillPolygon(xCoordinates1, yCoordinates1, 4);
+        
+        
+        
     }
 
 //    private void generateRandomIsland(GraphicsContext gc, int length) {
