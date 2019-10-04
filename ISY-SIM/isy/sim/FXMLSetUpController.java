@@ -27,6 +27,7 @@ import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 import com.sun.deploy.panel.TextFieldProperty;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -69,6 +70,7 @@ public class FXMLSetUpController implements Initializable {
     @FXML private ToggleButton btnCurrent;
     @FXML private MenuButton wastePref;
     @FXML private Label statusBar;
+    @FXML private ToggleButton btnClear;
 
     private boolean currentToggle = false;
     private boolean landToggle = false;
@@ -77,69 +79,54 @@ public class FXMLSetUpController implements Initializable {
     private double oceanHeight=500;
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
-
-    private StringProperty txtHor;
-    private DoubleProperty sldHor;
-    private StringConverter<Number> convHorizontal;
-
-    private StringProperty txtVer;
-    private DoubleProperty sldVer;
-    private StringConverter<Number> convVertical;
-
+    private boolean landToggled = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        wastePref.setVisible(false);
-        wastePref.setMinWidth(1);
-        wastePref.setPrefWidth(1);
-        statusBar.setMinWidth(450);
+        initializeWastePrefs();
         updateStatus();
         toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
         drawOcean();
         initializeSliders();
         toggleCurrent();
+        toggleLand();
+        clearAll();
+    }
+
+    private void initializeWastePrefs() {
+        wastePref.setVisible(false);
+        wastePref.setMinWidth(1);
+        wastePref.setPrefWidth(1);
+        statusBar.setMinWidth(450);
     }
 
     private void initializeSliders() {
-        txtHor = txtHorizontal.textProperty();
-        sldHor = sldHorizontal.valueProperty();
-        convHorizontal = new NumberStringConverter();
-        txtVer = txtVertical.textProperty();
-        sldVer = sldVertical.valueProperty();
-        convVertical = new NumberStringConverter();
-
-        Bindings.bindBidirectional(txtHor, sldHor, convHorizontal);
-        Bindings.bindBidirectional(txtVer, sldVer, convVertical);
-
-        sldHorizontal.valueProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (currentToggle) {
-                    setCurrentHorizontal(newValue.doubleValue());
-                    drawOcean();
-                    sldHorizontal.setValue(horizontalSpeed);
-
-                } else {
-                    setOceanWidth(newValue.doubleValue());
-                    updateStatus();
-                    oceanWidth = sldHorizontal.getValue();
-                }
-                txtHorizontal.setText(String.format("%d", newValue.intValue()));
+        sldHorizontal.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (currentToggle && !landToggled) {
+                setCurrentHorizontal(newValue.doubleValue());
+                drawOcean();
+                sldHorizontal.setValue(horizontalSpeed);
+                txtHorizontal.setText(""+(int)horizontalSpeed);
+            } else {
+                setOceanWidth(newValue.doubleValue());
+                oceanWidth = sldHorizontal.getValue();
+                txtHorizontal.setText(String.format("%d", (int) oceanWidth));
+                updateStatus();
             }
         });
 
-        sldVertical.valueProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (currentToggle) {
-                    setCurrentVertical(newValue.doubleValue());
-                    drawOcean();
-                    sldVertical.setValue(verticalSpeed);
-                } else {
-                    setOceanHeight(newValue.doubleValue());
-                    updateStatus();
-                    oceanHeight = sldVertical.getValue();
-                }
-                txtVertical.setText(String.format("%d", (newValue.intValue())));
+        sldVertical.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (currentToggle && !landToggled) {
+                setCurrentVertical(newValue.doubleValue());
+                drawOcean();
+                sldVertical.setValue(verticalSpeed);
+                txtVertical.setText(""+(int)verticalSpeed);
+            } else {
+                setOceanHeight(newValue.doubleValue());
+                oceanHeight = sldVertical.getValue();
+                txtVertical.setText(String.format("%d", (int)oceanHeight));
+                updateStatus();
             }
         });
     }
@@ -151,17 +138,21 @@ public class FXMLSetUpController implements Initializable {
         updateStatus();
     }
     private void setOceanWidth(double width) {
-        double scale = sldHorizontal.getWidth() / 900;
-        double oWidth = (width-100)*scale+60;
-        cnvOcean.setWidth(oWidth);
-        drawOcean();
+        if (!landToggled) {
+            double scale = sldHorizontal.getWidth() / 900;
+            double oWidth = (width-100)*scale+60;
+            cnvOcean.setWidth(oWidth);
+            drawOcean();
+        }
     }
     private void setOceanHeight(double height) {
-        double scale = sldVertical.getHeight() / 900;
-        double oHeight = (height-100)*scale+50;
-        cnvOcean.setHeight(oHeight);
-        cnvOcean.setTranslateY(525-oHeight);
-        drawOcean();
+        if (!landToggled) {
+            double scale = sldVertical.getHeight() / 900;
+            double oHeight = (height-100)*scale+50;
+            cnvOcean.setHeight(oHeight);
+            cnvOcean.setTranslateY(525-oHeight);
+            drawOcean();
+        }
     }
     private void drawGridLines(GraphicsContext gc, int minorGL, int majorGL) {
         gc.setStroke(Color.BLUE);
@@ -250,8 +241,8 @@ public class FXMLSetUpController implements Initializable {
                 setSldVerMinMax(1, verticalSpeed);
                 setSldVerMinMax(1, 10);
             } else {
-                txtHorizontal.setText(String.valueOf(oceanWidth));
-                txtVertical.setText(String.valueOf(oceanHeight));
+                setSldHorMinMax((int)oceanWidth, 1000);
+                setSldVerMinMax((int)oceanHeight, 1000);
                 setSldHorMinMax(100, 1000);
                 setSldVerMinMax(100, 1000);
                 txtHorizontal.setText(String.valueOf(oceanWidth));
@@ -259,10 +250,29 @@ public class FXMLSetUpController implements Initializable {
             }
         }));
     }
-
-
-        private void toggleLand() {
-        btnLand.pressedProperty().addListener(((observable, oldValue, newValue) -> {
+    private void toggleLand() {
+        btnLand.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            landToggle = !landToggle;
+            landToggled = true;
+            sldVertical.setDisable(true);
+            sldHorizontal.setDisable(true);
+            txtVertical.setDisable(true);
+            txtHorizontal.setDisable(true);
+            if (landToggle) {
+                cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        generateIsland(gc, event, 10);
+                    }
+                });
+            } else {
+                cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        ;
+                    }
+                });
+            }
         }));
     }
     private void toggleWaste() {
@@ -271,12 +281,26 @@ public class FXMLSetUpController implements Initializable {
                 wastePref.setVisible(false);
                 wastePref.setMinWidth(1);
                 wastePref.setPrefWidth(1);
-                statusBar.setMinWidth(450);
+                statusBar.setMinWidth(400);
             } else {
                 wastePref.setVisible(true);
                 wastePref.setMinWidth(100);
                 wastePref.setPrefWidth(100);
-                statusBar.setMinWidth(365);
+                statusBar.setMinWidth(355);
+            }
+        }));
+    }
+
+    private void clearAll() {
+        btnClear.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (btnClear.selectedProperty().getValue()){
+                landToggled=false;
+                btnLand.setSelected(false);
+                drawOcean();
+                sldVertical.setDisable(false);
+                sldHorizontal.setDisable(false);
+                txtVertical.setDisable(false);
+                txtHorizontal.setDisable(false);
             }
         }));
     }
@@ -305,9 +329,20 @@ public class FXMLSetUpController implements Initializable {
         } else {
             action="Changing Size";
         }
-        statusBar.setText("Action: " + action + "\t Size: "+(int)oceanWidth+"x"+(int)oceanHeight+'\t' + "Current Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "\nLand amount:" + "\tWaste amount:");
+        double[] gridCoords = convertMouseToGrid(cnvOcean.getWidth(), cnvOcean.getHeight());
+        statusBar.setText("Action: " + action + "\t Size: "+(int)gridCoords[0]+"x"+(int)gridCoords[1] + "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
     }
 
+    private void generateIsland(GraphicsContext gc, MouseEvent mouseEvent, int size) {
+        double xCoordinate = mouseEvent.getX();
+        double yCoordinate = mouseEvent.getY();
+
+        double[] xCoordinates = {xCoordinate-size/2.0, xCoordinate-size/2.0, xCoordinate+size/2.0, xCoordinate+size/2.0};
+        double[] yCoordinates = {yCoordinate-size/2.0, yCoordinate+size/2.0, yCoordinate+size/2.0, yCoordinate-size/2.0};
+
+        gc.setFill(Color.GREEN);
+        gc.fillPolygon(xCoordinates, yCoordinates, 4);
+    }
 
 //    private void generateRandomIsland(GraphicsContext gc, int length) {
 //        Random random = new Random();
@@ -318,5 +353,14 @@ public class FXMLSetUpController implements Initializable {
 //        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
 //        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
 //    }
-
+    private double[] convertMouseToGrid(double mouseX, double mouseY) {
+        double gridX = mouseX*1.323529411764706+20.588235294117647;
+        double gridY = mouseY*1.894736842105263+5.263157894736842;
+        return new double[]{gridX, gridY};
+    }
+    private double[] convertGridToMouse(double gridX, double gridY) {
+        double mouseX = (gridX-20.588235294117647)/1.323529411764706;
+        double mouseY = (gridY-5.263157894736842)/1.894736842105263;
+        return new double[]{mouseX, mouseY};
+    }
 }
