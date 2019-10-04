@@ -58,7 +58,7 @@ import javafx.util.converter.NumberStringConverter;
  * @author gfoster
  */
 public class FXMLSetUpController implements Initializable {
-    
+
     @FXML private TextField txtHorizontal;
     @FXML private TextField txtVertical;
     @FXML private Slider sldHorizontal;
@@ -193,7 +193,7 @@ public class FXMLSetUpController implements Initializable {
     private void arwCurrentUpSize(GraphicsContext gc) {
         double scaleHeight = cnvOcean.getHeight();
         gc.strokeLine(10, 20, 10, scaleHeight-20);
-        
+
         double[] xPoints = {0,10,20};
         double[] yPoints = {20,0,20};
         gc.setFill(Color.BLACK);
@@ -203,7 +203,7 @@ public class FXMLSetUpController implements Initializable {
     private void arwCurrentRightSize(GraphicsContext gc) {
         double scaleWidth = cnvOcean.getWidth();
         gc.strokeLine(20, 10, scaleWidth-20, 10);
-        
+
         double[] xPoints = {scaleWidth-20,scaleWidth,scaleWidth-20};
         double[] yPoints = {0,10,20};
         gc.setFill(Color.BLACK);
@@ -339,7 +339,6 @@ public class FXMLSetUpController implements Initializable {
         double[] yCoordinates = {yCoordinate, yCoordinate+majorGL, yCoordinate+majorGL, yCoordinate};
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
         updateLandArray(mouseEvent);
-        drawGridLines(gc, minorGL, majorGL);
     }
 
     private boolean checkLandArray(int x, int y) {
