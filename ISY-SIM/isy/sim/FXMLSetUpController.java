@@ -79,7 +79,6 @@ public class FXMLSetUpController implements Initializable {
     private double oceanHeight=500;
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
-    private boolean landToggled = false;
     private int minorGL = 5;
     private int majorGL = 50;
     private boolean[][] landArray;
@@ -106,7 +105,7 @@ public class FXMLSetUpController implements Initializable {
 
     private void initializeSliders() {
         sldHorizontal.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (currentToggle && !landToggled) {
+            if (currentToggle) {
                 setCurrentHorizontal(newValue.doubleValue());
                 drawOcean();
                 sldHorizontal.setValue(horizontalSpeed);
@@ -120,7 +119,7 @@ public class FXMLSetUpController implements Initializable {
         });
 
         sldVertical.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (currentToggle && !landToggled) {
+            if (currentToggle) {
                 setCurrentVertical(newValue.doubleValue());
                 drawOcean();
                 sldVertical.setValue(verticalSpeed);
@@ -141,21 +140,17 @@ public class FXMLSetUpController implements Initializable {
         updateStatus();
     }
     private void setOceanWidth(double width) {
-        if (!landToggled) {
-            double scale = sldHorizontal.getWidth() / 900;
-            double oWidth = (width-100)*scale+60;
-            cnvOcean.setWidth(oWidth);
-            drawOcean();
-        }
+        double scale = sldHorizontal.getWidth() / 900;
+        double oWidth = (width-100)*scale+60;
+        cnvOcean.setWidth(oWidth);
+        drawOcean();
     }
     private void setOceanHeight(double height) {
-        if (!landToggled) {
-            double scale = sldVertical.getHeight() / 900;
-            double oHeight = (height-100)*scale+50;
-            cnvOcean.setHeight(oHeight);
-            cnvOcean.setTranslateY(525-oHeight);
-            drawOcean();
-        }
+        double scale = sldVertical.getHeight() / 900;
+        double oHeight = (height-100)*scale+50;
+        cnvOcean.setHeight(oHeight);
+        cnvOcean.setTranslateY(525-oHeight);
+        drawOcean();
     }
     private void drawGridLines(GraphicsContext gc, int minorGL, int majorGL) {
         gc.setStroke(Color.BLUE);
@@ -256,15 +251,12 @@ public class FXMLSetUpController implements Initializable {
     private void toggleLand() {
         btnLand.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             landToggle = !landToggle;
-            landToggled = true;
-            sldVertical.setDisable(true);
-            sldHorizontal.setDisable(true);
-            txtVertical.setDisable(true);
-            txtHorizontal.setDisable(true);
             if (landToggle) {
+                initializeLandArray();
                 cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
+                        disableSliders();
                         generateIsland(gc, event);
                     }
                 });
@@ -297,7 +289,6 @@ public class FXMLSetUpController implements Initializable {
     private void clearAll() {
         btnClear.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             if (btnClear.selectedProperty().getValue()){
-                landToggled=false;
                 btnLand.setSelected(false);
                 drawOcean();
                 sldVertical.setDisable(false);
@@ -339,25 +330,47 @@ public class FXMLSetUpController implements Initializable {
     private void generateIsland(GraphicsContext gc, MouseEvent mouseEvent) {
         double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
         double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-        System.out.println(yCoordinate);
-
+        if (!checkLandArray((int)mouseEvent.getX(), (int)mouseEvent.getY())) {
+            gc.setFill(Color.GREEN);
+        } else {
+            gc.setFill(Color.AQUAMARINE);
+        }
         double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+majorGL, xCoordinate+majorGL};
         double[] yCoordinates = {yCoordinate, yCoordinate+majorGL, yCoordinate+majorGL, yCoordinate};
-
-        gc.setFill(Color.GREEN);
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
-        landToggled = true;
-        landArray = new boolean[(int)cnvOcean.getWidth()][(int)cnvOcean.getHeight()];
+        updateLandArray(mouseEvent);
+        drawGridLines(gc, minorGL, majorGL);
+    }
+
+    private boolean checkLandArray(int x, int y) {
+        return landArray[x][y];
+    }
+
+    private void initializeLandArray() {
+        landArray = new boolean[(int)cnvOcean.getWidth()+60][(int)cnvOcean.getHeight()];
+        for (int i = 0; i < landArray.length; i++) {
+            for (int j = 0; j < landArray[0].length; j++) {
+                landArray[i][j] = false;
+            }
+        }
     }
 
     private void updateLandArray(MouseEvent mouseEvent) {
         double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
         double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-        for (int i = (int)xCoordinate; i < (int)xCoordinate+majorGL; i++) {
-            for (int j = (int)yCoordinate; j < (int)yCoordinate+majorGL; j++) {
-                landArray[i][j] = true;
+        for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL; i++) {
+            for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL; j++) {
+                landArray[i][j] = !landArray[i][j];
+                System.out.println("("+i+", "+j+") has been set to "+landArray[i][j]);
             }
         }
+    }
+
+    private void disableSliders() {
+        sldVertical.setDisable(true);
+        sldHorizontal.setDisable(true);
+        txtVertical.setDisable(true);
+        txtHorizontal.setDisable(true);
     }
 
 //    private void generateRandomIsland(GraphicsContext gc, int length) {
