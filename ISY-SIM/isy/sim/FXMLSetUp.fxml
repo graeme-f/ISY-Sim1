@@ -43,8 +43,8 @@
                         <HBox prefHeight="60.0" prefWidth="740.0" />
                         <HBox minHeight="40.0" prefWidth="200.0">
                            <children>
-                              <Label fx:id="statusBar" minWidth="365" text="Size: 500x500" />
-                              <ToggleButton fx:id="btnCurrent" mnemonicParsing="false" prefHeight="25.0" prefWidth="91.0" text="Current" />
+                              <Label fx:id="statusBar" minWidth="305" prefWidth="305" />
+                              <ToggleButton fx:id="btnCurrent" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" text="Current" />
                               <ToggleButton fx:id="btnLand" minWidth="60.0" mnemonicParsing="false" text="Land" />
                               <ToggleButton fx:id="btnWaste" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Waste" />
                               <MenuButton fx:id="wastePref" mnemonicParsing="false" text="WastePref">
@@ -59,6 +59,7 @@
                                  </items>
                               </MenuButton>
                               <Button fx:id="btnPlay" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Play" textFill="#630000" />
+                              <ToggleButton fx:id="btnClear" minWidth="80" mnemonicParsing="false" text="Clear All" />
                            </children>
                         </HBox>
                      </children>
