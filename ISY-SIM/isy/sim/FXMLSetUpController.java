@@ -81,7 +81,7 @@ public class FXMLSetUpController implements Initializable {
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
     private int minorGL = 5;
-    private int majorGL = 50;
+    private int majorGL = 20;
     private boolean[][] landArray;
 
     @Override
@@ -98,25 +98,32 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void draw() {
-        // TODO: (1) Draw Ocean (2) Draw Gridlines (3) Draw Islands
         drawOcean();
         initializeArrows(gc);
         if (landToggled) {
-            drawIslands(gc);
+            drawIslands();
         }
     }
 
-    private void drawIslands(GraphicsContext gc) {
+    private void drawIslands() {
         for (int i = 0; i < landArray.length; i += majorGL) {
             for (int j = 0; j < landArray[0].length; j += majorGL) {
                 if (landArray[i][j]) {
-                    gc.setFill(Color.GREEN);
-                    double[] xCoordinates = {i, i, i+majorGL, i+majorGL};
-                    double[] yCoordinates = {j, j +majorGL, j +majorGL, j};
-                    gc.fillPolygon(xCoordinates, yCoordinates, 4);
+                    drawIsland(i, j);
                 }
             }
         }
+    }
+
+    private void drawIsland(int xCoordinate, int yCoordinate) {
+        gc.setFill(Color.YELLOW);
+        double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+majorGL, xCoordinate+majorGL};
+        double[] yCoordinates = {yCoordinate, yCoordinate+majorGL, yCoordinate+majorGL, yCoordinate};
+        gc.fillPolygon(xCoordinates, yCoordinates, 4);
+        gc.setFill(Color.GREEN);
+        xCoordinates = new double[]{xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.9375, xCoordinate+majorGL*0.9375};
+        yCoordinates = new double[]{yCoordinate+majorGL*0.0625, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.0625};
+        gc.fillPolygon(xCoordinates, yCoordinates, 4);
     }
 
     private void initializeWastePrefs() {
