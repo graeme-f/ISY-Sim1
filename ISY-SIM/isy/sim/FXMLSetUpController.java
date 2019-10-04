@@ -79,6 +79,9 @@ public class FXMLSetUpController implements Initializable {
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
     private boolean landToggled = false;
+    private int minorGL = 5;
+    private int majorGL = 50;
+    private boolean[][] landArray;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -132,7 +135,7 @@ public class FXMLSetUpController implements Initializable {
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
-        drawGridLines(gc, 5, 50);
+        drawGridLines(gc, minorGL, majorGL);
         initializeArrows(gc);
         updateStatus();
     }
@@ -158,19 +161,19 @@ public class FXMLSetUpController implements Initializable {
         int cnvWidth = (int) cnvOcean.getWidth();
         int cnvHeight = (int) cnvOcean.getHeight();
         for (int width = 0; width < cnvWidth; width += minorGL) {
-            for (int height = cnvHeight; height > 0; height -= minorGL) {
+            for (int height = 0; height < cnvHeight; height += minorGL) {
                 // TODO: Find  a more concise way of doing this
-                if (width % majorGL == 0 && (cnvHeight-height) % majorGL != 0) {
+                if (width % majorGL == 0 && height % majorGL != 0) {
                     gc.setLineWidth(0.4);
                     gc.strokeLine(width, height, width+minorGL, height);
                     gc.setLineWidth(3.0);
                     gc.strokeLine(width, height, width, height-minorGL);
-                } else if ((cnvHeight-height) % majorGL == 0 && width % majorGL != 0) {
+                } else if (height % majorGL == 0 && width % majorGL != 0) {
                     gc.setLineWidth(3.0);
                     gc.strokeLine(width, height, width+minorGL, height);
                     gc.setLineWidth(0.4);
                     gc.strokeLine(width, height, width, height-minorGL);
-                } else if ((cnvHeight-height) % majorGL == 0 && width % majorGL == 0) {
+                } else if (height % majorGL == 0 && width % majorGL == 0) {
                     gc.setLineWidth(3.0);
                     gc.strokeLine(width, height, width+minorGL, height);
                     gc.strokeLine(width, height, width, height-minorGL);
@@ -252,12 +255,18 @@ public class FXMLSetUpController implements Initializable {
     private void toggleLand() {
         btnLand.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             landToggle = !landToggle;
-            landToggled = true;
             if (landToggle) {
                 cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        generateIsland(gc, event, 50);
+                        generateIsland(gc, event);
+                    }
+                });
+            } else {
+                cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        ;
                     }
                 });
             }
@@ -308,15 +317,28 @@ public class FXMLSetUpController implements Initializable {
         statusBar.setText("Action: " + action + "\t Size: "+(int)gridCoords[0]+"x"+(int)gridCoords[1]+'\t' + "Current Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "\nLand amount:" + "\tWaste amount:");
     }
 
-    private void generateIsland(GraphicsContext gc, MouseEvent mouseEvent, int size) {
-        double xCoordinate = mouseEvent.getX();
-        double yCoordinate = mouseEvent.getY();
+    private void generateIsland(GraphicsContext gc, MouseEvent mouseEvent) {
+        double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
+        double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
+        System.out.println(yCoordinate);
 
-        double[] xCoordinates = {xCoordinate-size/2.0, xCoordinate-size/2.0, xCoordinate+size/2.0, xCoordinate+size/2.0};
-        double[] yCoordinates = {yCoordinate-size/2.0, yCoordinate+size/2.0, yCoordinate+size/2.0, yCoordinate-size/2.0};
+        double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+majorGL, xCoordinate+majorGL};
+        double[] yCoordinates = {yCoordinate, yCoordinate+majorGL, yCoordinate+majorGL, yCoordinate};
 
         gc.setFill(Color.GREEN);
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
+        landToggled = true;
+        landArray = new boolean[(int)cnvOcean.getWidth()][(int)cnvOcean.getHeight()];
+    }
+
+    private void updateLandArray(MouseEvent mouseEvent) {
+        double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
+        double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
+        for (int i = (int)xCoordinate; i < (int)xCoordinate+majorGL; i++) {
+            for (int j = (int)yCoordinate; j < (int)yCoordinate+majorGL; j++) {
+                landArray[i][j] = true;
+            }
+        }
     }
 
 //    private void generateRandomIsland(GraphicsContext gc, int length) {
@@ -328,6 +350,7 @@ public class FXMLSetUpController implements Initializable {
 //        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
 //        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
 //    }
+
     private double[] convertMouseToGrid(double mouseX, double mouseY) {
         double gridX = mouseX*1.323529411764706+20.588235294117647;
         double gridY = mouseY*1.894736842105263+5.263157894736842;
