@@ -70,6 +70,7 @@ public class FXMLSetUpController implements Initializable {
     @FXML private ToggleButton btnCurrent;
     @FXML private MenuButton wastePref;
     @FXML private Label statusBar;
+    @FXML private ToggleButton btnClear;
 
     private boolean currentToggle = false;
     private boolean landToggle = false;
@@ -93,6 +94,7 @@ public class FXMLSetUpController implements Initializable {
         initializeSliders();
         toggleCurrent();
         toggleLand();
+        clearAll();
     }
 
     private void initializeWastePrefs() {
@@ -129,7 +131,6 @@ public class FXMLSetUpController implements Initializable {
                 txtVertical.setText(String.format("%d", (int)oceanHeight));
                 updateStatus();
             }
-
         });
     }
     private void drawOcean(){
@@ -255,6 +256,11 @@ public class FXMLSetUpController implements Initializable {
     private void toggleLand() {
         btnLand.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             landToggle = !landToggle;
+            landToggled = true;
+            sldVertical.setDisable(true);
+            sldHorizontal.setDisable(true);
+            txtVertical.setDisable(true);
+            txtHorizontal.setDisable(true);
             if (landToggle) {
                 cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
@@ -272,19 +278,32 @@ public class FXMLSetUpController implements Initializable {
             }
         }));
     }
-
     private void toggleWaste() {
         btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
             if (btnWaste.selectedProperty().getValue()) {
                 wastePref.setVisible(false);
                 wastePref.setMinWidth(1);
                 wastePref.setPrefWidth(1);
-                statusBar.setMinWidth(450);
+                statusBar.setMinWidth(400);
             } else {
                 wastePref.setVisible(true);
                 wastePref.setMinWidth(100);
                 wastePref.setPrefWidth(100);
-                statusBar.setMinWidth(365);
+                statusBar.setMinWidth(355);
+            }
+        }));
+    }
+
+    private void clearAll() {
+        btnClear.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+            if (btnClear.selectedProperty().getValue()){
+                landToggled=false;
+                btnLand.setSelected(false);
+                drawOcean();
+                sldVertical.setDisable(false);
+                sldHorizontal.setDisable(false);
+                txtVertical.setDisable(false);
+                txtHorizontal.setDisable(false);
             }
         }));
     }
@@ -314,7 +333,7 @@ public class FXMLSetUpController implements Initializable {
             action="Changing Size";
         }
         double[] gridCoords = convertMouseToGrid(cnvOcean.getWidth(), cnvOcean.getHeight());
-        statusBar.setText("Action: " + action + "\t Size: "+(int)gridCoords[0]+"x"+(int)gridCoords[1]+'\t' + "Current Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "\nLand amount:" + "\tWaste amount:");
+        statusBar.setText("Action: " + action + "\t Size: "+(int)gridCoords[0]+"x"+(int)gridCoords[1] + "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
     }
 
     private void generateIsland(GraphicsContext gc, MouseEvent mouseEvent) {
