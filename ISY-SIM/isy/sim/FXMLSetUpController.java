@@ -74,6 +74,7 @@ public class FXMLSetUpController implements Initializable {
 
     private boolean currentToggle = false;
     private boolean landToggle = false;
+    private boolean landToggled = false;
     private GraphicsContext gc;
     private double oceanWidth=500;
     private double oceanHeight=500;
@@ -89,11 +90,33 @@ public class FXMLSetUpController implements Initializable {
         updateStatus();
         toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
-        drawOcean();
+        draw();
         initializeSliders();
         toggleCurrent();
         toggleLand();
         clearAll();
+    }
+
+    private void draw() {
+        // TODO: (1) Draw Ocean (2) Draw Gridlines (3) Draw Islands
+        drawOcean();
+        initializeArrows(gc);
+        if (landToggled) {
+            drawIslands(gc);
+        }
+    }
+
+    private void drawIslands(GraphicsContext gc) {
+        for (int i = 0; i < landArray.length; i += majorGL) {
+            for (int j = 0; j < landArray[0].length; j += majorGL) {
+                if (landArray[i][j]) {
+                    gc.setFill(Color.GREEN);
+                    double[] xCoordinates = {i, i, i+majorGL, i+majorGL};
+                    double[] yCoordinates = {j, j +majorGL, j +majorGL, j};
+                    gc.fillPolygon(xCoordinates, yCoordinates, 4);
+                }
+            }
+        }
     }
 
     private void initializeWastePrefs() {
@@ -253,11 +276,13 @@ public class FXMLSetUpController implements Initializable {
             landToggle = !landToggle;
             if (landToggle) {
                 initializeLandArray();
+                landToggled = true;
+                disableSliders();
                 cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        disableSliders();
-                        generateIsland(gc, event);
+                        updateLandArray(event);
+                        draw();
                     }
                 });
             } else {
@@ -327,24 +352,6 @@ public class FXMLSetUpController implements Initializable {
         statusBar.setText("Action: " + action + "\t Size: "+(int)gridCoords[0]+"x"+(int)gridCoords[1] + "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
     }
 
-    private void generateIsland(GraphicsContext gc, MouseEvent mouseEvent) {
-        double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
-        double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-        if (!checkLandArray((int)mouseEvent.getX(), (int)mouseEvent.getY())) {
-            gc.setFill(Color.GREEN);
-        } else {
-            gc.setFill(Color.AQUAMARINE);
-        }
-        double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+majorGL, xCoordinate+majorGL};
-        double[] yCoordinates = {yCoordinate, yCoordinate+majorGL, yCoordinate+majorGL, yCoordinate};
-        gc.fillPolygon(xCoordinates, yCoordinates, 4);
-        updateLandArray(mouseEvent);
-    }
-
-    private boolean checkLandArray(int x, int y) {
-        return landArray[x][y];
-    }
-
     private void initializeLandArray() {
         landArray = new boolean[(int)cnvOcean.getWidth()+60][(int)cnvOcean.getHeight()];
         for (int i = 0; i < landArray.length; i++) {
@@ -357,10 +364,9 @@ public class FXMLSetUpController implements Initializable {
     private void updateLandArray(MouseEvent mouseEvent) {
         double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
         double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-        for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL; i++) {
-            for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL; j++) {
+        for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL/2; i++) {
+            for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL/2; j++) {
                 landArray[i][j] = !landArray[i][j];
-                System.out.println("("+i+", "+j+") has been set to "+landArray[i][j]);
             }
         }
     }
