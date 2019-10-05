@@ -22,20 +22,9 @@
  * THE SOFTWARE.
  */
 package sim;
-
-import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
-import com.sun.deploy.panel.TextFieldProperty;
-import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -48,11 +37,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.util.StringConverter;
-import javafx.util.converter.NumberStringConverter;
-
 /**
  *
  * @author gfoster
@@ -83,6 +67,7 @@ public class FXMLSetUpController implements Initializable {
     private int minorGL = 5;
     private int majorGL = 20;
     private boolean[][] landArray;
+    private enum Direction {UP, LEFT, DOWN, RIGHT};
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -99,9 +84,9 @@ public class FXMLSetUpController implements Initializable {
 
     private void draw() {
         drawOcean();
-        initializeArrows(gc);
         if (landToggled) {
             drawIslands();
+            cleanBeaches();
         }
     }
 
@@ -109,13 +94,13 @@ public class FXMLSetUpController implements Initializable {
         for (int i = 0; i < landArray.length; i += majorGL) {
             for (int j = 0; j < landArray[0].length; j += majorGL) {
                 if (landArray[i][j]) {
-                    drawIsland(i, j);
+                    drawBeachIsland(i, j);
                 }
             }
         }
     }
 
-    private void drawIsland(int xCoordinate, int yCoordinate) {
+    private void drawBeachIsland(int xCoordinate, int yCoordinate) {
         gc.setFill(Color.YELLOW);
         double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+majorGL, xCoordinate+majorGL};
         double[] yCoordinates = {yCoordinate, yCoordinate+majorGL, yCoordinate+majorGL, yCoordinate};
@@ -124,6 +109,45 @@ public class FXMLSetUpController implements Initializable {
         xCoordinates = new double[]{xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.9375, xCoordinate+majorGL*0.9375};
         yCoordinates = new double[]{yCoordinate+majorGL*0.0625, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.0625};
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
+    }
+
+    private void drawLand(int xCoordinate, int yCoordinate, Direction direction) {
+        gc.setFill(Color.GREEN);
+        int x = xCoordinate;
+        int y = yCoordinate;
+        if (direction == Direction.DOWN) {
+            y += majorGL/2;
+        } else if (direction == Direction.LEFT) {
+            x -= majorGL/2;
+        } else if (direction == Direction.UP) {
+            y-= majorGL/2;
+        } else if (direction == Direction.RIGHT) {
+            x += majorGL;
+        }
+        double[] xCoordinates = {x+majorGL*0.0625, x+majorGL*0.0625, x+majorGL*0.9375, x+majorGL*0.9375};
+        double[] yCoordinates = {y+majorGL*0.0625, y+majorGL*0.9375, y+majorGL*0.9375, y+majorGL*0.0625};
+        gc.fillPolygon(xCoordinates, yCoordinates, 4);
+    }
+
+    private void cleanBeaches() {
+        for (int i = 0; i < landArray.length; i += majorGL) {
+            for (int j = 0; j < landArray[0].length; j += majorGL) {
+                if (landArray[i][j]) {
+                    if (landArray[i+majorGL][j]) {
+                        drawLand(i, j, Direction.RIGHT);
+                    }
+                    if (landArray[i-majorGL][j]) {
+                        drawLand(i, j, Direction.LEFT);
+                    }
+                    if (landArray[i][j+majorGL]) {
+                        drawLand(i, j, Direction.DOWN);
+                    }
+                    if (landArray[i][j-majorGL]) {
+                        drawLand(i, j, Direction.UP);
+                    }
+                }
+            }
+        }
     }
 
     private void initializeWastePrefs() {
@@ -143,11 +167,10 @@ public class FXMLSetUpController implements Initializable {
             } else {
                 setOceanWidth(newValue.doubleValue());
                 oceanWidth = sldHorizontal.getValue();
-                txtHorizontal.setText(String.format("%d", (int) oceanWidth));
+                txtHorizontal.setText(String.format("%d", (int)sldHorizontal.getValue()));
                 updateStatus();
             }
         });
-
         sldVertical.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (currentToggle) {
                 setCurrentVertical(newValue.doubleValue());
@@ -285,20 +308,12 @@ public class FXMLSetUpController implements Initializable {
                 initializeLandArray();
                 landToggled = true;
                 disableSliders();
-                cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        updateLandArray(event);
-                        draw();
-                    }
+                cnvOcean.setOnMouseClicked(event -> {
+                    updateLandArray(event);
+                    draw();
                 });
             } else {
-                cnvOcean.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        ;
-                    }
-                });
+                cnvOcean.setOnMouseClicked(event -> {});
             }
         }));
     }
