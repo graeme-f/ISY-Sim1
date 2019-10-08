@@ -133,18 +133,37 @@ public class FXMLSetUpController implements Initializable {
         for (int i = 0; i < landArray.length; i += majorGL) {
             for (int j = 0; j < landArray[0].length; j += majorGL) {
                 if (landArray[i][j]) {
-                    if (landArray[i+majorGL][j]) {
-                        drawLand(i, j, Direction.RIGHT);
+                    if ((i < majorGL || i > (landArray.length-majorGL)) && (j == 0 || j > (landArray[0].length-majorGL))) {
+                        ;
+                    } else if ((i < majorGL) || (i > (landArray.length - majorGL))) {
+                        if (landArray[i][j+majorGL]) {
+                            drawLand(i, j, Direction.DOWN);
+                        }
+                        if (landArray[i][j-majorGL]) {
+                            drawLand(i, j, Direction.UP);
+                        }
+                    } else if (j < majorGL || j > (landArray[0].length-majorGL)) {
+                        if (landArray[i+majorGL][j]) {
+                            drawLand(i, j, Direction.RIGHT);
+                        }
+                        if (landArray[i-majorGL][j]) {
+                            drawLand(i, j, Direction.LEFT);
+                        }
+                    } else {
+                        if (landArray[i][j+majorGL]) {
+                            drawLand(i, j, Direction.DOWN);
+                        }
+                        if (landArray[i][j-majorGL]) {
+                            drawLand(i, j, Direction.UP);
+                        }
+                        if (landArray[i+majorGL][j]) {
+                            drawLand(i, j, Direction.RIGHT);
+                        }
+                        if (landArray[i-majorGL][j]) {
+                            drawLand(i, j, Direction.LEFT);
+                        }
                     }
-                    if (landArray[i-majorGL][j]) {
-                        drawLand(i, j, Direction.LEFT);
-                    }
-                    if (landArray[i][j+majorGL]) {
-                        drawLand(i, j, Direction.DOWN);
-                    }
-                    if (landArray[i][j-majorGL]) {
-                        drawLand(i, j, Direction.UP);
-                    }
+
                 }
             }
         }
