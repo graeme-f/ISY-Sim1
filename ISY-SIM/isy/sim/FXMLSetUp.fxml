@@ -11,7 +11,6 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sim.FXMLSetUpController">
@@ -29,41 +28,31 @@
                   <Canvas fx:id="cnvOcean" height="261.0" translateY="264.0" width="365.0" />
                </children>
             </HBox>
-            <HBox prefHeight="75.0" prefWidth="800.0">
+            <HBox minHeight="25.0" prefHeight="30.0" prefWidth="740.0" translateX="60" translateY="0">
                <children>
-                  <Pane prefHeight="75.0" prefWidth="60.0" />
-                  <VBox prefHeight="75.0" prefWidth="740.0">
-                     <children>
-                        <HBox minHeight="25.0" prefHeight="30.0" prefWidth="740.0">
-                           <children>
-                              <TextField fx:id="txtHorizontal" maxWidth="60.0" text="500" />
-                              <Slider fx:id="sldHorizontal" max="1000.0" min="100.0" minWidth="680.0" translateY="4.0" value="500.0" />
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="60.0" prefWidth="740.0" />
-                        <HBox minHeight="40.0" prefWidth="200.0">
-                           <children>
-                              <Label fx:id="statusBar" minWidth="305" prefWidth="305" />
-                              <ToggleButton fx:id="btnCurrent" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" text="Current" />
-                              <ToggleButton fx:id="btnLand" minWidth="60.0" mnemonicParsing="false" text="Land" />
-                              <ToggleButton fx:id="btnWaste" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Waste" />
-                              <MenuButton fx:id="wastePref" mnemonicParsing="false" text="WastePref">
-                                 <items>
-                                    <CheckMenuItem mnemonicParsing="false" text="Small" />
-                                    <CheckMenuItem mnemonicParsing="false" text="Medium" />
-                                    <CheckMenuItem mnemonicParsing="false" text="Large" />
-                                    <SeparatorMenuItem mnemonicParsing="false" />
-                                    <CheckMenuItem mnemonicParsing="false" text="Oil" />
-                                    <CheckMenuItem mnemonicParsing="false" text="Plastic" />
-                                    <CheckMenuItem mnemonicParsing="false" text="Misc." />
-                                 </items>
-                              </MenuButton>
-                              <Button fx:id="btnPlay" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Play" textFill="#630000" />
-                              <ToggleButton fx:id="btnClear" minWidth="80" mnemonicParsing="false" text="Clear All" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
+                  <TextField fx:id="txtHorizontal" maxWidth="60.0" text="500" />
+                  <Slider fx:id="sldHorizontal" max="1000.0" min="100.0" minWidth="680.0" translateY="4.0" value="500.0" />
+               </children>
+            </HBox>
+            <HBox minHeight="40.0" prefWidth="200.0" translateY="0">
+                <children>
+                  <Label fx:id="statusBar" minWidth="305" prefWidth="305" />
+                  <ToggleButton fx:id="btnCurrent" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" text="Current" />
+                  <ToggleButton fx:id="btnLand" minWidth="60.0" mnemonicParsing="false" text="Land" />
+                  <ToggleButton fx:id="btnWaste" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Waste" />
+                  <MenuButton fx:id="wastePref" mnemonicParsing="false" text="WastePref">
+                     <items>
+                        <CheckMenuItem mnemonicParsing="false" text="Small" />
+                        <CheckMenuItem mnemonicParsing="false" text="Medium" />
+                        <CheckMenuItem mnemonicParsing="false" text="Large" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <CheckMenuItem mnemonicParsing="false" text="Oil" />
+                        <CheckMenuItem mnemonicParsing="false" text="Plastic" />
+                        <CheckMenuItem mnemonicParsing="false" text="Misc." />
+                     </items>
+                  </MenuButton>
+                  <Button fx:id="btnPlay" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Play" textFill="#630000" />
+                  <ToggleButton fx:id="btnClear" minWidth="80" mnemonicParsing="false" text="Clear All" />
                </children>
             </HBox>
          </children>

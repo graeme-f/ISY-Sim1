@@ -265,7 +265,7 @@ public class FXMLSetUpController implements Initializable {
     private void arwCurrentUpSize(GraphicsContext gc) {
         double scaleHeight = cnvOcean.getHeight();
         gc.strokeLine(10, 20, 10, scaleHeight-20);
-
+        
         double[] xPoints = {0,10,20};
         double[] yPoints = {20,0,20};
         gc.setFill(Color.BLACK);
@@ -275,7 +275,7 @@ public class FXMLSetUpController implements Initializable {
     private void arwCurrentRightSize(GraphicsContext gc) {
         double scaleWidth = cnvOcean.getWidth();
         gc.strokeLine(20, 10, scaleWidth-20, 10);
-
+        
         double[] xPoints = {scaleWidth-20,scaleWidth,scaleWidth-20};
         double[] yPoints = {0,10,20};
         gc.setFill(Color.BLACK);
@@ -355,6 +355,7 @@ public class FXMLSetUpController implements Initializable {
     private void clearAll() {
         btnClear.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             if (btnClear.selectedProperty().getValue()){
+                landToggled=false;
                 btnLand.setSelected(false);
                 drawOcean();
                 sldVertical.setDisable(false);
@@ -428,7 +429,6 @@ public class FXMLSetUpController implements Initializable {
 //        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
 //        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
 //    }
-
     private double[] convertMouseToGrid(double mouseX, double mouseY) {
         double gridX = mouseX*1.323529411764706+20.588235294117647;
         double gridY = mouseY*1.894736842105263+5.263157894736842;
