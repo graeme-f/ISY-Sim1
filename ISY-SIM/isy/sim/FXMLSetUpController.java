@@ -340,7 +340,7 @@ public class FXMLSetUpController implements Initializable {
         double[] xCoordinates = {xCoordinate-size/2.0, xCoordinate-size/2.0, xCoordinate+size/2.0, xCoordinate+size/2.0};
         double[] yCoordinates = {yCoordinate-size/2.0, yCoordinate+size/2.0, yCoordinate+size/2.0, yCoordinate-size/2.0};
 
-        gc.setFill(Color.YELLOW);
+        gc.setFill(Color.BEIGE);
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
         
           double xCoordinate1 = mouseEvent.getX();

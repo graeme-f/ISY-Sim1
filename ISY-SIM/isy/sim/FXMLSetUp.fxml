@@ -37,7 +37,7 @@
                         <HBox minHeight="25.0" prefHeight="30.0" prefWidth="740.0">
                            <children>
                               <TextField fx:id="txtHorizontal" maxWidth="60.0" text="500" />
-                              <Slider fx:id="sldHorizontal" max="1000.0" min="100.0" minWidth="680.0" translateY="4.0" value="500.0" />
+                              <Slider fx:id="sldHorizontal" max="1000.0" min="100.0" minWidth="680.0" translateY="4.0" value="500.0"/>
                            </children>
                         </HBox>
                         <HBox prefHeight="60.0" prefWidth="740.0" />
