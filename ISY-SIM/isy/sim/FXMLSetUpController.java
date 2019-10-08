@@ -330,6 +330,7 @@ public class FXMLSetUpController implements Initializable {
                 cnvOcean.setOnMouseClicked(event -> {
                     updateLandArray(event);
                     draw();
+                    initializeArrows(gc);
                 });
             } else {
                 cnvOcean.setOnMouseClicked(event -> {});
@@ -385,7 +386,9 @@ public class FXMLSetUpController implements Initializable {
 
     private void updateStatus(){
         String action;
-        if (currentToggle){
+        if (landToggled){
+            action="Placing Land";
+        } else if (currentToggle){
             action="Changing Current";
         } else {
             action="Changing Size";
@@ -439,4 +442,4 @@ public class FXMLSetUpController implements Initializable {
         double mouseY = (gridY-5.263157894736842)/1.894736842105263;
         return new double[]{mouseX, mouseY};
     }
-}
+}//
