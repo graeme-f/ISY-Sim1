@@ -332,13 +332,12 @@ public class FXMLSetUpController implements Initializable {
                     initializeLandArray();
                     landInitialized = true;
                 }
-                cnvOcean.setOnMousePressed(event -> {
+                cnvOcean.setOnMouseClicked(event -> {
                     placingLand = !landArray[(int)event.getX()][(int)event.getY()];
                 });
                 cnvOcean.setOnMouseDragged(event -> {
                     updateLandArray(event, placingLand);
                     draw();
-                    initializeArrows(gc);
                 });
             } else {
                 cnvOcean.setOnMouseDragged(event -> {});
@@ -405,7 +404,7 @@ public class FXMLSetUpController implements Initializable {
             action="Changing Size";
         }
         double[] gridCoords = convertMouseToGrid(cnvOcean.getWidth(), cnvOcean.getHeight());
-        statusBar.setText("Action: " + action + "\t Size: "+(int)gridCoords[0]+"x"+(int)gridCoords[1] + "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
+        statusBar.setText("Action: " + action + "\t Size: "+txtHorizontal.getText()+"x"+ txtVertical.getText()+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
     }
 
     private void initializeLandArray() {
