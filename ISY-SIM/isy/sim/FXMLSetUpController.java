@@ -25,6 +25,9 @@ package sim;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,6 +40,10 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.NumberStringConverter;
+
 /**
  *
  * @author gfoster
@@ -180,6 +187,14 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void initializeSliders() {
+        StringProperty txtHor = txtHorizontal.textProperty();
+        StringProperty txtVer = txtVertical.textProperty();
+        DoubleProperty sldHor = sldHorizontal.valueProperty();
+        DoubleProperty sldVer = sldVertical.valueProperty();
+        NumberStringConverter conv = new NumberStringConverter();
+        Bindings.bindBidirectional(txtHor, sldHor, conv);
+        Bindings.bindBidirectional(txtVer, sldVer, conv);
+
         sldHorizontal.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (currentToggle) {
                 setCurrentHorizontal(newValue.doubleValue());
