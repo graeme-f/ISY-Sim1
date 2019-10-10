@@ -340,6 +340,7 @@ public class FXMLSetUpController implements Initializable {
                     draw();
                 });
             } else {
+                cnvOcean.setOnMousePressed(event -> {});
                 cnvOcean.setOnMouseDragged(event -> {});
                 cnvOcean.setOnMouseReleased(event -> {});
             }
@@ -416,7 +417,7 @@ public class FXMLSetUpController implements Initializable {
     private void updateLandArray(MouseEvent mouseEvent, boolean bool) {
         double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
         double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-        if (!(xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) {
+        if (!(((xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) || ((xCoordinate - majorGL > cnvOcean.getWidth() || yCoordinate - majorGL> cnvOcean.getHeight())))) {
             for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL/2; i++) {
                 for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL/2; j++) {
                     landArray[i][j] = bool;
