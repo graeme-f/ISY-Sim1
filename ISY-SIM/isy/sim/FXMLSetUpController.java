@@ -25,6 +25,7 @@ package sim;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -69,8 +70,26 @@ public class FXMLSetUpController implements Initializable {
     private int majorGL = 20;
     private boolean landInitialized = false;
     private boolean[][] landArray;
+    private boolean[][] wasteArray;
     private enum Direction {UP, LEFT, DOWN, RIGHT};
     private String size= "500x500";
+    private enum WasteType {PLASTIC, OIL, MISC};
+    private enum SourceSize {SMALL, MEDIUM, LARGE};
+
+    private class WasteSource {
+        int xCoord;
+        int yCoord;
+        WasteType wasteType;
+        SourceSize sourceSize;
+
+        private WasteSource(int x, int y, WasteType type, SourceSize size) {
+            xCoord = x;
+            yCoord = y;
+            wasteArray[x][y]=true;
+            wasteType=type;
+            sourceSize=size;
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -83,7 +102,7 @@ public class FXMLSetUpController implements Initializable {
         toggleCurrent();
         toggleLand();
         clearAll();
-    }
+    } // initialises all listeners and draws main application
 
     private void draw() {
         drawOcean();
@@ -92,7 +111,7 @@ public class FXMLSetUpController implements Initializable {
             cleanBeaches();
         }
         drawArrows(gc);
-    }
+    } // draws the land and arrows on the canvas
 
     private void drawIslands() {
         for (int i = 0; i < landArray.length; i += majorGL) {
@@ -102,7 +121,7 @@ public class FXMLSetUpController implements Initializable {
                 }
             }
         }
-    }
+    } // uses the array of where land is to draw islands on the grid
 
     private void drawBeachIsland(int xCoordinate, int yCoordinate) {
         gc.setFill(Color.YELLOW);
@@ -113,8 +132,14 @@ public class FXMLSetUpController implements Initializable {
         xCoordinates = new double[]{xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.9375, xCoordinate+majorGL*0.9375};
         yCoordinates = new double[]{yCoordinate+majorGL*0.0625, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.0625};
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
-    }
+    } // draws the yellow beach
 
+    /**
+     *
+     * @param xCoordinate
+     * @param yCoordinate
+     * @param direction
+     */
     private void drawLand(int xCoordinate, int yCoordinate, Direction direction) {
         gc.setFill(Color.GREEN);
         int x = xCoordinate;
@@ -131,7 +156,8 @@ public class FXMLSetUpController implements Initializable {
         double[] xCoordinates = {x+majorGL*0.0625, x+majorGL*0.0625, x+majorGL*0.9375, x+majorGL*0.9375};
         double[] yCoordinates = {y+majorGL*0.0625, y+majorGL*0.9375, y+majorGL*0.9375, y+majorGL*0.0625};
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
-    }
+    } // draws land
+
 
     private void cleanBeaches() {
         for (int i = 0; i < landArray.length; i += majorGL) {
@@ -213,7 +239,7 @@ public class FXMLSetUpController implements Initializable {
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
         drawGridLines(gc, minorGL, majorGL);
         updateStatus();
-    }
+    } // draws on canvas the ocean and grid lines
     private void setOceanWidth(double width) {
         double scale = sldHorizontal.getWidth() / 900;
         double oWidth = (width-100)*scale+60;
@@ -288,7 +314,6 @@ public class FXMLSetUpController implements Initializable {
         double scaleWidth = cnvOcean.getWidth();
         double scaleHeight = cnvOcean.getHeight();
         gc.strokeLine(scaleWidth-20, scaleHeight-10, 20, scaleHeight-10);
-
         double[] xPoints = {20, 0, 20};
         double[] yPoints = {scaleHeight, scaleHeight-10, scaleHeight-20};
         gc.setFill(Color.BLACK);
@@ -349,10 +374,12 @@ public class FXMLSetUpController implements Initializable {
     private void toggleWaste() {
         btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
             if (btnWaste.selectedProperty().getValue()) {
+                btnLand.setSelected(false);
                 wastePref.setVisible(false);
                 wastePref.setMinWidth(1);
                 wastePref.setPrefWidth(1);
                 statusBar.setMinWidth(400);
+
             } else {
                 wastePref.setVisible(true);
                 wastePref.setMinWidth(100);
