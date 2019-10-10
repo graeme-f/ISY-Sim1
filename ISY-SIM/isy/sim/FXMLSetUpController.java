@@ -70,6 +70,7 @@ public class FXMLSetUpController implements Initializable {
     private boolean landInitialized = false;
     private boolean[][] landArray;
     private enum Direction {UP, LEFT, DOWN, RIGHT};
+    private String size= "500x500";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -396,16 +397,18 @@ public class FXMLSetUpController implements Initializable {
 
     private void updateStatus(){
         String action;
-        if (landToggled){
+        if (landToggle){
             action="Placing Land";
+            size =txtHorizontal.getText()+"x"+ txtVertical.getText();
         } else if (currentToggle){
             action="Changing Current";
         } else {
             action="Changing Size";
+            size = txtHorizontal.getText()+"x"+ txtVertical.getText();
         }
         double[] gridCoords = convertMouseToGrid(cnvOcean.getWidth(), cnvOcean.getHeight());
-        statusBar.setText("Action: " + action + "\t Size: "+txtHorizontal.getText()+"x"+ txtVertical.getText()+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
-    }
+        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
+    } //FIX THIS RIGHT HERE BC WHEN CURRENT TOGGLE THE SIZE IS WRONG
 
     private void initializeLandArray() {
         landArray = new boolean[(int)cnvOcean.getWidth()+60][(int)cnvOcean.getHeight()];
