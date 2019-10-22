@@ -25,6 +25,9 @@ package sim;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
@@ -38,6 +41,10 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.NumberStringConverter;
+
 /**
  *
  * @author gfoster
@@ -207,6 +214,14 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void initializeSliders() {
+        StringProperty txtHor = txtHorizontal.textProperty();
+        StringProperty txtVer = txtVertical.textProperty();
+        DoubleProperty sldHor = sldHorizontal.valueProperty();
+        DoubleProperty sldVer = sldVertical.valueProperty();
+        NumberStringConverter conv = new NumberStringConverter();
+        Bindings.bindBidirectional(txtHor, sldHor, conv);
+        Bindings.bindBidirectional(txtVer, sldVer, conv);
+
         sldHorizontal.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (currentToggle) {
                 setCurrentHorizontal(newValue.doubleValue());
@@ -366,6 +381,7 @@ public class FXMLSetUpController implements Initializable {
                     draw();
                 });
             } else {
+                cnvOcean.setOnMousePressed(event -> {});
                 cnvOcean.setOnMouseDragged(event -> {});
                 cnvOcean.setOnMouseReleased(event -> {});
             }
@@ -379,7 +395,6 @@ public class FXMLSetUpController implements Initializable {
                 wastePref.setMinWidth(1);
                 wastePref.setPrefWidth(1);
                 statusBar.setMinWidth(400);
-
             } else {
                 wastePref.setVisible(true);
                 wastePref.setMinWidth(100);
@@ -449,7 +464,7 @@ public class FXMLSetUpController implements Initializable {
     private void updateLandArray(MouseEvent mouseEvent, boolean bool) {
         double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
         double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-        if (!(xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) {
+        if (!(((xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) || ((xCoordinate - majorGL > cnvOcean.getWidth() || yCoordinate - majorGL> cnvOcean.getHeight())))) {
             for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL/2; i++) {
                 for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL/2; j++) {
                     landArray[i][j] = bool;
