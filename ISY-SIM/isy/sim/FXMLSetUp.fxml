@@ -42,12 +42,12 @@
                   <ToggleButton fx:id="btnWaste" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Waste" />
                   <MenuButton fx:id="wastePref" mnemonicParsing="false" text="WastePref">
                      <items>
-                        <CheckMenuItem mnemonicParsing="false" text="Small" />
-                        <CheckMenuItem mnemonicParsing="false" text="Medium" />
-                        <CheckMenuItem mnemonicParsing="false" text="Large" />
+                        <CheckMenuItem fx:id="smallItem" mnemonicParsing="false" text="Small" />
+                        <CheckMenuItem fx:id="medItem" mnemonicParsing="false" text="Medium" />
+                        <CheckMenuItem fx:id="largeItem" mnemonicParsing="false" text="Large" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <CheckMenuItem mnemonicParsing="false" text="Oil" />
-                        <CheckMenuItem mnemonicParsing="false" text="Plastic" />
+                        <CheckMenuItem fx:id="oilItem" mnemonicParsing="false" text="Oil" />
+                        <CheckMenuItem fx:id="plasticItem" mnemonicParsing="false" text="Plastic" />
                         <CheckMenuItem mnemonicParsing="false" text="Misc." />
                      </items>
                   </MenuButton>

@@ -23,12 +23,15 @@
  */
 package sim;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -63,6 +66,12 @@ public class FXMLSetUpController implements Initializable {
     @FXML private MenuButton wastePref;
     @FXML private Label statusBar;
     @FXML private ToggleButton btnClear;
+    @FXML private CheckMenuItem smallItem;
+    @FXML private CheckMenuItem medItem;
+    @FXML private CheckMenuItem largeItem;
+    @FXML private CheckMenuItem oilItem;
+    @FXML private CheckMenuItem plasticItem;
+    @FXML private CheckMenuItem miscItem;
 
     private boolean currentToggle = false;
     private boolean landToggle = false;
@@ -78,10 +87,13 @@ public class FXMLSetUpController implements Initializable {
     private boolean landInitialized = false;
     private boolean[][] landArray;
     private boolean[][] wasteArray;
+    private List<WasteSource> wasteSources = new ArrayList<WasteSource>();
     private enum Direction {UP, LEFT, DOWN, RIGHT};
     private String size= "500x500";
     private enum WasteType {PLASTIC, OIL, MISC};
     private enum SourceSize {SMALL, MEDIUM, LARGE};
+    private WasteType currentSourceType = WasteType.MISC;
+    private SourceSize currentSourceSize = SourceSize.MEDIUM;
 
     private class WasteSource {
         int xCoord;
@@ -109,6 +121,7 @@ public class FXMLSetUpController implements Initializable {
         toggleCurrent();
         toggleLand();
         clearAll();
+        setWastePrefs();
     } // initialises all listeners and draws main application
 
     private void draw() {
@@ -116,6 +129,8 @@ public class FXMLSetUpController implements Initializable {
         if (landToggled) {
             drawIslands();
             cleanBeaches();
+            System.out.println(currentSourceSize);
+            System.out.println(currentSourceType);
         }
         drawArrows(gc);
     } // draws the land and arrows on the canvas
@@ -141,6 +156,9 @@ public class FXMLSetUpController implements Initializable {
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
     } // draws the yellow beach
 
+    private void drawWasteSource(int x, int y, WasteType type, SourceSize size){
+        wasteSources.add(new WasteSource(x,y,type,size));
+    }
     /**
      *
      * @param xCoordinate
@@ -364,7 +382,7 @@ public class FXMLSetUpController implements Initializable {
         }));
     }
     private void toggleLand() {
-        btnLand.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+        btnLand.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             landToggle = !landToggle;
             if (landToggle) {
                 disableSliders();
@@ -395,6 +413,7 @@ public class FXMLSetUpController implements Initializable {
                 wastePref.setMinWidth(1);
                 wastePref.setPrefWidth(1);
                 statusBar.setMinWidth(400);
+
             } else {
                 wastePref.setVisible(true);
                 wastePref.setMinWidth(100);
@@ -404,8 +423,10 @@ public class FXMLSetUpController implements Initializable {
         }));
     }
 
+
+
     private void clearAll() {
-        btnClear.selectedProperty().addListener(((observable, oldValue, newValue) -> {
+        btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
                 landToggled=false;
                 btnLand.setSelected(false);
@@ -450,7 +471,7 @@ public class FXMLSetUpController implements Initializable {
         }
         double[] gridCoords = convertMouseToGrid(cnvOcean.getWidth(), cnvOcean.getHeight());
         statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
-    } //FIX THIS RIGHT HERE BC WHEN CURRENT TOGGLE THE SIZE IS WRONG
+    }
 
     private void initializeLandArray() {
         landArray = new boolean[(int)cnvOcean.getWidth()+60][(int)cnvOcean.getHeight()];
@@ -459,6 +480,9 @@ public class FXMLSetUpController implements Initializable {
                 landArray[i][j] = false;
             }
         }
+    }
+
+    private void setWastePrefs() {
     }
 
     private void updateLandArray(MouseEvent mouseEvent, boolean bool) {
