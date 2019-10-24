@@ -23,12 +23,12 @@
  */
 package sim;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.property.BooleanProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,8 +41,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
-import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
 /**
@@ -81,20 +79,50 @@ public class FXMLSetUpController implements Initializable {
     private enum Direction {UP, LEFT, DOWN, RIGHT};
     private String size= "500x500";
     private enum WasteType {PLASTIC, OIL, MISC};
-    private enum SourceSize {SMALL, MEDIUM, LARGE};
+    private enum Size {SMALL, MEDIUM, LARGE};
+    WasteSource[] sources;
+
+    private class WasteObject {
+        WasteSource source;
+        Size size;
+        int[][] location;
+        double velocity;
+
+        public WasteObject(Size s, WasteSource ws, double v) {
+            size = s;
+            source = ws;
+            velocity = v;
+            location = new int[source.xCoord][source.yCoord];
+        }
+    }
 
     private class WasteSource {
         int xCoord;
         int yCoord;
+        int wasteOutput;
+        double randConst;
         WasteType wasteType;
-        SourceSize sourceSize;
+        Size size;
+        Random randomVar = new Random();
+        // Small = 10–30, Medium = 30–50, Large = 50–70
 
-        private WasteSource(int x, int y, WasteType type, SourceSize size) {
+        private WasteSource(int x, int y, WasteType type, Size size) {
             xCoord = x;
             yCoord = y;
             wasteArray[x][y]=true;
             wasteType=type;
-            sourceSize=size;
+            this.size=size;
+            randConst = (randomVar.nextDouble() + (randomVar.nextDouble() * returnIntValue(this.size)))/4.0;
+        }
+        private int returnIntValue(Size s) {
+            if (s == Size.SMALL) {
+                return 1;
+            } else if (s == Size.MEDIUM) {
+                return 2;
+            } else if (s == Size.LARGE) {
+                return 3;
+            }
+            return 0;
         }
     }
 
