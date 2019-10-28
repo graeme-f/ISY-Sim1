@@ -463,14 +463,23 @@ public class FXMLSetUpController implements Initializable {
         if (landToggle){
             action="Placing Land";
             size =txtHorizontal.getText()+"x"+ txtVertical.getText();
+        } else if (wasteToggle){
+            action = "Placing waste";
         } else if (currentToggle){
             action="Changing Current";
         } else {
             action="Changing Size";
             size = txtHorizontal.getText()+"x"+ txtVertical.getText();
         }
-        double[] gridCoords = convertMouseToGrid(cnvOcean.getWidth(), cnvOcean.getHeight());
-        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
+        int landAmt=0;
+        for (int i = 0; i < landArray.length; i++) {
+            for (int j = 0; j < landArray[0].length; j++) {
+                if (landArray[i][j]){
+                        landAmt++;
+                }
+            }
+        }
+        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/2500 + "\tWaste amount:");
     }
 
     private void initializeLandArray() {
