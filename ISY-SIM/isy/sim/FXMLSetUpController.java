@@ -168,6 +168,7 @@ public class FXMLSetUpController implements Initializable {
             cleanBeaches(wasteArray, Color.LIGHTGRAY);
         }
         drawArrows(gc);
+        updateStatus();
     } // draws the land and arrows on the canvas
 
     private void drawIslands() {
@@ -178,6 +179,7 @@ public class FXMLSetUpController implements Initializable {
                 }
             }
         }
+        updateStatus();
     } // uses the array of where land is to draw islands on the grid
 
     private void drawWasteSources() {
@@ -515,19 +517,40 @@ public class FXMLSetUpController implements Initializable {
         sldHorizontal.setMax(max);
     }
 
-    private void updateStatus(){
+    private void updateStatus() {
         String action;
-        if (landToggle){
-            action="Placing Land";
-            size =txtHorizontal.getText()+"x"+ txtVertical.getText();
-        } else if (currentToggle){
-            action="Changing Current";
+        if (landToggle) {
+            action = "Placing Land";
+            size = txtHorizontal.getText() + "x" + txtVertical.getText();
+        } else if (wasteToggle) {
+            action = "Placing waste";
+        } else if (currentToggle) {
+            action = "Changing Current";
         } else {
-            action="Changing Size";
-            size = txtHorizontal.getText()+"x"+ txtVertical.getText();
+            action = "Changing Size";
+            size = txtHorizontal.getText() + "x" + txtVertical.getText();
         }
-        double[] gridCoords = convertMouseToGrid(cnvOcean.getWidth(), cnvOcean.getHeight());
-        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:" + "\tWaste amount:");
+        int landAmt = 0;
+        if (landInitialized){
+            for (int i = 0; i < landArray.length; i++) {
+                for (int j = 0; j < landArray[0].length; j++) {
+                    if (landArray[i][j]) {
+                        landAmt++;
+                    }
+                }
+            }
+        }
+        int wasteAmt = 0;
+        if (wasteInitialized){
+            for (int i = 0; i < wasteArray.length; i++) {
+                for (int j = 0; j < wasteArray[0].length; j++) {
+                    if (wasteArray[i][j]) {
+                        wasteAmt++;
+                    }
+                }
+            }
+        }
+        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
 
     private void initializeLandArray() {
