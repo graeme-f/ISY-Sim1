@@ -126,23 +126,24 @@ public class FXMLSetUpController implements Initializable {
         private WasteSource(int x, int y, WasteType type, Size size) {
             xCoord = x;
             yCoord = y;
-            wasteArray[x][y]=true;
-            wasteType=type;
-            this.size=size;
-            randConst = (randomVar.nextDouble() + (randomVar.nextDouble() * returnIntValue(this.size)))/4.0;
+            wasteArray[x][y] = true;
+            wasteType = type;
+            this.size = size;
+            randConst = (randomVar.nextDouble() + (randomVar.nextDouble() * returnIntValue(this.size))) / 4.0;
         }
+
         private int returnIntValue(Size s) {
-            if (s == Size.SMALL) {
-                return 1;
-            } else if (s == Size.MEDIUM) {
-                return 2;
-            } else if (s == Size.LARGE) {
-                return 3;
+            switch (s) {
+                case SMALL:
+                    return 1;
+                case MEDIUM:
+                    return 2;
+                case LARGE:
+                    return 3;
             }
             return 0;
         }
     }
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeWastePrefs();
@@ -239,7 +240,7 @@ public class FXMLSetUpController implements Initializable {
                         if (arr[i][j+majorGL]) {
                             drawLand(i, j, Direction.DOWN, color);
                         }
-                        if (arr[i][j-majorGL]) {
+                        else{
                             drawLand(i, j, Direction.UP, color);
                         }
                     } else if (j < majorGL || j > (arr[0].length-majorGL)) {
@@ -268,6 +269,7 @@ public class FXMLSetUpController implements Initializable {
             }
         }
     }
+
 
     private void initializeWastePrefs() {
         wastePref.setVisible(false);
