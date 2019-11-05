@@ -454,13 +454,12 @@ public class FXMLSetUpController implements Initializable {
                     landInitialized = true;
                 }
                 cnvOcean.setOnMousePressed(event -> {
-                    placingLand = !landArray[(int)event.getX()][(int)event.getY()];
+                    placingLand = !landArray[(int) event.getX()][(int) event.getY()];
                 });
                 cnvOcean.setOnMouseDragged(event -> {
                     updateArray(event, placingLand, landArray);
                     draw();
                 });
-            } else {
             }
         }));
     }
