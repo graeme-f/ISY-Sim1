@@ -22,29 +22,25 @@
  * THE SOFTWARE.
  */
 package sim;
-import java.net.URL;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -111,6 +107,7 @@ public class FXMLSetUpController implements Initializable {
             velocity = v;
             location = new int[source.xCoord][source.yCoord];
         }
+
     }
 
     private class WasteSource {
@@ -154,7 +151,6 @@ public class FXMLSetUpController implements Initializable {
         toggleCurrent();
         toggleLand();
         clearAll();
-        setWastePrefs();
     } // initialises all listeners and draws main application
 
     private void draw() {
@@ -190,6 +186,24 @@ public class FXMLSetUpController implements Initializable {
                 }
             }
         }
+    }
+
+    public boolean getLandToggled() {
+        return landToggled;
+    }
+    public boolean[][] getLandArray() {
+        return landArray;
+    }
+    public boolean[][] getWasteArray() {
+        return wasteArray;
+    }
+    public double[] getOcean() {
+        double a = oceanWidth;
+        double b = oceanHeight;
+        double[] c= new double[2];
+        c[0] = a;
+        c[1] = b;
+        return c;
     }
 
     private void drawBlock(int xCoordinate, int yCoordinate, Color beach, Color land) {
@@ -463,7 +477,6 @@ public class FXMLSetUpController implements Initializable {
                     wasteInitialized = true;
                 }
                 cnvOcean.setOnMousePressed(event -> {
-                    System.out.println("Point reached.");
                     placingWaste = !wasteArray[(int)event.getX()][(int)event.getY()];
                 });
                 cnvOcean.setOnMouseDragged(event -> {
@@ -488,6 +501,7 @@ public class FXMLSetUpController implements Initializable {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
                 landToggled=false;
+                wasteToggled=false;
                 btnLand.setSelected(false);
                 sldVertical.setDisable(false);
                 sldHorizontal.setDisable(false);
@@ -571,8 +585,6 @@ public class FXMLSetUpController implements Initializable {
         }
     }
 
-    private void setWastePrefs() {
-    }
     private void updateArray(MouseEvent mouseEvent, boolean bool, boolean[][] arr) {
         double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
         double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;

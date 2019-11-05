@@ -28,6 +28,6 @@ package sim.Layers;
  *
  * @author gfoster
  */
-public class WasteLayer {
+public class WasteLayer extends Layer {
 
 } // end of class WasteLayer

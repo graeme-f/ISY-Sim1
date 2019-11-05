@@ -24,10 +24,23 @@
 
 package sim.Layers;
 
+
+import sim.FXMLSetUpController;
+
 /**
  *
  * @author gfoster
  */
-public class Layer {
+public class Layer{
+    static FXMLSetUpController clas;
+
+    public double[] widthHeight = clas.getOcean();
+    public double width = widthHeight[0];
+    public double height = widthHeight[1];
+
+    public Layer(FXMLSetUpController clas){
+        this.clas = clas;
+    }
+
 
 } // end of class Layer

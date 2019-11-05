@@ -28,6 +28,10 @@ package sim.Layers;
  *
  * @author gfoster
  */
-public class WasteSourceLayer {
+public class WasteSourceLayer extends Layer {
+    public WasteSourceLayer(){
+        super(clas);
+        int a = 3;
+    }
 
 } // end of class WasteSourceLayer
