@@ -24,10 +24,24 @@
 
 package sim.Objects;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 /**
  *
  * @author gfoster
  */
-public class LandObject {
+public class LandObject extends SimObject{
 
+    public LandObject(GraphicsContext graphicsContext, int locationX, int locationY) {
+        super(graphicsContext, locationX, locationY);
+    }
+
+    @Override
+    public void draw() {
+        double[] xCoordinates = {x, x, x+1, x+1};
+        double[] yCoordinates = {y, y+1, y+1, y};
+        gc.setFill(Color.GREEN);
+        gc.fillPolygon(xCoordinates, yCoordinates, 4);
+    }
 } // end of class LandObject

@@ -24,10 +24,24 @@
 
 package sim.Layers;
 
+import javafx.scene.canvas.GraphicsContext;
+import sim.Utilities.SimMatrix;
+
 /**
  *
  * @author gfoster
  */
-public class Layer {
+public abstract class Layer {
+    GraphicsContext gc;
+    SimMatrix m;
+
+    public Layer(GraphicsContext gContext, int width, int height) {
+        gc = gContext;
+        m = new SimMatrix(width, height);
+    }
+
+    public void drawLayer() {
+        m.drawMatrix();
+    }
 
 } // end of class Layer

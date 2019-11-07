@@ -24,10 +24,25 @@
 
 package sim.Objects;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 /**
  *
  * @author gfoster
  */
-public class WasteSourceObject {
+public class WasteSourceObject extends SimObject {
 
+
+    public WasteSourceObject(GraphicsContext graphicsContext, int locationX, int locationY) {
+        super(graphicsContext, locationX, locationY);
+    }
+
+    @Override
+    public void draw() {
+        double[] xCoordinates = {x, x, x+1, x+1};
+        double[] yCoordinates = {y, y+1, y+1, y};
+        gc.setFill(Color.LIGHTGRAY);
+        gc.fillPolygon(xCoordinates, yCoordinates, 4);
+    }
 } // end of class WasteSourceObject

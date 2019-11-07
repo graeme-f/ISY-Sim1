@@ -23,11 +23,17 @@
  */
 
 package sim.Layers;
+import javafx.scene.canvas.GraphicsContext;
+import sim.Utilities.SimMatrix;
 
 /**
  *
  * @author gfoster
  */
-public class LandLayer {
+public class LandLayer extends Layer {
+
+    public LandLayer(GraphicsContext gContext, int width, int height) {
+        super(gContext, width, height);
+    }
 
 } // end of class LandLayer
