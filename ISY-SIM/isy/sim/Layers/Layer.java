@@ -23,8 +23,6 @@
  */
 
 package sim.Layers;
-
-
 import sim.FXMLSetUpController;
 
 /**
@@ -41,6 +39,6 @@ public class Layer{
     public Layer(FXMLSetUpController clas){
         this.clas = clas;
     }
-
+    double wit = LandLayer.jfs();
 
 } // end of class Layer

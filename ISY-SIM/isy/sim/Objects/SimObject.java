@@ -28,6 +28,7 @@ package sim.Objects;
  *
  * @author gfoster
  */
-public class SimObject {
+public abstract class SimObject {
+    public abstract void draw();
 
 } // end of class SimObject

@@ -31,7 +31,9 @@ package sim.Layers;
 public class WasteSourceLayer extends Layer {
     public WasteSourceLayer(){
         super(clas);
-        int a = 3;
+        int a;
     }
-
+    WasteSourceLayer a = new WasteSourceLayer();
+    LandLayer kla = new LandLayer();
+    kla.wid
 } // end of class WasteSourceLayer

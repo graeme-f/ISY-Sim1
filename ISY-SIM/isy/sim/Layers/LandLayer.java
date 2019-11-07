@@ -23,21 +23,21 @@
  */
 
 package sim.Layers;
-import sim.Layers.Layer;
 /**
  *
  * @author gfoster
  */
 public class LandLayer extends Layer {
-    Layer f;
-    f.get
-    public double[] widthHeight = clas.getOcean();
-    double widt = widthHeight[0];
-    public double height = widthHeight[1];
+
+
     public LandLayer(){
         super(clas);
+        double[] widthHeight = clas.getOcean();
+        boolean[][] landArray = clas.getLandArray();
+        double widt = widthHeight[0];
+        double height = widthHeight[1];
 
     }
-    LandLayer
-    boolean[][] landArray = clas.getLandArray();
+    public static double jfs() {return 5;}
+
 } // end of class LandLayer
