@@ -31,13 +31,13 @@ import sim.Objects.SimObject;
  */
 public class SimMatrix {
     private SimObject[][] matrix;
-    int length;
     int width;
+    int height;
 
-    public SimMatrix(int l, int w) {
-        length = l;
+    public SimMatrix(int w, int h) {
         width = w;
-        matrix = new SimObject[length][width];
+        height = h;
+        matrix = new SimObject[width][height];
     }
 
     public void drawMatrix() {

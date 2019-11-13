@@ -23,21 +23,16 @@
  */
 
 package sim.Layers;
+import javafx.scene.canvas.GraphicsContext;
+
 /**
  *
  * @author gfoster
  */
 public class LandLayer extends Layer {
 
-
-    public LandLayer(){
-        super(clas);
-        double[] widthHeight = clas.getOcean();
-        boolean[][] landArray = clas.getLandArray();
-        double widt = widthHeight[0];
-        double height = widthHeight[1];
-
+    public LandLayer(GraphicsContext gContext, int width, int height) {
+        super(gContext, width, height);
     }
-    public static double jfs() {return 5;}
 
 } // end of class LandLayer

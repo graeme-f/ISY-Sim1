@@ -23,22 +23,25 @@
  */
 
 package sim.Layers;
-import sim.FXMLSetUpController;
+
+import javafx.scene.canvas.GraphicsContext;
+import sim.Utilities.SimMatrix;
 
 /**
  *
  * @author gfoster
  */
-public class Layer{
-    static FXMLSetUpController clas;
+public abstract class Layer {
+    GraphicsContext gc;
+    SimMatrix m;
 
-    public double[] widthHeight = clas.getOcean();
-    public double width = widthHeight[0];
-    public double height = widthHeight[1];
-
-    public Layer(FXMLSetUpController clas){
-        this.clas = clas;
+    public Layer(GraphicsContext gContext, int width, int height) {
+        gc = gContext;
+        m = new SimMatrix(width, height);
     }
-    double wit = LandLayer.jfs();
+
+    public void drawLayer() {
+        m.drawMatrix();
+    }
 
 } // end of class Layer

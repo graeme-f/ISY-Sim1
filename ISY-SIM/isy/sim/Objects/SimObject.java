@@ -24,11 +24,23 @@
 
 package sim.Objects;
 
+import javafx.scene.canvas.GraphicsContext;
+
 /**
  *
  * @author gfoster
  */
 public abstract class SimObject {
+    GraphicsContext gc;
+    int x;
+    int y;
+
+    public SimObject(GraphicsContext graphicsContext, int locationX, int locationY) {
+        gc = graphicsContext;
+        x = locationX;
+        y = locationY;
+    }
+
     public abstract void draw();
 
 } // end of class SimObject

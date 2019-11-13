@@ -23,11 +23,16 @@
  */
 
 package sim.Layers;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
  * @author gfoster
  */
 public class WasteLayer extends Layer {
+
+    public WasteLayer(GraphicsContext gContext, int width, int height) {
+        super(gContext, width, height);
+    }
 
 } // end of class WasteLayer

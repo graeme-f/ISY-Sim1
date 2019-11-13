@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  */
 package sim;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
@@ -37,9 +36,6 @@ import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -85,7 +81,6 @@ public class FXMLSetUpController implements Initializable {
     private boolean wasteInitialized = false;
     private boolean[][] landArray;
     private boolean[][] wasteArray;
-    private List<WasteSource> wasteSources = new ArrayList<WasteSource>();
     private enum Direction {UP, LEFT, DOWN, RIGHT};
     private String size= "500x500";
     private enum WasteType {PLASTIC, OIL, MISC};
@@ -93,52 +88,6 @@ public class FXMLSetUpController implements Initializable {
     private WasteType currentSourceType = WasteType.MISC;
     private SourceSize currentSourceSize = SourceSize.MEDIUM;
     private enum Size {SMALL, MEDIUM, LARGE};
-    WasteSource[] sources;
-
-    private class WasteObject {
-        WasteSource source;
-        Size size;
-        int[][] location;
-        double velocity;
-
-        public WasteObject(Size s, WasteSource ws, double v) {
-            size = s;
-            source = ws;
-            velocity = v;
-            location = new int[source.xCoord][source.yCoord];
-        }
-
-    }
-
-    private class WasteSource {
-        int xCoord;
-        int yCoord;
-        int wasteOutput;
-        double randConst;
-        WasteType wasteType;
-        Size size;
-        Random randomVar = new Random();
-        // Small = 10–30, Medium = 30–50, Large = 50–70
-
-        private WasteSource(int x, int y, WasteType type, Size size) {
-            xCoord = x;
-            yCoord = y;
-            wasteArray[x][y]=true;
-            wasteType=type;
-            this.size=size;
-            randConst = (randomVar.nextDouble() + (randomVar.nextDouble() * returnIntValue(this.size)))/4.0;
-        }
-        private int returnIntValue(Size s) {
-            if (s == Size.SMALL) {
-                return 1;
-            } else if (s == Size.MEDIUM) {
-                return 2;
-            } else if (s == Size.LARGE) {
-                return 3;
-            }
-            return 0;
-        }
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -151,6 +100,7 @@ public class FXMLSetUpController implements Initializable {
         toggleCurrent();
         toggleLand();
         clearAll();
+        setWastePrefs();
     } // initialises all listeners and draws main application
 
     private void draw() {
@@ -188,24 +138,6 @@ public class FXMLSetUpController implements Initializable {
         }
     }
 
-    public boolean getLandToggled() {
-        return landToggled;
-    }
-    public boolean[][] getLandArray() {
-        return landArray;
-    }
-    public boolean[][] getWasteArray() {
-        return wasteArray;
-    }
-    public double[] getOcean() {
-        double a = oceanWidth;
-        double b = oceanHeight;
-        double[] c= new double[2];
-        c[0] = a;
-        c[1] = b;
-        return c;
-    }
-
     private void drawBlock(int xCoordinate, int yCoordinate, Color beach, Color land) {
         gc.setFill(beach);
         double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+majorGL, xCoordinate+majorGL};
@@ -217,9 +149,6 @@ public class FXMLSetUpController implements Initializable {
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
     } // draws the yellow beach
 
-    private void drawWasteSource(int x, int y, WasteType type, Size size){
-        wasteSources.add(new WasteSource(x,y,type,size));
-    }
     /**
      *
      * @param xCoordinate
@@ -476,6 +405,7 @@ public class FXMLSetUpController implements Initializable {
                     wasteInitialized = true;
                 }
                 cnvOcean.setOnMousePressed(event -> {
+                    System.out.println("Point reached.");
                     placingWaste = !wasteArray[(int)event.getX()][(int)event.getY()];
                 });
                 cnvOcean.setOnMouseDragged(event -> {
@@ -500,7 +430,6 @@ public class FXMLSetUpController implements Initializable {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
                 landToggled=false;
-                wasteToggled=false;
                 btnLand.setSelected(false);
                 sldVertical.setDisable(false);
                 sldHorizontal.setDisable(false);
@@ -584,6 +513,8 @@ public class FXMLSetUpController implements Initializable {
         }
     }
 
+    private void setWastePrefs() {
+    }
     private void updateArray(MouseEvent mouseEvent, boolean bool, boolean[][] arr) {
         double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
         double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
