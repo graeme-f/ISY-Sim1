@@ -34,6 +34,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
+import sim.Layers.WasteSourceLayer;
+import sim.Objects.WasteSourceObject;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -63,6 +65,7 @@ public class FXMLSetUpController implements Initializable {
     @FXML private CheckMenuItem plasticItem;
     @FXML private CheckMenuItem miscItem;
 
+    WasteSourceLayer wasteSourceLayer;
     private boolean currentToggle = false;
     private boolean landToggle = false;
     private boolean wasteToggle = false;
@@ -83,11 +86,6 @@ public class FXMLSetUpController implements Initializable {
     private boolean[][] wasteArray;
     private enum Direction {UP, LEFT, DOWN, RIGHT};
     private String size= "500x500";
-    private enum WasteType {PLASTIC, OIL, MISC};
-    private enum SourceSize {SMALL, MEDIUM, LARGE};
-    private WasteType currentSourceType = WasteType.MISC;
-    private SourceSize currentSourceSize = SourceSize.MEDIUM;
-    private enum Size {SMALL, MEDIUM, LARGE};
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -100,18 +98,17 @@ public class FXMLSetUpController implements Initializable {
         toggleCurrent();
         toggleLand();
         clearAll();
-        setWastePrefs();
     } // initialises all listeners and draws main application
 
     private void draw() {
         drawOcean();
         if (landToggled) {
             drawIslands();
-            cleanBeaches(landArray, Color.GREEN);
+            //cleanBeaches(landArray, Color.GREEN);
         }
         if (wasteToggled) {
             drawWasteSources();
-            cleanBeaches(wasteArray, Color.LIGHTGRAY);
+            //cleanBeaches(wasteArray, Color.LIGHTGRAY);
         }
         drawArrows(gc);
         updateStatus();
@@ -173,7 +170,7 @@ public class FXMLSetUpController implements Initializable {
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
     } // draws land
 
-
+/*
     private void cleanBeaches(boolean[][] arr, Color color) {
         for (int i = 0; i < arr.length; i += majorGL) {
             for (int j = 0; j < arr[0].length; j += majorGL) {
@@ -213,6 +210,8 @@ public class FXMLSetUpController implements Initializable {
             }
         }
     }
+
+ */
 
     private void initializeWastePrefs() {
         wastePref.setVisible(false);
@@ -404,13 +403,9 @@ public class FXMLSetUpController implements Initializable {
                     initializeWasteArray();
                     wasteInitialized = true;
                 }
-                cnvOcean.setOnMousePressed(event -> {
-                    System.out.println("Point reached.");
-                    placingWaste = !wasteArray[(int)event.getX()][(int)event.getY()];
-                });
-                cnvOcean.setOnMouseDragged(event -> {
-                    updateArray(event, placingWaste, wasteArray);
-                    draw();
+                cnvOcean.setOnMouseClicked(event -> {
+                    wasteSourceLayer.m.matrix[(int)event.getX()][((int)event.getY())] = new WasteSourceObject(gc, ((int)event.getX()), ((int)event.getY()));
+                    wasteSourceLayer.drawLayer();
                 });
                 btnLand.setSelected(false);
                 wastePref.setVisible(false);
@@ -505,26 +500,20 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void initializeWasteArray() {
-        wasteArray = new boolean[(int)cnvOcean.getWidth()+60][(int)cnvOcean.getHeight()];
-        for (int i = 0; i < wasteArray.length; i++) {
-            for (int j = 0; j < wasteArray[0].length; j++) {
-                wasteArray[i][j] = false;
-            }
-        }
+        wasteSourceLayer = new WasteSourceLayer(gc, (int)cnvOcean.getWidth()+60, (int)cnvOcean.getHeight()+60);
     }
 
-    private void setWastePrefs() {
-    }
+
     private void updateArray(MouseEvent mouseEvent, boolean bool, boolean[][] arr) {
         double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
         double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-        if (!(((xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) || ((xCoordinate - majorGL > cnvOcean.getWidth() || yCoordinate - majorGL> cnvOcean.getHeight())))) {
+                /*if (!(((xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) || ((xCoordinate - majorGL > cnvOcean.getWidth() || yCoordinate - majorGL> cnvOcean.getHeight())))) {
             for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL/2; i++) {
                 for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL/2; j++) {
                     arr[i][j] = bool;
                 }
             }
-        }
+        }*/
     }
 
     private void disableSliders() {

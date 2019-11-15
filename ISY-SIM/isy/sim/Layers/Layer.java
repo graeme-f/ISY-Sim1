@@ -33,7 +33,7 @@ import sim.Utilities.SimMatrix;
  */
 public abstract class Layer {
     GraphicsContext gc;
-    SimMatrix m;
+    public SimMatrix m;
 
     public Layer(GraphicsContext gContext, int width, int height) {
         gc = gContext;

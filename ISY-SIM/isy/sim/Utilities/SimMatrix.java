@@ -30,7 +30,7 @@ import sim.Objects.SimObject;
  * @author gfoster
  */
 public class SimMatrix {
-    private SimObject[][] matrix;
+    public SimObject[][] matrix;
     int width;
     int height;
 
@@ -41,8 +41,8 @@ public class SimMatrix {
     }
 
     public void drawMatrix() {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
+        for (int i = 0; i < matrix.length; i+=50) {
+            for (int j = 0; j < matrix[0].length; j+=50) {
                 try {
                     matrix[i][j].draw();
                 } catch (NullPointerException ignored) {
