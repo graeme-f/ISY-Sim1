@@ -119,16 +119,6 @@ public class FXMLSetUpController implements Initializable {
         updateStatus();
     } // draws the land and arrows on the canvas
 
-    private void drawIslands() {
-        for (int i = 0; i < landArray.length; i += majorGL) {
-            for (int j = 0; j < landArray[0].length; j += majorGL) {
-                if (landArray[i][j]) {
-                    drawBlock(i, j, Color.YELLOW, Color.GREEN);
-                }
-            }
-        }
-        updateStatus();
-    } // uses the array of where land is to draw islands on the grid
 
     private void drawWasteSources() {
         for (int i = 0; i < wasteArray.length; i += majorGL) {
@@ -151,70 +141,6 @@ public class FXMLSetUpController implements Initializable {
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
     } // draws the yellow beach
 
-    /**
-     *
-     * @param xCoordinate
-     * @param yCoordinate
-     * @param direction
-     */
-    private void drawLand(int xCoordinate, int yCoordinate, Direction direction, Color color) {
-        gc.setFill(color);
-        int x = xCoordinate;
-        int y = yCoordinate;
-        if (direction == Direction.DOWN) {
-            y += majorGL/2;
-        } else if (direction == Direction.LEFT) {
-            x -= majorGL/2;
-        } else if (direction == Direction.UP) {
-            y-= majorGL/2;
-        } else if (direction == Direction.RIGHT) {
-            x += majorGL;
-        }
-        double[] xCoordinates = {x+majorGL*0.0625, x+majorGL*0.0625, x+majorGL*0.9375, x+majorGL*0.9375};
-        double[] yCoordinates = {y+majorGL*0.0625, y+majorGL*0.9375, y+majorGL*0.9375, y+majorGL*0.0625};
-        gc.fillPolygon(xCoordinates, yCoordinates, 4);
-    } // draws land
-
-
-    private void cleanBeaches(boolean[][] arr, Color color) {
-        for (int i = 0; i < arr.length; i += majorGL) {
-            for (int j = 0; j < arr[0].length; j += majorGL) {
-                if (arr[i][j]) {
-                    if ((i < majorGL || i > (arr.length-majorGL)) && (j == 0 || j > (arr[0].length-majorGL))) {
-                        ;
-                    } else if ((i < majorGL) || (i > (arr.length - majorGL))) {
-                        if (arr[i][j+majorGL]) {
-                            drawLand(i, j, Direction.DOWN, color);
-                        }
-                        if (arr[i][j-majorGL]) {
-                            drawLand(i, j, Direction.UP, color);
-                        }
-                    } else if (j < majorGL || j > (arr[0].length-majorGL)) {
-                        if (arr[i+majorGL][j]) {
-                            drawLand(i, j, Direction.RIGHT, color);
-                        }
-                        if (arr[i-majorGL][j]) {
-                            drawLand(i, j, Direction.LEFT, color);
-                        }
-                    } else {
-                        if (arr[i][j+majorGL]) {
-                            drawLand(i, j, Direction.DOWN, color);
-                        }
-                        if (arr[i][j-majorGL]) {
-                            drawLand(i, j, Direction.UP, color);
-                        }
-                        if (arr[i+majorGL][j]) {
-                            drawLand(i, j, Direction.RIGHT, color);
-                        }
-                        if (arr[i-majorGL][j]) {
-                            drawLand(i, j, Direction.LEFT, color);
-                        }
-                    }
-
-                }
-            }
-        }
-    }
 
     private void initializeWastePrefs() {
         wastePref.setVisible(false);
@@ -393,48 +319,40 @@ public class FXMLSetUpController implements Initializable {
         }));
     }
 
-    private void toggleWaste() {
-        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
-            btnLand.selectedProperty().set(false);
-            wasteToggle = !wasteToggle;
-            landToggle = !landToggle;
-            if (wasteToggle) {
-                disableSliders();
-                wasteToggled = true;
-                if (!wasteInitialized) {
-                    initializeWasteSourceLayer();
-                    wasteInitialized = true;
-                }
-                cnvOcean.setOnMouseClicked(event -> {
-                    initializeWasteSourceObjects((int) event.getX(), (int) event.getY());
-                    wasteSourceLayer.drawLayer();
-                });
-                btnLand.setSelected(false);
-                wastePref.setVisible(false);
-                wastePref.setMinWidth(1);
-                wastePref.setPrefWidth(1);
-                statusBar.setMinWidth(400);
-            } else {
-                wastePref.setVisible(true);
-                wastePref.setMinWidth(100);
-                wastePref.setPrefWidth(100);
-                statusBar.setMinWidth(355);
-            }
-        }));
-    }
+//    private void toggleWaste() {
+//        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
+//            btnLand.selectedProperty().set(false);
+//            wasteToggle = !wasteToggle;
+//            landToggle = !landToggle;
+//            if (wasteToggle) {
+//                disableSliders();
+//                wasteToggled = true;
+//                if (!wasteInitialized) {
+//                    initializeWasteSourceLayer();
+//                    wasteInitialized = true;
+//                }
+//                cnvOcean.setOnMouseClicked(event -> {
+//                    initializeWasteSourceObjects((int) event.getX(), (int) event.getY());
+//                    wasteSourceLayer.drawLayer();
+//                });
+//                btnLand.setSelected(false);
+//                wastePref.setVisible(false);
+//                wastePref.setMinWidth(1);
+//                wastePref.setPrefWidth(1);
+//                statusBar.setMinWidth(400);
+//            } else {
+//                wastePref.setVisible(true);
+//                wastePref.setMinWidth(100);
+//                wastePref.setPrefWidth(100);
+//                statusBar.setMinWidth(355);
+//            }
+//        }));
+//    }
 
     private void initializeLandObjects(int x, int y) {
         for (int i = (x/majorGL)*majorGL; i < (x/majorGL)*majorGL+majorGL; i++) {
             for (int j = (y/majorGL)*majorGL; j < (y/majorGL)*majorGL+majorGL; j++) {
                 landLayer.m.matrix[i][j] = new LandObject(gc, i, j);
-            }
-        }
-    }
-
-    private void initializeWasteSourceObjects(int x, int y) {
-        for (int i = (x/majorGL)*majorGL; i < (x/majorGL)*majorGL+majorGL; i++) {
-            for (int j = (y/majorGL)*majorGL; j < (y/majorGL)*majorGL+majorGL; j++) {
-                wasteSourceLayer.m.matrix[i][j] = new WasteSourceObject(gc, i, j);
             }
         }
     }
@@ -485,26 +403,8 @@ public class FXMLSetUpController implements Initializable {
             action = "Changing Size";
             size = txtHorizontal.getText() + "x" + txtVertical.getText();
         }
-        int landAmt = 0;
-        if (landInitialized){
-            for (int i = 0; i < landArray.length; i++) {
-                for (int j = 0; j < landArray[0].length; j++) {
-                    if (landArray[i][j]) {
-                        landAmt++;
-                    }
-                }
-            }
-        }
-        int wasteAmt = 0;
-        if (wasteInitialized){
-            for (int i = 0; i < wasteArray.length; i++) {
-                for (int j = 0; j < wasteArray[0].length; j++) {
-                    if (wasteArray[i][j]) {
-                        wasteAmt++;
-                    }
-                }
-            }
-        }
+        int landAmt = 0; // TODO Get this from LandLayer
+        int wasteAmt = 0;// TODO Get this from WasteLayer
         statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
 
@@ -515,34 +415,11 @@ public class FXMLSetUpController implements Initializable {
     private void initializeWasteSourceLayer() {
         wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight());
     }
-//
-//    private void updateArray(MouseEvent mouseEvent, boolean bool, boolean[][] arr) {
-//        double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
-//        double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-//        if (!(((xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) || ((xCoordinate - majorGL > cnvOcean.getWidth() || yCoordinate - majorGL> cnvOcean.getHeight())))) {
-//            for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL/2; i++) {
-//                for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL/2; j++) {
-//                    arr[i][j] = bool;
-//                }
-//            }
-//        }
-//    }
-//
+
     private void disableSliders() {
         sldVertical.setDisable(true);
         sldHorizontal.setDisable(true);
         txtVertical.setDisable(true);
         txtHorizontal.setDisable(true);
     }
-    private double[] convertMouseToGrid(double mouseX, double mouseY) {
-        double gridX = mouseX*1.323529411764706+20.588235294117647;
-        double gridY = mouseY*1.894736842105263+5.263157894736842;
-        return new double[]{gridX, gridY};
-    }
-    private double[] convertGridToMouse(double gridX, double gridY) {
-        double mouseX = (gridX - 20.588235294117647) / 1.323529411764706;
-        double mouseY = (gridY - 5.263157894736842) / 1.894736842105263;
-        return new double[]{mouseX, mouseY};
-    }
 }
-//}
