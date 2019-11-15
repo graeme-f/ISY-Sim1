@@ -31,10 +31,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
+import sim.Layers.LandLayer;
 import sim.Layers.WasteSourceLayer;
+import sim.Objects.LandObject;
 import sim.Objects.WasteSourceObject;
 
 import java.net.URL;
@@ -65,7 +66,8 @@ public class FXMLSetUpController implements Initializable {
     @FXML private CheckMenuItem plasticItem;
     @FXML private CheckMenuItem miscItem;
 
-    WasteSourceLayer wasteSourceLayer;
+    private LandLayer landLayer;
+    private WasteSourceLayer wasteSourceLayer;
     private boolean currentToggle = false;
     private boolean landToggle = false;
     private boolean wasteToggle = false;
@@ -74,24 +76,24 @@ public class FXMLSetUpController implements Initializable {
     private boolean placingLand = false;
     private boolean placingWaste = false;
     private GraphicsContext gc;
-    private double oceanWidth=500;
-    private double oceanHeight=500;
+    private double oceanWidth = 500;
+    private double oceanHeight = 500;
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
     private int minorGL = 5;
-    private int majorGL = 20;
+    public int majorGL = 20;
     private boolean landInitialized = false;
     private boolean wasteInitialized = false;
     private boolean[][] landArray;
     private boolean[][] wasteArray;
-    private enum Direction {UP, LEFT, DOWN, RIGHT};
-    private String size= "500x500";
+    private enum Direction {UP, LEFT, DOWN, RIGHT}
+    private String size = "500x500";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeWastePrefs();
         updateStatus();
-        toggleWaste();
+//        toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
         draw();
         initializeSliders();
@@ -103,12 +105,10 @@ public class FXMLSetUpController implements Initializable {
     private void draw() {
         drawOcean();
         if (landToggled) {
-            drawIslands();
-            //cleanBeaches(landArray, Color.GREEN);
+            landLayer.drawLayer();
         }
         if (wasteToggled) {
             drawWasteSources();
-            //cleanBeaches(wasteArray, Color.LIGHTGRAY);
         }
         drawArrows(gc);
         updateStatus();
@@ -170,7 +170,7 @@ public class FXMLSetUpController implements Initializable {
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
     } // draws land
 
-/*
+
     private void cleanBeaches(boolean[][] arr, Color color) {
         for (int i = 0; i < arr.length; i += majorGL) {
             for (int j = 0; j < arr[0].length; j += majorGL) {
@@ -210,8 +210,6 @@ public class FXMLSetUpController implements Initializable {
             }
         }
     }
-
- */
 
     private void initializeWastePrefs() {
         wastePref.setVisible(false);
@@ -262,6 +260,7 @@ public class FXMLSetUpController implements Initializable {
         drawGridLines(gc, minorGL, majorGL);
         updateStatus();
     } // draws on canvas the ocean and grid lines
+
     private void setOceanWidth(double width) {
         double scale = sldHorizontal.getWidth() / 900;
         double oWidth = (width-100)*scale+60;
@@ -316,7 +315,7 @@ public class FXMLSetUpController implements Initializable {
     private void arwCurrentUpSize(GraphicsContext gc) {
         double scaleHeight = cnvOcean.getHeight();
         gc.strokeLine(10, 20, 10, scaleHeight-20);
-        
+
         double[] xPoints = {0,10,20};
         double[] yPoints = {20,0,20};
         gc.setFill(Color.BLACK);
@@ -326,7 +325,7 @@ public class FXMLSetUpController implements Initializable {
     private void arwCurrentRightSize(GraphicsContext gc) {
         double scaleWidth = cnvOcean.getWidth();
         gc.strokeLine(20, 10, scaleWidth-20, 10);
-        
+
         double[] xPoints = {scaleWidth-20,scaleWidth,scaleWidth-20};
         double[] yPoints = {0,10,20};
         gc.setFill(Color.BLACK);
@@ -378,19 +377,17 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 landToggled = true;
                 if (!landInitialized) {
-                    initializeLandArray();
+                    initializeLandLayer();
                     landInitialized = true;
                 }
-                cnvOcean.setOnMousePressed(event -> {
-                    placingLand = !landArray[(int) event.getX()][(int) event.getY()];
-                });
-                cnvOcean.setOnMouseDragged(event -> {
-                    updateArray(event, placingLand, landArray);
-                    draw();
+                cnvOcean.setOnMouseClicked(event -> {
+                    initializeLandObjects((int) event.getX(), (int) event.getY());
+                    landLayer.drawLayer();
                 });
             }
         }));
     }
+
     private void toggleWaste() {
         btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
             btnLand.selectedProperty().set(false);
@@ -400,11 +397,11 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 wasteToggled = true;
                 if (!wasteInitialized) {
-                    initializeWasteArray();
+                    initializeWasteSourceLayer();
                     wasteInitialized = true;
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    wasteSourceLayer.m.matrix[(int)event.getX()][((int)event.getY())] = new WasteSourceObject(gc, ((int)event.getX()), ((int)event.getY()));
+                    initializeWasteSourceObjects((int) event.getX(), (int) event.getY());
                     wasteSourceLayer.drawLayer();
                 });
                 btnLand.setSelected(false);
@@ -419,6 +416,22 @@ public class FXMLSetUpController implements Initializable {
                 statusBar.setMinWidth(355);
             }
         }));
+    }
+
+    private void initializeLandObjects(int x, int y) {
+        for (int i = (x/majorGL)*majorGL; i < (x/majorGL)*majorGL+majorGL; i++) {
+            for (int j = (y/majorGL)*majorGL; j < (y/majorGL)*majorGL+majorGL; j++) {
+                landLayer.m.matrix[i][j] = new LandObject(gc, i, j);
+            }
+        }
+    }
+
+    private void initializeWasteSourceObjects(int x, int y) {
+        for (int i = (x/majorGL)*majorGL; i < (x/majorGL)*majorGL+majorGL; i++) {
+            for (int j = (y/majorGL)*majorGL; j < (y/majorGL)*majorGL+majorGL; j++) {
+                wasteSourceLayer.m.matrix[i][j] = new WasteSourceObject(gc, i, j);
+            }
+        }
     }
 
     private void clearAll() {
@@ -490,56 +503,41 @@ public class FXMLSetUpController implements Initializable {
         statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
 
-    private void initializeLandArray() {
-        landArray = new boolean[(int)cnvOcean.getWidth()+60][(int)cnvOcean.getHeight()];
-        for (int i = 0; i < landArray.length; i++) {
-            for (int j = 0; j < landArray[0].length; j++) {
-                landArray[i][j] = false;
-            }
-        }
+    private void initializeLandLayer() {
+        landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight());
     }
 
-    private void initializeWasteArray() {
-        wasteSourceLayer = new WasteSourceLayer(gc, (int)cnvOcean.getWidth()+60, (int)cnvOcean.getHeight()+60);
+    private void initializeWasteSourceLayer() {
+        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight());
     }
-
-
-    private void updateArray(MouseEvent mouseEvent, boolean bool, boolean[][] arr) {
-        double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
-        double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
-                /*if (!(((xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) || ((xCoordinate - majorGL > cnvOcean.getWidth() || yCoordinate - majorGL> cnvOcean.getHeight())))) {
-            for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL/2; i++) {
-                for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL/2; j++) {
-                    arr[i][j] = bool;
-                }
-            }
-        }*/
-    }
-
+//
+//    private void updateArray(MouseEvent mouseEvent, boolean bool, boolean[][] arr) {
+//        double xCoordinate = (double)((int)mouseEvent.getX()/majorGL)*majorGL;
+//        double yCoordinate = (double)((int)mouseEvent.getY()/majorGL)*majorGL;
+//        if (!(((xCoordinate + majorGL > cnvOcean.getWidth() || yCoordinate + majorGL> cnvOcean.getHeight())) || ((xCoordinate - majorGL > cnvOcean.getWidth() || yCoordinate - majorGL> cnvOcean.getHeight())))) {
+//            for (int i = (int)xCoordinate; i <= (int)xCoordinate+majorGL/2; i++) {
+//                for (int j = (int)yCoordinate; j <= (int)yCoordinate+majorGL/2; j++) {
+//                    arr[i][j] = bool;
+//                }
+//            }
+//        }
+//    }
+//
     private void disableSliders() {
         sldVertical.setDisable(true);
         sldHorizontal.setDisable(true);
         txtVertical.setDisable(true);
         txtHorizontal.setDisable(true);
     }
-
-//    private void generateRandomIsland(GraphicsContext gc, int length) {
-//        Random random = new Random();
-//        int cnvHeight = (int) cnvOcean.getHeight();
-//        int cnvWidth = (int) cnvOcean.getWidth();
-//        int heightCoef = cnvHeight/length;
-//        int widthCoef = cnvWidth/length;
-//        double[] xPoints = {(double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef), (double) length*random.nextInt(widthCoef)};
-//        double[] yPoints = {(double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef), (double) length*random.nextInt(heightCoef)};
-//    }
     private double[] convertMouseToGrid(double mouseX, double mouseY) {
         double gridX = mouseX*1.323529411764706+20.588235294117647;
         double gridY = mouseY*1.894736842105263+5.263157894736842;
         return new double[]{gridX, gridY};
     }
     private double[] convertGridToMouse(double gridX, double gridY) {
-        double mouseX = (gridX-20.588235294117647)/1.323529411764706;
-        double mouseY = (gridY-5.263157894736842)/1.894736842105263;
+        double mouseX = (gridX - 20.588235294117647) / 1.323529411764706;
+        double mouseY = (gridY - 5.263157894736842) / 1.894736842105263;
         return new double[]{mouseX, mouseY};
     }
-}//
+}
+//}
