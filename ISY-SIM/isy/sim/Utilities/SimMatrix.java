@@ -30,7 +30,7 @@ import sim.Objects.SimObject;
  * @author gfoster
  */
 public class SimMatrix {
-    private SimObject[][] matrix;
+    public SimObject[][] matrix;
     int width;
     int height;
 
