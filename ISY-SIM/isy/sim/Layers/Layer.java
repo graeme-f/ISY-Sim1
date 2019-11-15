@@ -25,6 +25,7 @@
 package sim.Layers;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import sim.Utilities.SimMatrix;
 
 /**
@@ -33,11 +34,11 @@ import sim.Utilities.SimMatrix;
  */
 public abstract class Layer {
     GraphicsContext gc;
-    SimMatrix m;
+    public SimMatrix m;
 
-    public Layer(GraphicsContext gContext, int width, int height) {
+    public Layer(GraphicsContext gContext, double width, double height) {
         gc = gContext;
-        m = new SimMatrix(width, height);
+        m = new SimMatrix((int)width, (int)height);
     }
 
     public void drawLayer() {

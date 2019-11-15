@@ -31,7 +31,7 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class WasteLayer extends Layer {
 
-    public WasteLayer(GraphicsContext gContext, int width, int height) {
+    public WasteLayer(GraphicsContext gContext, double width, double height) {
         super(gContext, width, height);
     }
 

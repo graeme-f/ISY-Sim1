@@ -32,7 +32,7 @@ import sim.Utilities.SimMatrix;
  */
 public class LandLayer extends Layer {
 
-    public LandLayer(GraphicsContext gContext, int width, int height) {
+    public LandLayer(GraphicsContext gContext, double width, double height) {
         super(gContext, width, height);
     }
 
