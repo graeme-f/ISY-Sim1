@@ -26,6 +26,7 @@ package sim.Objects;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import sim.Layers.LandLayer;
 
 /**
  *
@@ -39,8 +40,13 @@ public class LandObject extends SimObject{
 
     @Override
     public void draw() {
-        double[] xCoordinates = {x, x, x+1, x+1};
-        double[] yCoordinates = {y, y+1, y+1, y};
+    	int cw = LandLayer.cellWidth();
+    	int x1 = x*cw;
+    	int x2 = x1+ cw;
+    	int y1 = y * cw;
+    	int y2 = y1 + cw;
+        double[] xCoordinates = {x1, x1, x2, x2};
+        double[] yCoordinates = {y1, y2, y2, y1};
         gc.setFill(Color.GREEN);
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
     }

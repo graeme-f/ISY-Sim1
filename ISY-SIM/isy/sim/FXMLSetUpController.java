@@ -109,10 +109,10 @@ public class FXMLSetUpController implements Initializable {
 
     private void draw() {
         drawOcean();
-        if (landToggled) {
+        if (landToggled) { // TODO This is not the right place for this property it should be in LandLayer
             landLayer.drawLayer();
         }
-        if (wasteToggled) {
+        if (wasteToggled) { // TODO This is not the right place for this property it should be in WasteLayer
             drawWasteSources();
         }
         drawArrows(gc);
@@ -300,6 +300,7 @@ public class FXMLSetUpController implements Initializable {
             }
         }));
     }
+    
     private void toggleLand() {
         btnLand.selectedProperty().addListener(((observable, oldValue, newValue) -> {
             btnWaste.selectedProperty().set(false);
@@ -318,6 +319,18 @@ public class FXMLSetUpController implements Initializable {
             }
         }));
     }
+
+    private void initializeLandLayer() {
+        landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
+    }
+
+
+    private void initializeLandObjects(int x, int y) {
+    	int i = x/majorGL;
+    	int j = y/majorGL;
+    	landLayer.addObject(new LandObject(gc, i, j));
+    }
+
 
 //    private void toggleWaste() {
 //        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
@@ -349,14 +362,6 @@ public class FXMLSetUpController implements Initializable {
 //        }));
 //    }
 
-    private void initializeLandObjects(int x, int y) {
-        for (int i = (x/majorGL)*majorGL; i < (x/majorGL)*majorGL+majorGL; i++) {
-            for (int j = (y/majorGL)*majorGL; j < (y/majorGL)*majorGL+majorGL; j++) {
-                landLayer.m.matrix[i][j] = new LandObject(gc, i, j);
-            }
-        }
-    }
-
     private void clearAll() {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
@@ -367,7 +372,7 @@ public class FXMLSetUpController implements Initializable {
                 txtVertical.setDisable(false);
                 txtHorizontal.setDisable(false);
                 landInitialized = false;
-                landToggled = false;
+                landToggled = false; // TODO why in twice (see 7 lines earlier) 
                 draw();
             }
         }));
@@ -408,12 +413,8 @@ public class FXMLSetUpController implements Initializable {
         statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
 
-    private void initializeLandLayer() {
-        landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight());
-    }
-
     private void initializeWasteSourceLayer() {
-        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight());
+        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
     }
 
     private void disableSliders() {
