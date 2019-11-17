@@ -44,6 +44,7 @@ import javafx.util.converter.NumberStringConverter;
 import sim.Layers.LandLayer;
 import sim.Layers.WasteSourceLayer;
 import sim.Objects.LandObject;
+import sim.Objects.SimObject;
 import sim.Objects.WasteSourceObject;
 
 /**
@@ -113,7 +114,7 @@ public class FXMLSetUpController implements Initializable {
             landLayer.drawLayer();
         }
         if (wasteToggled) {
-            drawWasteSources();
+            wasteSourceLayer.drawLayer();
         }
         drawArrows(gc);
         updateStatus();
@@ -386,8 +387,12 @@ public class FXMLSetUpController implements Initializable {
                     landInitialized = true;
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    initializeLandObjects((int) event.getX(), (int) event.getY());
-                    landLayer.drawLayer();
+                    if (landLayer.m.matrix[(int)event.getX()][(int)event.getY()] == null) {
+                        initializeLandObjects((int) event.getX(), (int) event.getY());
+                    } else {
+                        removeLandObjects((int) event.getX(), (int) event.getY());
+                    }
+                    draw();
                 });
             }
         }));
@@ -406,7 +411,11 @@ public class FXMLSetUpController implements Initializable {
                     wasteInitialized = true;
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    initializeWasteSourceObjects((int) event.getX(), (int) event.getY());
+                    try {
+                        WasteSourceObject obj = new WasteSourceObject(gc, (int) event.getX(), (int) event.getY());
+                    } catch (NullPointerException ignored) {
+                        initializeWasteSourceObjects((int) event.getX(), (int) event.getY());
+                    }
                     wasteSourceLayer.drawLayer();
                 });
                 btnLand.setSelected(false);
@@ -431,6 +440,14 @@ public class FXMLSetUpController implements Initializable {
         }
     }
 
+    private void removeLandObjects(int x, int y) {
+        for (int i = (x/majorGL)*majorGL; i < (x/majorGL)*majorGL+majorGL; i++) {
+            for (int j = (y/majorGL)*majorGL; j < (y/majorGL)*majorGL+majorGL; j++) {
+                landLayer.m.matrix[i][j] = null;
+            }
+        }
+    }
+
     private void initializeWasteSourceObjects(int x, int y) {
         for (int i = (x/majorGL)*majorGL; i < (x/majorGL)*majorGL+majorGL; i++) {
             for (int j = (y/majorGL)*majorGL; j < (y/majorGL)*majorGL+majorGL; j++) {
@@ -439,17 +456,26 @@ public class FXMLSetUpController implements Initializable {
         }
     }
 
+    private void removeWasteObjects(int x, int y) {
+        for (int i = (x/majorGL)*majorGL; i < (x/majorGL)*majorGL+majorGL; i++) {
+            for (int j = (y/majorGL)*majorGL; j < (y/majorGL)*majorGL+majorGL; j++) {
+                wasteSourceLayer.m.matrix[i][j] = null;
+            }
+        }
+    }
+
     private void clearAll() {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
                 landToggled=false;
+                wasteToggled = false;
                 btnLand.setSelected(false);
                 sldVertical.setDisable(false);
                 sldHorizontal.setDisable(false);
                 txtVertical.setDisable(false);
                 txtHorizontal.setDisable(false);
                 landInitialized = false;
-                landToggled = false;
+                wasteInitialized = false;
                 draw();
             }
         }));
@@ -487,9 +513,9 @@ public class FXMLSetUpController implements Initializable {
         }
         int landAmt = 0;
         if (landInitialized){
-            for (int i = 0; i < landArray.length; i++) {
-                for (int j = 0; j < landArray[0].length; j++) {
-                    if (landArray[i][j]) {
+            for (int i = 0; i < landLayer.m.matrix.length; i += majorGL) {
+                for (int j = 0; j < landLayer.m.matrix[0].length; j += majorGL) {
+                    if (landLayer.m.matrix[i][j] != null) {
                         landAmt++;
                     }
                 }
@@ -497,15 +523,15 @@ public class FXMLSetUpController implements Initializable {
         }
         int wasteAmt = 0;
         if (wasteInitialized){
-            for (int i = 0; i < wasteArray.length; i++) {
-                for (int j = 0; j < wasteArray[0].length; j++) {
-                    if (wasteArray[i][j]) {
+            for (int i = 0; i < wasteSourceLayer.m.matrix.length; i += majorGL) {
+                for (int j = 0; j < wasteSourceLayer.m.matrix[0].length; j += majorGL) {
+                    if (wasteSourceLayer.m.matrix[i][j] != null) {
                         wasteAmt++;
                     }
                 }
             }
         }
-        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
+        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt + "\tWaste amount:" + wasteAmt);
     }
 
     private void initializeLandLayer() {
