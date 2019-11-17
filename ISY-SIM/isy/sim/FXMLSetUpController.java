@@ -41,7 +41,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
-import sim.Layers.ArrowLayer;
+import sim.Layers.CurrentLayer;
 import sim.Layers.GridLayer;
 import sim.Layers.LandLayer;
 import sim.Layers.WasteSourceLayer;
@@ -65,7 +65,7 @@ public class FXMLSetUpController implements Initializable {
     @FXML private ToggleButton btnCurrent;
     @FXML private MenuButton wastePref;
     @FXML private Label statusBar;
-    @FXML private ToggleButton btnClear;
+    @FXML private ToggleButton btnClear; // TODO why a toggle button
     @FXML private CheckMenuItem smallItem;
     @FXML private CheckMenuItem medItem;
     @FXML private CheckMenuItem largeItem;
@@ -73,9 +73,9 @@ public class FXMLSetUpController implements Initializable {
     @FXML private CheckMenuItem plasticItem;
     @FXML private CheckMenuItem miscItem;
 
-    private LandLayer landLayer;
+    private LandLayer landLayer = null;
     private GridLayer gridLayer;
-    private ArrowLayer arrowLayer;
+    private CurrentLayer arrowLayer;
     private WasteSourceLayer wasteSourceLayer;
     private boolean currentToggle = false;
     private boolean landToggle = false;
@@ -91,7 +91,6 @@ public class FXMLSetUpController implements Initializable {
     private double verticalSpeed = 2;
     private int minorGL = 5;
     public int majorGL = 20;
-    private boolean landInitialized = false;
     private boolean wasteInitialized = false;
     private boolean[][] landArray;
     private boolean[][] wasteArray;
@@ -105,7 +104,7 @@ public class FXMLSetUpController implements Initializable {
 //        toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
         gridLayer = new GridLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 5, 20);
-        arrowLayer = new ArrowLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 2, 2);
+        arrowLayer = new CurrentLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 2, 2);
         draw();
         initializeSliders();
         toggleCurrent();
@@ -244,29 +243,18 @@ public class FXMLSetUpController implements Initializable {
             if (landToggle) {
                 disableSliders();
                 landToggled = true;
-                if (!landInitialized) {
-                    initializeLandLayer();
-                    landInitialized = true;
+                if (landLayer == null) {
+                	landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    initializeLandObjects((int) event.getX(), (int) event.getY());
+                	int i = (int)event.getX()/majorGL;
+                	int j = (int) event.getY()/majorGL;
+                	landLayer.addObject(new LandObject(gc, i, j));
                     landLayer.drawLayer();
                 });
             }
         }));
     }
-
-    private void initializeLandLayer() {
-        landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
-    }
-
-
-    private void initializeLandObjects(int x, int y) {
-    	int i = x/majorGL;
-    	int j = y/majorGL;
-    	landLayer.addObject(new LandObject(gc, i, j));
-    }
-
 
 //    private void toggleWaste() {
 //        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
@@ -307,7 +295,7 @@ public class FXMLSetUpController implements Initializable {
                 sldHorizontal.setDisable(false);
                 txtVertical.setDisable(false);
                 txtHorizontal.setDisable(false);
-                landInitialized = false;
+                landLayer = null;
                 landToggled = false; // TODO why in twice (see 7 lines earlier) 
                 draw();
             }

@@ -3,12 +3,12 @@ package sim.Layers;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class ArrowLayer extends ResizeableLayer {
+public class CurrentLayer extends ResizeableLayer {
 
 	private double verticalWidth;
 	private double horizontalWidth;
 	
-	public ArrowLayer(GraphicsContext gContext, double width, double height, double vw, double hw) {
+	public CurrentLayer(GraphicsContext gContext, double width, double height, double vw, double hw) {
 		super(gContext, width, height);
 		verticalWidth = vw;
 		horizontalWidth = hw;
