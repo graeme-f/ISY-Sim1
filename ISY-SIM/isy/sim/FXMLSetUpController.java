@@ -41,6 +41,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
+import sim.Layers.ArrowLayer;
+import sim.Layers.GridLayer;
 import sim.Layers.LandLayer;
 import sim.Layers.WasteSourceLayer;
 import sim.Objects.LandObject;
@@ -72,6 +74,8 @@ public class FXMLSetUpController implements Initializable {
     @FXML private CheckMenuItem miscItem;
 
     private LandLayer landLayer;
+    private GridLayer gridLayer;
+    private ArrowLayer arrowLayer;
     private WasteSourceLayer wasteSourceLayer;
     private boolean currentToggle = false;
     private boolean landToggle = false;
@@ -100,6 +104,8 @@ public class FXMLSetUpController implements Initializable {
         updateStatus();
 //        toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
+        gridLayer = new GridLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 5, 20);
+        arrowLayer = new ArrowLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 2, 2);
         draw();
         initializeSliders();
         toggleCurrent();
@@ -115,7 +121,7 @@ public class FXMLSetUpController implements Initializable {
         if (wasteToggled) { // TODO This is not the right place for this property it should be in WasteLayer
             drawWasteSources();
         }
-        drawArrows(gc);
+        arrowLayer.drawLayer();
         updateStatus();
     } // draws the land and arrows on the canvas
 
@@ -160,7 +166,8 @@ public class FXMLSetUpController implements Initializable {
 
         sldHorizontal.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (currentToggle) {
-                setCurrentHorizontal(newValue.doubleValue());
+            	horizontalSpeed = newValue.doubleValue();
+            	arrowLayer.setHorizontalWidth(newValue.doubleValue());
                 draw();
                 sldHorizontal.setValue(horizontalSpeed);
                 txtHorizontal.setText(""+(int)horizontalSpeed);
@@ -173,7 +180,8 @@ public class FXMLSetUpController implements Initializable {
         });
         sldVertical.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (currentToggle) {
-                setCurrentVertical(newValue.doubleValue());
+            	verticalSpeed = newValue.doubleValue();
+            	arrowLayer.setVerticalWidth(newValue.doubleValue());
                 draw();
                 sldVertical.setValue(verticalSpeed);
                 txtVertical.setText(""+(int)verticalSpeed);
@@ -188,7 +196,7 @@ public class FXMLSetUpController implements Initializable {
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
-        drawGridLines(gc, minorGL, majorGL);
+        gridLayer.drawLayer();
         updateStatus();
     } // draws on canvas the ocean and grid lines
 
@@ -196,6 +204,8 @@ public class FXMLSetUpController implements Initializable {
         double scale = sldHorizontal.getWidth() / 900;
         double oWidth = (width-100)*scale+60;
         cnvOcean.setWidth(oWidth);
+        gridLayer.setWidth(oWidth);
+        arrowLayer.setWidth(oWidth);
         draw();
     }
     private void setOceanHeight(double height) {
@@ -203,83 +213,9 @@ public class FXMLSetUpController implements Initializable {
         double oHeight = (height-100)*scale+50;
         cnvOcean.setHeight(oHeight);
         cnvOcean.setTranslateY(525-oHeight);
+        gridLayer.setHeight(oHeight);
+        arrowLayer.setHeight(oHeight);
         draw();
-    }
-    private void drawGridLines(GraphicsContext gc, int minorGL, int majorGL) {
-        gc.setStroke(Color.BLUE);
-        int cnvWidth = (int) cnvOcean.getWidth();
-        int cnvHeight = (int) cnvOcean.getHeight();
-        for (int width = 0; width < cnvWidth; width += minorGL) {
-            for (int height = 0; height < cnvHeight; height += minorGL) {
-                // TODO: Find  a more concise way of doing this
-                if (width % majorGL == 0 && height % majorGL != 0) {
-                    gc.setLineWidth(0.4);
-                    gc.strokeLine(width, height, width+minorGL, height);
-                    gc.setLineWidth(3.0);
-                    gc.strokeLine(width, height, width, height-minorGL);
-                } else if (height % majorGL == 0 && width % majorGL != 0) {
-                    gc.setLineWidth(3.0);
-                    gc.strokeLine(width, height, width+minorGL, height);
-                    gc.setLineWidth(0.4);
-                    gc.strokeLine(width, height, width, height-minorGL);
-                } else if (height % majorGL == 0 && width % majorGL == 0) {
-                    gc.setLineWidth(3.0);
-                    gc.strokeLine(width, height, width+minorGL, height);
-                    gc.strokeLine(width, height, width, height-minorGL);
-                } else {
-                    gc.setLineWidth(0.4);
-                    gc.strokeLine(width, height, width+minorGL, height);
-                    gc.strokeLine(width, height, width, height-minorGL);
-                }
-            }
-        }
-    }
-    private void drawArrows(GraphicsContext gc) {
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(verticalSpeed);
-        arwCurrentUpSize(gc);
-        arwCurrentDownSize(gc);
-        gc.setLineWidth(horizontalSpeed);
-        arwCurrentRightSize(gc);
-        arwCurrentLeftSize(gc);
-    }
-    private void arwCurrentUpSize(GraphicsContext gc) {
-        double scaleHeight = cnvOcean.getHeight();
-        gc.strokeLine(10, 20, 10, scaleHeight-20);
-
-        double[] xPoints = {0,10,20};
-        double[] yPoints = {20,0,20};
-        gc.setFill(Color.BLACK);
-        gc.fillPolygon(xPoints, yPoints, 3);
-
-    }
-    private void arwCurrentRightSize(GraphicsContext gc) {
-        double scaleWidth = cnvOcean.getWidth();
-        gc.strokeLine(20, 10, scaleWidth-20, 10);
-
-        double[] xPoints = {scaleWidth-20,scaleWidth,scaleWidth-20};
-        double[] yPoints = {0,10,20};
-        gc.setFill(Color.BLACK);
-        gc.fillPolygon(xPoints, yPoints, 3);
-    }
-    private void arwCurrentLeftSize(GraphicsContext gc) {
-        double scaleWidth = cnvOcean.getWidth();
-        double scaleHeight = cnvOcean.getHeight();
-        gc.strokeLine(scaleWidth-20, scaleHeight-10, 20, scaleHeight-10);
-        double[] xPoints = {20, 0, 20};
-        double[] yPoints = {scaleHeight, scaleHeight-10, scaleHeight-20};
-        gc.setFill(Color.BLACK);
-        gc.fillPolygon(xPoints, yPoints, 3);
-    }
-    private void arwCurrentDownSize(GraphicsContext gc) {
-        double scaleWidth = cnvOcean.getWidth();
-        double scaleHeight = cnvOcean.getHeight();
-        gc.strokeLine(scaleWidth-10, scaleHeight-20, scaleWidth-10, 20);
-
-        double[] xPoints = {scaleWidth, scaleWidth-10, scaleWidth-20};
-        double[] yPoints = {scaleHeight-20, scaleHeight, scaleHeight-20};
-        gc.setFill(Color.BLACK);
-        gc.fillPolygon(xPoints, yPoints, 3);
     }
 
     private void toggleCurrent() {
@@ -376,13 +312,6 @@ public class FXMLSetUpController implements Initializable {
                 draw();
             }
         }));
-    }
-
-    private void setCurrentHorizontal(double speed) {
-        horizontalSpeed = speed;
-    }
-    private void setCurrentVertical(double speed) {
-        verticalSpeed = speed;
     }
 
     private void setSldVerMinMax(double min, double max) {

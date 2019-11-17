@@ -23,15 +23,29 @@
  */
 
 package sim.Layers;
+
 import javafx.scene.canvas.GraphicsContext;
+import sim.Objects.SimObject;
+import sim.Utilities.SimMatrix;
 
 /**
  *
  * @author gfoster
  */
-public class WasteSourceLayer extends MatrixLayer {
+public abstract class MatrixLayer  extends Layer{
+    protected SimMatrix m;
 
-    public WasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
-        super(gContext, width, height, cellWidth);
+    public MatrixLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+    	super(gContext, width, height);
+        m = new SimMatrix((int)width/cellWidth+1, (int)height/cellWidth+1);
     }
-} // end of class WasteSourceLayer
+    
+    public void drawLayer() {
+        m.drawMatrix();
+    }
+    
+    public void addObject(SimObject object) {
+    	m.matrix[object.getx()][object.gety()] = object;
+    }
+
+} // end of class Layer
