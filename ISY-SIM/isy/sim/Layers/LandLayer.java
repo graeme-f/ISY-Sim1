@@ -30,10 +30,19 @@ import sim.Utilities.SimMatrix;
  *
  * @author gfoster
  */
-public class LandLayer extends Layer {
+public class LandLayer extends MatrixLayer {
 
-    public LandLayer(GraphicsContext gContext, double width, double height) {
-        super(gContext, width, height);
+	/* 
+	 * The cellWidth is static so that we don't need to store a reference
+	 * with each SimObject back to the layer that the SimObject belongs to 
+	 */
+    protected static int cellWidth;
+    
+    public LandLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+        super(gContext, width, height, cellWidth);
+        LandLayer.cellWidth = cellWidth;
     }
+    
+    public static int cellWidth() {return cellWidth;}
 
 } // end of class LandLayer
