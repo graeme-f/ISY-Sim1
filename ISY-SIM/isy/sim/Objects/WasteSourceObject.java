@@ -24,10 +24,13 @@
 
 package sim.Objects;
 
+import javafx.scene.paint.Color;
+
 /**
  *
  * @author gfoster
  */
-public class WasteSourceObject {
+public class WasteSourceObject extends SimObject {
 
+    Color land = Color.GRAY;
 } // end of class WasteSourceObject

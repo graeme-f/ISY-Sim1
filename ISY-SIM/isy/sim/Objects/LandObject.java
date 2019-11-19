@@ -24,10 +24,15 @@
 
 package sim.Objects;
 
+import javafx.scene.paint.Color;
+
 /**
  *
  * @author gfoster
  */
-public class LandObject {
+public class LandObject extends SimObject {
+
+    Color land = Color.GREEN;
+    Color beach = Color.YELLOW;
 
 } // end of class LandObject
