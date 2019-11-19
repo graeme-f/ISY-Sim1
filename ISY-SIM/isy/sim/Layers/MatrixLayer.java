@@ -22,27 +22,30 @@
  * THE SOFTWARE.
  */
 
-package sim.Objects;
+package sim.Layers;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import sim.Objects.SimObject;
+import sim.Utilities.SimMatrix;
 
 /**
  *
  * @author gfoster
  */
-public class WasteSourceObject extends SimObject {
+public abstract class MatrixLayer  extends Layer{
+    protected SimMatrix m;
 
-
-    public WasteSourceObject(GraphicsContext graphicsContext, int locationX, int locationY) {
-        super(graphicsContext, locationX, locationY);
+    public MatrixLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+    	super(gContext, width, height);
+        m = new SimMatrix((int)width/cellWidth+1, (int)height/cellWidth+1);
+    }
+    
+    public void drawLayer() {
+        m.drawMatrix();
+    }
+    
+    public void addObject(SimObject object) {
+    	m.matrix[object.getx()][object.gety()] = object;
     }
 
-    @Override
-    public void draw() {
-        double[] xCoordinates = {x, x, x+1, x+1};
-        double[] yCoordinates = {y, y+1, y+1, y};
-        gc.setFill(Color.LIGHTGRAY);
-        gc.fillPolygon(xCoordinates, yCoordinates, 4);
-    }
-} // end of class WasteSourceObject
+} // end of class Layer

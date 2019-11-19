@@ -23,11 +23,16 @@
  */
 
 package sim.Layers;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
  * @author gfoster
  */
-public class WasteLayer {
+public class WasteLayer extends MatrixLayer {
+
+    public WasteLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+        super(gContext, width, height, cellWidth);
+    }
 
 } // end of class WasteLayer

@@ -23,11 +23,31 @@
  */
 
 package sim.Utilities;
+import sim.Objects.SimObject;
 
 /**
  *
  * @author gfoster
  */
 public class SimMatrix {
+    public SimObject[][] matrix;
+    int width;
+    int height;
+
+    public SimMatrix(int w, int h) {
+        width = w;
+        height = h;
+        matrix = new SimObject[width][height];
+    }
+
+    public void drawMatrix() {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+            	if (matrix[i][j]!=null) {
+            		matrix[i][j].draw();
+            	}
+            }
+        }
+    }
 
 } // end of class SimMatrix
