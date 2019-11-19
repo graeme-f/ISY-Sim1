@@ -99,6 +99,7 @@ public class FXMLSetUpController implements Initializable {
         initializeSliders();
         toggleCurrent();
         toggleLand();
+        toggleWaste();
         clearAll();
     } // initialises all listeners and draws main application
 
