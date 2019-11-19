@@ -91,10 +91,9 @@ public class FXMLSetUpController implements Initializable {
     private double verticalSpeed = 2;
     private int minorGL = 5;
     public int majorGL = 20;
-    private boolean wasteInitialized = false;
     private boolean[][] landArray;
     private boolean[][] wasteArray;
-    private enum Direction {UP, LEFT, DOWN, RIGHT}
+    public enum Direction {UP, LEFT, DOWN, RIGHT}
     private String size = "500x500";
 
     @Override
@@ -114,38 +113,11 @@ public class FXMLSetUpController implements Initializable {
 
     private void draw() {
         drawOcean();
-        if (landToggled) { // TODO This is not the right place for this property it should be in LandLayer
-            landLayer.drawLayer();
-        }
-        if (wasteToggled) { // TODO This is not the right place for this property it should be in WasteLayer
-            drawWasteSources();
-        }
+        landLayer.drawLayer();
+        wasteSourceLayer.drawLayer();
         arrowLayer.drawLayer();
         updateStatus();
     } // draws the land and arrows on the canvas
-
-
-    private void drawWasteSources() {
-        for (int i = 0; i < wasteArray.length; i += majorGL) {
-            for (int j = 0; j < wasteArray[0].length; j += majorGL) {
-                if (wasteArray[i][j]) {
-                    drawBlock(i, j, Color.BLACK, Color.LIGHTGRAY);
-                }
-            }
-        }
-    }
-
-    private void drawBlock(int xCoordinate, int yCoordinate, Color beach, Color land) {
-        gc.setFill(beach);
-        double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+majorGL, xCoordinate+majorGL};
-        double[] yCoordinates = {yCoordinate, yCoordinate+majorGL, yCoordinate+majorGL, yCoordinate};
-        gc.fillPolygon(xCoordinates, yCoordinates, 4);
-        gc.setFill(land);
-        xCoordinates = new double[]{xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.9375, xCoordinate+majorGL*0.9375};
-        yCoordinates = new double[]{yCoordinate+majorGL*0.0625, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.0625};
-        gc.fillPolygon(xCoordinates, yCoordinates, 4);
-    } // draws the yellow beach
-
 
     private void initializeWastePrefs() {
         wastePref.setVisible(false);
@@ -192,6 +164,7 @@ public class FXMLSetUpController implements Initializable {
             }
         });
     }
+
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
@@ -290,13 +263,14 @@ public class FXMLSetUpController implements Initializable {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
                 landToggled=false;
+                wasteToggled=false;
                 btnLand.setSelected(false);
                 sldVertical.setDisable(false);
                 sldHorizontal.setDisable(false);
                 txtVertical.setDisable(false);
                 txtHorizontal.setDisable(false);
-                landLayer = null;
-                landToggled = false; // TODO why in twice (see 7 lines earlier) 
+                landLayer=null;
+                wasteSourceLayer=null;
                 draw();
             }
         }));
