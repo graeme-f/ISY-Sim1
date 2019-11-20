@@ -17,29 +17,21 @@ public class GridLayer extends ResizeableLayer {
 	@Override
 	public void drawLayer() {
         gc.setStroke(Color.BLUE);
-        for (int width = 0; width < layerWidth; width += minorGL) {
-            for (int height = 0; height < layerHeight; height += minorGL) {
-                // TODO: Find  a more concise way of doing this
-                if (width % majorGL == 0 && height % majorGL != 0) {
-                    gc.setLineWidth(0.4);
-                    gc.strokeLine(width, height, width+minorGL, height);
-                    gc.setLineWidth(3.0);
-                    gc.strokeLine(width, height, width, height-minorGL);
-                } else if (height % majorGL == 0 && width % majorGL != 0) {
-                    gc.setLineWidth(3.0);
-                    gc.strokeLine(width, height, width+minorGL, height);
-                    gc.setLineWidth(0.4);
-                    gc.strokeLine(width, height, width, height-minorGL);
-                } else if (height % majorGL == 0 && width % majorGL == 0) {
-                    gc.setLineWidth(3.0);
-                    gc.strokeLine(width, height, width+minorGL, height);
-                    gc.strokeLine(width, height, width, height-minorGL);
-                } else {
-                    gc.setLineWidth(0.4);
-                    gc.strokeLine(width, height, width+minorGL, height);
-                    gc.strokeLine(width, height, width, height-minorGL);
-                }
+	    for (int width = 0; width < layerWidth; width += minorGL) {
+	        if (width % majorGL == 0) {
+	            gc.setLineWidth(3.0);
+            } else {
+	            gc.setLineWidth(0.4);
             }
+	        gc.strokeLine(width, 0, width, layerHeight);
+        }
+	    for (int height = 0; height < layerHeight; height += minorGL) {
+	        if (height % majorGL == 0) {
+	            gc.setLineWidth(3.0);
+            } else {
+	            gc.setLineWidth(0.4);
+            }
+			gc.strokeLine(0, height, layerWidth, height);
         }
 	} // end of method drawLayer()
 
