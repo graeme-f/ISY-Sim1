@@ -73,7 +73,7 @@ public class FXMLSetUpController implements Initializable {
     @FXML private CheckMenuItem plasticItem;
     @FXML private CheckMenuItem miscItem;
 
-    private LandLayer landLayer = null;
+    private LandLayer landLayer;
     private GridLayer gridLayer;
     private CurrentLayer arrowLayer;
     private WasteSourceLayer wasteSourceLayer;
@@ -108,14 +108,21 @@ public class FXMLSetUpController implements Initializable {
         initializeSliders();
         toggleCurrent();
         toggleLand();
+        toggleWaste();
         clearAll();
     } // initialises all listeners and draws main application
 
     private void draw() {
         drawOcean();
-        landLayer.drawLayer();
-        wasteSourceLayer.drawLayer();
-        arrowLayer.drawLayer();
+        if (landLayer != null) {
+            landLayer.drawLayer();
+        }
+        if (wasteSourceLayer != null) {
+            wasteSourceLayer.drawLayer();
+        }
+        if (arrowLayer != null) {
+            arrowLayer.drawLayer();
+        }
         updateStatus();
     } // draws the land and arrows on the canvas
 
@@ -134,7 +141,6 @@ public class FXMLSetUpController implements Initializable {
         NumberStringConverter conv = new NumberStringConverter();
         Bindings.bindBidirectional(txtHor, sldHor, conv);
         Bindings.bindBidirectional(txtVer, sldVer, conv);
-
         sldHorizontal.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (currentToggle) {
             	horizontalSpeed = newValue.doubleValue();
@@ -229,35 +235,36 @@ public class FXMLSetUpController implements Initializable {
         }));
     }
 
-//    private void toggleWaste() {
-//        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
-//            btnLand.selectedProperty().set(false);
-//            wasteToggle = !wasteToggle;
-//            landToggle = !landToggle;
-//            if (wasteToggle) {
-//                disableSliders();
-//                wasteToggled = true;
-//                if (!wasteInitialized) {
-//                    initializeWasteSourceLayer();
-//                    wasteInitialized = true;
-//                }
-//                cnvOcean.setOnMouseClicked(event -> {
-//                    initializeWasteSourceObjects((int) event.getX(), (int) event.getY());
-//                    wasteSourceLayer.drawLayer();
-//                });
-//                btnLand.setSelected(false);
-//                wastePref.setVisible(false);
-//                wastePref.setMinWidth(1);
-//                wastePref.setPrefWidth(1);
-//                statusBar.setMinWidth(400);
-//            } else {
-//                wastePref.setVisible(true);
-//                wastePref.setMinWidth(100);
-//                wastePref.setPrefWidth(100);
-//                statusBar.setMinWidth(355);
-//            }
-//        }));
-//    }
+    private void toggleWaste() {
+        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
+            btnLand.selectedProperty().set(false);
+            wasteToggle = !wasteToggle;
+            landToggle = !landToggle;
+            if (wasteToggle) {
+                disableSliders();
+                wasteToggled = true;
+                if (wasteSourceLayer == null) {
+                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL);
+                }
+                cnvOcean.setOnMouseClicked(event -> {
+                    int i = (int)event.getX()/majorGL;
+                    int j = (int) event.getY()/majorGL;
+                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
+                    wasteSourceLayer.drawLayer();
+                });
+                btnLand.setSelected(false);
+                wastePref.setVisible(false);
+                wastePref.setMinWidth(1);
+                wastePref.setPrefWidth(1);
+                statusBar.setMinWidth(400);
+            } else {
+                wastePref.setVisible(true);
+                wastePref.setMinWidth(100);
+                wastePref.setPrefWidth(100);
+                statusBar.setMinWidth(355);
+            }
+        }));
+    }
 
     private void clearAll() {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
