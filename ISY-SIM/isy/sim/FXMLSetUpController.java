@@ -80,6 +80,7 @@ public class FXMLSetUpController implements Initializable {
     private boolean currentToggle = false;
     private boolean landToggle = false;
     private boolean wasteToggle = false;
+    private boolean wastePrefToggle = false;
     private boolean landToggled = false;
     private boolean wasteToggled = false;
     private boolean placingLand = false;
@@ -109,6 +110,7 @@ public class FXMLSetUpController implements Initializable {
         toggleCurrent();
         toggleLand();
         toggleWaste();
+        toggleWastePrefs();
         clearAll();
     } // initialises all listeners and draws main application
 
@@ -264,6 +266,50 @@ public class FXMLSetUpController implements Initializable {
                 statusBar.setMinWidth(355);
             }
         }));
+    }
+
+    private void toggleWastePrefs() {
+        wastePref.pressedProperty().addListener((observable, oldValue, newValue) -> {
+            wastePrefToggle = !wastePrefToggle;
+            if (wastePrefToggle) {
+                smallItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        medItem.selectedProperty().set(false);
+                        largeItem.selectedProperty().set(false);
+                    }
+                });
+                medItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        smallItem.selectedProperty().set(false);
+                        largeItem.selectedProperty().set(false);
+                    }
+                });
+                largeItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        medItem.selectedProperty().set(false);
+                        smallItem.selectedProperty().set(false);
+                    }
+                });
+                oilItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        plasticItem.selectedProperty().set(false);
+                        miscItem.selectedProperty().set(false);
+                    }
+                });
+                plasticItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        oilItem.selectedProperty().set(false);
+                        miscItem.selectedProperty().set(false);
+                    }
+                });
+                miscItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        oilItem.selectedProperty().set(false);
+                        plasticItem.selectedProperty().set(false);
+                    }
+                });
+            }
+        });
     }
 
     private void clearAll() {
