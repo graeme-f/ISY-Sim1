@@ -50,14 +50,20 @@ public abstract class MatrixLayer  extends Layer {
     }
 
     public SimObject getNeighbour(SimObject object, Direction d) {
-        if (d == Direction.UP) {
-            return m.matrix[object.getx()][object.gety()-1];
-        } else if (d == Direction.DOWN){
-            return m.matrix[object.getx()][object.gety()+1];
-        } else if (d == Direction.LEFT) {
-            return m.matrix[object.getx()-1][object.gety()];
-        } else {
-            return m.matrix[object.getx()+1][object.gety()];
+        if ((object.getx() == 0) || (object.gety() == 0)) {
+            return object;
+        }
+        switch (d) {
+            case UP:
+                return m.matrix[object.getx()][object.gety()-1];
+            case DOWN:
+                return m.matrix[object.getx()][object.gety()+1];
+            case LEFT:
+                return m.matrix[object.getx()-1][object.gety()];
+            case RIGHT:
+                return m.matrix[object.getx()+1][object.gety()];
+            default:
+                return object;
         }
     }
 

@@ -43,6 +43,10 @@ public class LandLayer extends MatrixLayer {
         LandLayer.cellWidth = cellWidth;
     }
     
-    public static int cellWidth() {return cellWidth;}
+    public static int cellWidth() {
+        return cellWidth;
+    }
+
+
 
 } // end of class LandLayer

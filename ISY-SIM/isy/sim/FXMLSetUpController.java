@@ -73,13 +73,14 @@ public class FXMLSetUpController implements Initializable {
     @FXML private CheckMenuItem plasticItem;
     @FXML private CheckMenuItem miscItem;
 
-    private LandLayer landLayer = null;
+    private LandLayer landLayer;
     private GridLayer gridLayer;
     private CurrentLayer arrowLayer;
     private WasteSourceLayer wasteSourceLayer;
     private boolean currentToggle = false;
     private boolean landToggle = false;
     private boolean wasteToggle = false;
+    private boolean wastePrefToggle = false;
     private boolean landToggled = false;
     private boolean wasteToggled = false;
     private boolean placingLand = false;
@@ -108,14 +109,22 @@ public class FXMLSetUpController implements Initializable {
         initializeSliders();
         toggleCurrent();
         toggleLand();
+        toggleWaste();
+        toggleWastePrefs();
         clearAll();
     } // initialises all listeners and draws main application
 
     private void draw() {
         drawOcean();
-        landLayer.drawLayer();
-        wasteSourceLayer.drawLayer();
-        arrowLayer.drawLayer();
+        if (landLayer != null) {
+            landLayer.drawLayer();
+        }
+        if (wasteSourceLayer != null) {
+            wasteSourceLayer.drawLayer();
+        }
+        if (arrowLayer != null) {
+            arrowLayer.drawLayer();
+        }
         updateStatus();
     } // draws the land and arrows on the canvas
 
@@ -134,7 +143,6 @@ public class FXMLSetUpController implements Initializable {
         NumberStringConverter conv = new NumberStringConverter();
         Bindings.bindBidirectional(txtHor, sldHor, conv);
         Bindings.bindBidirectional(txtVer, sldVer, conv);
-
         sldHorizontal.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (currentToggle) {
             	horizontalSpeed = newValue.doubleValue();
@@ -229,35 +237,80 @@ public class FXMLSetUpController implements Initializable {
         }));
     }
 
-//    private void toggleWaste() {
-//        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
-//            btnLand.selectedProperty().set(false);
-//            wasteToggle = !wasteToggle;
-//            landToggle = !landToggle;
-//            if (wasteToggle) {
-//                disableSliders();
-//                wasteToggled = true;
-//                if (!wasteInitialized) {
-//                    initializeWasteSourceLayer();
-//                    wasteInitialized = true;
-//                }
-//                cnvOcean.setOnMouseClicked(event -> {
-//                    initializeWasteSourceObjects((int) event.getX(), (int) event.getY());
-//                    wasteSourceLayer.drawLayer();
-//                });
-//                btnLand.setSelected(false);
-//                wastePref.setVisible(false);
-//                wastePref.setMinWidth(1);
-//                wastePref.setPrefWidth(1);
-//                statusBar.setMinWidth(400);
-//            } else {
-//                wastePref.setVisible(true);
-//                wastePref.setMinWidth(100);
-//                wastePref.setPrefWidth(100);
-//                statusBar.setMinWidth(355);
-//            }
-//        }));
-//    }
+    private void toggleWaste() {
+        btnWaste.pressedProperty().addListener(((observable, oldValue, newValue) -> {
+            btnLand.selectedProperty().set(false);
+            wasteToggle = !wasteToggle;
+            landToggle = !landToggle;
+            if (wasteToggle) {
+                disableSliders();
+                wasteToggled = true;
+                if (wasteSourceLayer == null) {
+                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL);
+                }
+                cnvOcean.setOnMouseClicked(event -> {
+                    int i = (int)event.getX()/majorGL;
+                    int j = (int) event.getY()/majorGL;
+                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
+                    wasteSourceLayer.drawLayer();
+                });
+                btnLand.setSelected(false);
+                wastePref.setVisible(false);
+                wastePref.setMinWidth(1);
+                wastePref.setPrefWidth(1);
+                statusBar.setMinWidth(400);
+            } else {
+                wastePref.setVisible(true);
+                wastePref.setMinWidth(100);
+                wastePref.setPrefWidth(100);
+                statusBar.setMinWidth(355);
+            }
+        }));
+    }
+
+    private void toggleWastePrefs() {
+        wastePref.pressedProperty().addListener((observable, oldValue, newValue) -> {
+            wastePrefToggle = !wastePrefToggle;
+            if (wastePrefToggle) {
+                smallItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        medItem.selectedProperty().set(false);
+                        largeItem.selectedProperty().set(false);
+                    }
+                });
+                medItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        smallItem.selectedProperty().set(false);
+                        largeItem.selectedProperty().set(false);
+                    }
+                });
+                largeItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        medItem.selectedProperty().set(false);
+                        smallItem.selectedProperty().set(false);
+                    }
+                });
+                oilItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        plasticItem.selectedProperty().set(false);
+                        miscItem.selectedProperty().set(false);
+                    }
+                });
+                plasticItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        oilItem.selectedProperty().set(false);
+                        miscItem.selectedProperty().set(false);
+                    }
+                });
+                miscItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1 == Boolean.TRUE) {
+                        oilItem.selectedProperty().set(false);
+                        plasticItem.selectedProperty().set(false);
+                    }
+                });
+            }
+        });
+    }
 
     private void clearAll() {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {

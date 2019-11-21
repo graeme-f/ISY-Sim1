@@ -31,7 +31,16 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class WasteSourceLayer extends MatrixLayer {
 
+    protected static int cellWidth;
+
     public WasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
         super(gContext, width, height, cellWidth);
+        WasteSourceLayer.cellWidth = cellWidth;
     }
+
+    public static int cellWidth() {
+        return cellWidth;
+    }
+
+
 } // end of class WasteSourceLayer
