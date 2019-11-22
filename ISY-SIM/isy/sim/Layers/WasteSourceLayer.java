@@ -29,9 +29,9 @@ import javafx.scene.canvas.GraphicsContext;
  *
  * @author gfoster
  */
-public class WasteSourceLayer extends Layer {
+public class WasteSourceLayer extends MatrixLayer {
 
-    public WasteSourceLayer(GraphicsContext gContext, double width, double height) {
-        super(gContext, width, height);
+    public WasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+        super(gContext, width, height, cellWidth);
     }
 } // end of class WasteSourceLayer
