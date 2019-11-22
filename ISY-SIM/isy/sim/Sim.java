@@ -34,7 +34,7 @@ import javafx.stage.Stage;
  * @author gfoster
  */
 public class Sim extends Application {
-    
+
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("FXMLSetUp.fxml"));

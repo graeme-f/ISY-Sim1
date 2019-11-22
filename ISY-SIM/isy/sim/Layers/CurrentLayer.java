@@ -30,16 +30,13 @@ public class CurrentLayer extends ResizeableLayer {
 
     private void arwCurrentUpSize(GraphicsContext gc) {
         gc.strokeLine(10, 20, 10, layerHeight-20);
-
         double[] xPoints = {0,10,20};
         double[] yPoints = {20,0,20};
         gc.setFill(Color.BLACK);
         gc.fillPolygon(xPoints, yPoints, 3);
-
     }
     private void arwCurrentRightSize(GraphicsContext gc) {
         gc.strokeLine(20, 10, layerWidth-20, 10);
-
         double[] xPoints = {layerWidth-20,layerWidth,layerWidth-20};
         double[] yPoints = {0,10,20};
         gc.setFill(Color.BLACK);
@@ -54,7 +51,6 @@ public class CurrentLayer extends ResizeableLayer {
     }
     private void arwCurrentDownSize(GraphicsContext gc) {
         gc.strokeLine(layerWidth-10, layerHeight-20, layerWidth-10, 20);
-
         double[] xPoints = {layerWidth, layerWidth-10, layerWidth-20};
         double[] yPoints = {layerHeight-20, layerHeight, layerHeight-20};
         gc.setFill(Color.BLACK);
