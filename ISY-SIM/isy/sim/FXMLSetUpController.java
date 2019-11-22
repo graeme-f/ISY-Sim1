@@ -365,7 +365,7 @@ public class FXMLSetUpController implements Initializable {
         int wasteAmt = 0;// TODO Get this from WasteLayer
         statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
-
+//
     private void initializeWasteSourceLayer() {
         wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL, size, type);
     }
