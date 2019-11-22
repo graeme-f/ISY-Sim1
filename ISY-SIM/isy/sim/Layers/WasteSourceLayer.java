@@ -23,7 +23,9 @@
  */
 
 package sim.Layers;
+
 import javafx.scene.canvas.GraphicsContext;
+import sim.FXMLSetUpController;
 
 /**
  *
@@ -33,7 +35,7 @@ public class WasteSourceLayer extends MatrixLayer {
 
     protected static int cellWidth;
 
-    public WasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+    public WasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth, FXMLSetUpController.sourceSize size, FXMLSetUpController.sourceType type) {
         super(gContext, width, height, cellWidth);
         WasteSourceLayer.cellWidth = cellWidth;
     }

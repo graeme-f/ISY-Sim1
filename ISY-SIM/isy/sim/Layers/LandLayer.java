@@ -24,7 +24,6 @@
 
 package sim.Layers;
 import javafx.scene.canvas.GraphicsContext;
-import sim.Utilities.SimMatrix;
 
 /**
  *

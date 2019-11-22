@@ -22,9 +22,6 @@
  * THE SOFTWARE.
  */
 package sim;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
@@ -34,11 +31,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
 import sim.Layers.CurrentLayer;
@@ -47,6 +39,9 @@ import sim.Layers.LandLayer;
 import sim.Layers.WasteSourceLayer;
 import sim.Objects.LandObject;
 import sim.Objects.WasteSourceObject;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -94,7 +89,11 @@ public class FXMLSetUpController implements Initializable {
     public  final int majorGL = 20;
     private boolean[][] landArray;
     private boolean[][] wasteArray;
-    private String size = "500x500";
+    public enum sourceSize {SMALL, MEDIUM, LARGE}
+    public enum sourceType {OIL, PLASTIC, MISC}
+    private sourceType type;
+    private sourceSize size;
+    private String s = "500x500";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -187,6 +186,7 @@ public class FXMLSetUpController implements Initializable {
         arrowLayer.setWidth(oWidth);
         draw();
     }
+
     private void setOceanHeight(double height) {
         double scale = sldVertical.getHeight() / 900;
         double oHeight = (height-100)*scale+50;
@@ -249,7 +249,7 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 wasteToggled = true;
                 if (wasteSourceLayer == null) {
-                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL);
+                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL, size, type);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
                     int i = (int)event.getX()/majorGL;
@@ -279,36 +279,42 @@ public class FXMLSetUpController implements Initializable {
                     if (newValue1) {
                         medItem.selectedProperty().set(false);
                         largeItem.selectedProperty().set(false);
+                        size = sourceSize.SMALL;
                     }
                 });
                 medItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         smallItem.selectedProperty().set(false);
                         largeItem.selectedProperty().set(false);
+                        size = sourceSize.MEDIUM;
                     }
                 });
                 largeItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         medItem.selectedProperty().set(false);
                         smallItem.selectedProperty().set(false);
+                        size = sourceSize.LARGE;
                     }
                 });
                 oilItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         plasticItem.selectedProperty().set(false);
                         miscItem.selectedProperty().set(false);
+                        type = sourceType.OIL;
                     }
                 });
                 plasticItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         oilItem.selectedProperty().set(false);
                         miscItem.selectedProperty().set(false);
+                        type = sourceType.PLASTIC;
                     }
                 });
                 miscItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         oilItem.selectedProperty().set(false);
                         plasticItem.selectedProperty().set(false);
+                        type = sourceType.MISC;
                     }
                 });
             }
@@ -346,22 +352,22 @@ public class FXMLSetUpController implements Initializable {
         String action;
         if (landToggle) {
             action = "Placing Land";
-            size = txtHorizontal.getText() + "x" + txtVertical.getText();
+            s = txtHorizontal.getText() + "x" + txtVertical.getText();
         } else if (wasteToggle) {
             action = "Placing waste";
         } else if (currentToggle) {
             action = "Changing Current";
         } else {
             action = "Changing Size";
-            size = txtHorizontal.getText() + "x" + txtVertical.getText();
+            s = txtHorizontal.getText() + "x" + txtVertical.getText();
         }
         int landAmt = 0; // TODO Get this from LandLayer
         int wasteAmt = 0;// TODO Get this from WasteLayer
         statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
-
+//
     private void initializeWasteSourceLayer() {
-        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
+        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL, size, type);
     }
 
     private void disableSliders() {
