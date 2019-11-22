@@ -27,13 +27,14 @@ package sim.Layers;
 import javafx.scene.canvas.GraphicsContext;
 import sim.Objects.SimObject;
 import sim.Utilities.SimMatrix;
-import sim.FXMLSetUpController.Direction;
 
 /**
  *
  * @author gfoster
  */
 public abstract class MatrixLayer  extends Layer {
+    
+    public enum Direction {UP, LEFT, DOWN, RIGHT}
     protected SimMatrix m;
 
     public MatrixLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
@@ -50,20 +51,29 @@ public abstract class MatrixLayer  extends Layer {
     }
 
     public SimObject getNeighbour(SimObject object, Direction d) {
-        if ((object.getx() == 0) || (object.gety() == 0)) {
-            return object;
-        }
         switch (d) {
             case UP:
+                if ((object.gety() == 0)){
+                    return null;
+                }
                 return m.matrix[object.getx()][object.gety()-1];
             case DOWN:
+                if ((object.gety() == m.getHeight()-1)){
+                    return null;
+                }
                 return m.matrix[object.getx()][object.gety()+1];
             case LEFT:
+                if ((object.getx() == 0)){
+                    return null;
+                }
                 return m.matrix[object.getx()-1][object.gety()];
             case RIGHT:
+                if ((object.getx() == m.getWidth()-1)){
+                    return null;
+                }
                 return m.matrix[object.getx()+1][object.gety()];
             default:
-                return object;
+                return null;
         }
     }
 
