@@ -90,11 +90,10 @@ public class FXMLSetUpController implements Initializable {
     private double oceanHeight = 500;
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
-    private int minorGL = 5;
-    public int majorGL = 20;
+    private final int minorGL = 5;
+    public  final int majorGL = 20;
     private boolean[][] landArray;
     private boolean[][] wasteArray;
-    public enum Direction {UP, LEFT, DOWN, RIGHT}
     private String size = "500x500";
 
     @Override
@@ -273,37 +272,37 @@ public class FXMLSetUpController implements Initializable {
             wastePrefToggle = !wastePrefToggle;
             if (wastePrefToggle) {
                 smallItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
-                    if (newValue1 == Boolean.TRUE) {
+                    if (newValue1) {
                         medItem.selectedProperty().set(false);
                         largeItem.selectedProperty().set(false);
                     }
                 });
                 medItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
-                    if (newValue1 == Boolean.TRUE) {
+                    if (newValue1) {
                         smallItem.selectedProperty().set(false);
                         largeItem.selectedProperty().set(false);
                     }
                 });
                 largeItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
-                    if (newValue1 == Boolean.TRUE) {
+                    if (newValue1) {
                         medItem.selectedProperty().set(false);
                         smallItem.selectedProperty().set(false);
                     }
                 });
                 oilItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
-                    if (newValue1 == Boolean.TRUE) {
+                    if (newValue1) {
                         plasticItem.selectedProperty().set(false);
                         miscItem.selectedProperty().set(false);
                     }
                 });
                 plasticItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
-                    if (newValue1 == Boolean.TRUE) {
+                    if (newValue1) {
                         oilItem.selectedProperty().set(false);
                         miscItem.selectedProperty().set(false);
                     }
                 });
                 miscItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
-                    if (newValue1 == Boolean.TRUE) {
+                    if (newValue1) {
                         oilItem.selectedProperty().set(false);
                         plasticItem.selectedProperty().set(false);
                     }
