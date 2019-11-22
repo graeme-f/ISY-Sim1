@@ -50,6 +50,24 @@ public abstract class MatrixLayer  extends Layer {
     	m.matrix[object.getx()][object.gety()] = object;
     }
 
+    public SimObject getObject(int x, int y) {
+        if (x < 0 || x >= m.getWidth()) return null;
+        if (y < 0 || y >= m.getHeight()) return null;
+    	return m.matrix[x][y];
+    }
+
+    public boolean hasObject(int x, int y) {
+        return (getObject(x,y)!= null);
+    }
+
+    public SimObject removeObject(int x, int y) {
+        SimObject object = getObject(x, y);
+        if (object != null){
+            m.matrix[x][y] = null;
+        }
+        return object;
+    }
+
     public SimObject getNeighbour(SimObject object, Direction d) {
         switch (d) {
             case UP:

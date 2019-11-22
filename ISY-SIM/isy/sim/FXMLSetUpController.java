@@ -227,10 +227,14 @@ public class FXMLSetUpController implements Initializable {
                 	landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                	int i = (int)event.getX()/majorGL;
-                	int j = (int) event.getY()/majorGL;
-                	landLayer.addObject(new LandObject(gc, i, j));
-                    landLayer.drawLayer();
+                    int x = (int)event.getX()/majorGL;
+                    int y = (int) event.getY()/majorGL;
+                    if (landLayer.hasObject(x,y)){
+                        landLayer.removeObject(x, y);
+                    } else {
+                        landLayer.addObject(new LandObject(gc, x, y));
+                    }
+                    draw();
                 });
             }
         }));
