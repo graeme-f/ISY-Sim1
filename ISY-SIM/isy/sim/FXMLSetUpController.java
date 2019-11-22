@@ -91,8 +91,8 @@ public class FXMLSetUpController implements Initializable {
     private boolean[][] wasteArray;
     public enum sourceSize {SMALL, MEDIUM, LARGE}
     public enum sourceType {OIL, PLASTIC, MISC}
-    private sourceType type;
-    private sourceSize size;
+    private sourceType type = sourceType.PLASTIC;
+    private sourceSize size = sourceSize.MEDIUM;
     private String s = "500x500";
 
     @Override
@@ -249,12 +249,12 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 wasteToggled = true;
                 if (wasteSourceLayer == null) {
-                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL, size, type);
+                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
                     int i = (int)event.getX()/majorGL;
                     int j = (int) event.getY()/majorGL;
-                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
+                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j, size, type));
                     wasteSourceLayer.drawLayer();
                 });
                 btnLand.setSelected(false);
@@ -363,11 +363,11 @@ public class FXMLSetUpController implements Initializable {
         }
         int landAmt = 0; // TODO Get this from LandLayer
         int wasteAmt = 0;// TODO Get this from WasteLayer
-        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
+        statusBar.setText("Action: " + action + "\t Size: "+s+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
 //
     private void initializeWasteSourceLayer() {
-        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL, size, type);
+        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
     }
 
     private void disableSliders() {

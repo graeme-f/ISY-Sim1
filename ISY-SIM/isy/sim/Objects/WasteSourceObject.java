@@ -26,6 +26,7 @@ package sim.Objects;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import sim.FXMLSetUpController;
 import sim.Layers.WasteSourceLayer;
 
 /**
@@ -35,7 +36,7 @@ import sim.Layers.WasteSourceLayer;
 public class WasteSourceObject extends SimObject {
 
 
-    public WasteSourceObject(GraphicsContext graphicsContext, int locationX, int locationY) {
+    public WasteSourceObject(GraphicsContext graphicsContext, int locationX, int locationY, FXMLSetUpController.sourceSize size, FXMLSetUpController.sourceType type) {
         super(graphicsContext, locationX, locationY);
     }
 
