@@ -49,5 +49,8 @@ public class SimMatrix {
             }
         }
     }
+    
+    public int getHeight(){return height;}
+    public int getWidth() {return width;}
 
 } // end of class SimMatrix

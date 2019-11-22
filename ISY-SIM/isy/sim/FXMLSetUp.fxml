@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sim.FXMLSetUpController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sim.FXMLSetUpController">
    <children>
       <VBox prefHeight="600.0" prefWidth="800.0">
          <children>
@@ -48,7 +48,7 @@
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <CheckMenuItem fx:id="oilItem" mnemonicParsing="false" text="Oil" />
                         <CheckMenuItem fx:id="plasticItem" mnemonicParsing="false" text="Plastic" />
-                        <CheckMenuItem mnemonicParsing="false" text="Misc." />
+                        <CheckMenuItem fx:id="miscItem" mnemonicParsing="false" text="Misc." />
                      </items>
                   </MenuButton>
                   <Button fx:id="btnPlay" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" text="Play" textFill="#630000" />

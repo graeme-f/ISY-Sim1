@@ -32,7 +32,9 @@ import sim.Utilities.SimMatrix;
  *
  * @author gfoster
  */
-public abstract class MatrixLayer  extends Layer{
+public abstract class MatrixLayer  extends Layer {
+    
+    public enum Direction {UP, LEFT, DOWN, RIGHT}
     protected SimMatrix m;
 
     public MatrixLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
@@ -46,6 +48,51 @@ public abstract class MatrixLayer  extends Layer{
     
     public void addObject(SimObject object) {
     	m.matrix[object.getx()][object.gety()] = object;
+    }
+
+    public SimObject getObject(int x, int y) {
+        if (x < 0 || x >= m.getWidth()) return null;
+        if (y < 0 || y >= m.getHeight()) return null;
+    	return m.matrix[x][y];
+    }
+
+    public boolean hasObject(int x, int y) {
+        return (getObject(x,y)!= null);
+    }
+
+    public SimObject removeObject(int x, int y) {
+        SimObject object = getObject(x, y);
+        if (object != null){
+            m.matrix[x][y] = null;
+        }
+        return object;
+    }
+
+    public SimObject getNeighbour(SimObject object, Direction d) {
+        switch (d) {
+            case UP:
+                if ((object.gety() == 0)){
+                    return null;
+                }
+                return m.matrix[object.getx()][object.gety()-1];
+            case DOWN:
+                if ((object.gety() == m.getHeight()-1)){
+                    return null;
+                }
+                return m.matrix[object.getx()][object.gety()+1];
+            case LEFT:
+                if ((object.getx() == 0)){
+                    return null;
+                }
+                return m.matrix[object.getx()-1][object.gety()];
+            case RIGHT:
+                if ((object.getx() == m.getWidth()-1)){
+                    return null;
+                }
+                return m.matrix[object.getx()+1][object.gety()];
+            default:
+                return null;
+        }
     }
 
 } // end of class Layer
