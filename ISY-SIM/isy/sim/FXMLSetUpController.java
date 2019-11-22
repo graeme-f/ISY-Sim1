@@ -68,13 +68,14 @@ public class FXMLSetUpController implements Initializable {
     @FXML private CheckMenuItem plasticItem;
     @FXML private CheckMenuItem miscItem;
 
-    private LandLayer landLayer = null;
+    private LandLayer landLayer;
     private GridLayer gridLayer;
     private CurrentLayer arrowLayer;
-    private WasteSourceLayer wasteSourceLayer = null;
+    private WasteSourceLayer wasteSourceLayer;
     private boolean currentToggle = false;
     private boolean landToggle = false;
     private boolean wasteToggle = false;
+    private boolean wastePrefToggle = false;
     private boolean landToggled = false;
     private boolean wasteToggled = false;
     private boolean placingLand = false;
@@ -84,20 +85,21 @@ public class FXMLSetUpController implements Initializable {
     private double oceanHeight = 500;
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
-    private int minorGL = 5;
-    public int majorGL = 20;
-    private enum Direction {UP, LEFT, DOWN, RIGHT}
+    private final int minorGL = 5;
+    public  final int majorGL = 20;
+    private boolean[][] landArray;
+    private boolean[][] wasteArray;
     public enum sourceSize {SMALL, MEDIUM, LARGE}
     public enum sourceType {OIL, PLASTIC, MISC}
     private sourceType type;
     private sourceSize size;
     private String s = "500x500";
-    private boolean[][] wasteArray;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeWastePrefs();
         updateStatus();
+//        toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
         gridLayer = new GridLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 5, 20);
         arrowLayer = new CurrentLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 2, 2);
@@ -106,44 +108,23 @@ public class FXMLSetUpController implements Initializable {
         toggleCurrent();
         toggleLand();
         toggleWaste();
+        toggleWastePrefs();
         clearAll();
-        setWastePrefs();
     } // initialises all listeners and draws main application
 
     private void draw() {
         drawOcean();
-        if (landToggled) { // TODO This is not the right place for this property it should be in LandLayer
+        if (landLayer != null) {
             landLayer.drawLayer();
         }
-        if (wasteToggled) { // TODO This is not the right place for this property it should be in WasteLayer
-            drawWasteSources();
+        if (wasteSourceLayer != null) {
+            wasteSourceLayer.drawLayer();
         }
-        arrowLayer.drawLayer();
+        if (arrowLayer != null) {
+            arrowLayer.drawLayer();
+        }
         updateStatus();
     } // draws the land and arrows on the canvas
-
-
-    private void drawWasteSources() {
-        for (int i = 0; i < wasteArray.length; i += majorGL) {
-            for (int j = 0; j < wasteArray[0].length; j += majorGL) {
-                if (wasteArray[i][j]) {
-                    drawBlock(i, j, Color.BLACK, Color.LIGHTGRAY);
-                }
-            }
-        }
-    }
-
-    private void drawBlock(int xCoordinate, int yCoordinate, Color beach, Color land) {
-        gc.setFill(beach);
-        double[] xCoordinates = {xCoordinate, xCoordinate, xCoordinate+majorGL, xCoordinate+majorGL};
-        double[] yCoordinates = {yCoordinate, yCoordinate+majorGL, yCoordinate+majorGL, yCoordinate};
-        gc.fillPolygon(xCoordinates, yCoordinates, 4);
-        gc.setFill(land);
-        xCoordinates = new double[]{xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.0625, xCoordinate+majorGL*0.9375, xCoordinate+majorGL*0.9375};
-        yCoordinates = new double[]{yCoordinate+majorGL*0.0625, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.9375, yCoordinate+majorGL*0.0625};
-        gc.fillPolygon(xCoordinates, yCoordinates, 4);
-    } // draws the yellow beach
-
 
     private void initializeWastePrefs() {
         wastePref.setVisible(false);
@@ -160,7 +141,6 @@ public class FXMLSetUpController implements Initializable {
         NumberStringConverter conv = new NumberStringConverter();
         Bindings.bindBidirectional(txtHor, sldHor, conv);
         Bindings.bindBidirectional(txtVer, sldVer, conv);
-
         sldHorizontal.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (currentToggle) {
             	horizontalSpeed = newValue.doubleValue();
@@ -190,6 +170,7 @@ public class FXMLSetUpController implements Initializable {
             }
         });
     }
+
     private void drawOcean(){
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
@@ -205,6 +186,7 @@ public class FXMLSetUpController implements Initializable {
         arrowLayer.setWidth(oWidth);
         draw();
     }
+
     private void setOceanHeight(double height) {
         double scale = sldVertical.getHeight() / 900;
         double oHeight = (height-100)*scale+50;
@@ -245,43 +227,17 @@ public class FXMLSetUpController implements Initializable {
                 	landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                	int i = (int)event.getX()/majorGL;
-                	int j = (int) event.getY()/majorGL;
-                	landLayer.addObject(new LandObject(gc, i, j));
-                    landLayer.drawLayer();
+                    int x = (int)event.getX()/majorGL;
+                    int y = (int) event.getY()/majorGL;
+                    if (landLayer.hasObject(x,y)){
+                        landLayer.removeObject(x, y);
+                    } else {
+                        landLayer.addObject(new LandObject(gc, x, y));
+                    }
+                    draw();
                 });
             }
         }));
-    }
-
-    private void setWastePrefs(){
-        if(wasteToggle) {
-            System.out.println("sdflj");
-            oilItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                plasticItem.setSelected(true);
-                miscItem.setSelected(true);
-                if (oilItem.selectedProperty().getValue()) {
-                    type = sourceType.OIL;
-                    System.out.println("point reached");
-                }
-            });
-            plasticItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                if(newValue){
-                    oilItem.setSelected(false);
-                    miscItem.setSelected(false);
-                }
-                if (plasticItem.isSelected()) {
-                    type = sourceType.PLASTIC;
-                }
-            });
-            miscItem.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                plasticItem.setSelected(false);
-                oilItem.setSelected(false);
-                if (miscItem.isSelected()) {
-                    type = sourceType.MISC;
-                }
-            });
-        }
     }
 
     private void toggleWaste() {
@@ -293,13 +249,12 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 wasteToggled = true;
                 if (wasteSourceLayer == null) {
-                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
+                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL, size, type);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-
                     int i = (int)event.getX()/majorGL;
                     int j = (int) event.getY()/majorGL;
-                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j, type, size));
+                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
                     wasteSourceLayer.drawLayer();
                 });
                 btnLand.setSelected(false);
@@ -316,18 +271,68 @@ public class FXMLSetUpController implements Initializable {
         }));
     }
 
+    private void toggleWastePrefs() {
+        wastePref.pressedProperty().addListener((observable, oldValue, newValue) -> {
+            wastePrefToggle = !wastePrefToggle;
+            if (wastePrefToggle) {
+                smallItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1) {
+                        medItem.selectedProperty().set(false);
+                        largeItem.selectedProperty().set(false);
+                        size = sourceSize.SMALL;
+                    }
+                });
+                medItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1) {
+                        smallItem.selectedProperty().set(false);
+                        largeItem.selectedProperty().set(false);
+                        size = sourceSize.MEDIUM;
+                    }
+                });
+                largeItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1) {
+                        medItem.selectedProperty().set(false);
+                        smallItem.selectedProperty().set(false);
+                        size = sourceSize.LARGE;
+                    }
+                });
+                oilItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1) {
+                        plasticItem.selectedProperty().set(false);
+                        miscItem.selectedProperty().set(false);
+                        type = sourceType.OIL;
+                    }
+                });
+                plasticItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1) {
+                        oilItem.selectedProperty().set(false);
+                        miscItem.selectedProperty().set(false);
+                        type = sourceType.PLASTIC;
+                    }
+                });
+                miscItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
+                    if (newValue1) {
+                        oilItem.selectedProperty().set(false);
+                        plasticItem.selectedProperty().set(false);
+                        type = sourceType.MISC;
+                    }
+                });
+            }
+        });
+    }
 
     private void clearAll() {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
                 landToggled=false;
+                wasteToggled=false;
                 btnLand.setSelected(false);
                 sldVertical.setDisable(false);
                 sldHorizontal.setDisable(false);
                 txtVertical.setDisable(false);
                 txtHorizontal.setDisable(false);
-                landLayer = null;
-                landToggled = false; // TODO why in twice (see 7 lines earlier) 
+                landLayer=null;
+                wasteSourceLayer=null;
                 draw();
             }
         }));
@@ -358,11 +363,11 @@ public class FXMLSetUpController implements Initializable {
         }
         int landAmt = 0; // TODO Get this from LandLayer
         int wasteAmt = 0;// TODO Get this from WasteLayer
-        statusBar.setText("Action: " + action + "\t Size: "+s+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
+        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
 
     private void initializeWasteSourceLayer() {
-        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
+        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL, size, type);
     }
 
     private void disableSliders() {
