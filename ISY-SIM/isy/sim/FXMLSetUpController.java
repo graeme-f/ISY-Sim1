@@ -224,7 +224,7 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 landToggled = true;
                 if (landLayer == null) {
-                	landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
+                	landLayer = LandLayer.getLandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
                     int x = (int)event.getX()/majorGL;
@@ -249,13 +249,13 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 wasteToggled = true;
                 if (wasteSourceLayer == null) {
-                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL);
+                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    int i = (int)event.getX()/majorGL;
-                    int j = (int) event.getY()/majorGL;
-                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j, size, type));
-                    wasteSourceLayer.drawLayer();
+                    int i = (int)event.getX()/minorGL;
+                    int j = (int) event.getY()/minorGL;
+                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
+                    draw();
                 });
                 btnLand.setSelected(false);
                 wastePref.setVisible(false);

@@ -49,7 +49,7 @@ public class WasteSourceObject extends SimObject {
         int y2 = y1 + cw;
         double[] xCoordinates = {x1, x1, x2, x2};
         double[] yCoordinates = {y1, y2, y2, y1};
-        gc.setFill(Color.LIGHTGRAY);
+        gc.setFill(Color.web("0x57350f"));
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
     }
 } // end of class WasteSourceObject
