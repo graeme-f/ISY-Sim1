@@ -54,7 +54,7 @@ public class LandObject extends SimObject{
 	        gc.fillPolygon(xCoordinates, yCoordinates, 4);
     	}
     	
-        if (ll.getNeighbour(this, Direction.UP) == null) {
+        if (ll.getNeighbour(this, Direction.UP) == null && !ll.isEdge(this, Direction.UP)) {
         	int x1 = x*cw;
         	int x2 = x1 + cw;
         	int y1 = y * cw;
@@ -65,7 +65,7 @@ public class LandObject extends SimObject{
             gc.fillPolygon(xCoordinates, yCoordinates, 4);       	
         }
 
-        if (ll.getNeighbour(this, Direction.LEFT) == null) {
+        if (ll.getNeighbour(this, Direction.LEFT) == null && !ll.isEdge(this, Direction.LEFT)) {
         	int x1 = x*cw;
         	int x2 = x1 + 3;
         	int y1 = y * cw;
@@ -75,7 +75,7 @@ public class LandObject extends SimObject{
             gc.setFill(Color.YELLOW);
             gc.fillPolygon(xCoordinates, yCoordinates, 4);       	
         }
-        if (ll.getNeighbour(this, Direction.DOWN) == null) {
+        if (ll.getNeighbour(this, Direction.DOWN) == null && !ll.isEdge(this, Direction.DOWN)) {
         	int x1 = x*cw;
         	int x2 = x1 + cw;
         	int y1 = y * cw + cw;
@@ -86,7 +86,7 @@ public class LandObject extends SimObject{
             gc.fillPolygon(xCoordinates, yCoordinates, 4);       	
         }
 
-        if (ll.getNeighbour(this, Direction.RIGHT) == null) {
+        if (ll.getNeighbour(this, Direction.RIGHT) == null && !ll.isEdge(this, Direction.RIGHT)) {
         	int x1 = x*cw + cw;
         	int x2 = x1 - 3;
         	int y1 = y * cw;
