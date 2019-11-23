@@ -27,6 +27,7 @@ package sim.Objects;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import sim.Layers.LandLayer;
+import sim.Layers.MatrixLayer.Direction;
 
 /**
  *
@@ -40,14 +41,61 @@ public class LandObject extends SimObject{
 
     @Override
     public void draw() {
-    	int cw = LandLayer.cellWidth();
-    	int x1 = x*cw;
-    	int x2 = x1+ cw;
-    	int y1 = y * cw;
-    	int y2 = y1 + cw;
-        double[] xCoordinates = {x1, x1, x2, x2};
-        double[] yCoordinates = {y1, y2, y2, y1};
-        gc.setFill(Color.GREEN);
-        gc.fillPolygon(xCoordinates, yCoordinates, 4);
+    	LandLayer ll = LandLayer.getLandLayer(); 
+    	int cw = ll.cellWidth();
+    	{
+	    	int x1 = x*cw;
+	    	int x2 = x1+ cw;
+	    	int y1 = y * cw;
+	    	int y2 = y1 + cw;
+	        double[] xCoordinates = {x1, x1, x2, x2};
+	        double[] yCoordinates = {y1, y2, y2, y1};
+	        gc.setFill(Color.GREEN);
+	        gc.fillPolygon(xCoordinates, yCoordinates, 4);
+    	}
+    	
+        if (ll.getNeighbour(this, Direction.UP) == null) {
+        	int x1 = x*cw;
+        	int x2 = x1 + cw;
+        	int y1 = y * cw;
+        	int y2 = y1 + 3;
+            double[] xCoordinates = {x1, x1, x2, x2};
+            double[] yCoordinates = {y1, y2, y2, y1};
+            gc.setFill(Color.YELLOW);
+            gc.fillPolygon(xCoordinates, yCoordinates, 4);       	
+        }
+
+        if (ll.getNeighbour(this, Direction.LEFT) == null) {
+        	int x1 = x*cw;
+        	int x2 = x1 + 3;
+        	int y1 = y * cw;
+        	int y2 = y1 + cw;
+            double[] xCoordinates = {x1, x1, x2, x2};
+            double[] yCoordinates = {y1, y2, y2, y1};
+            gc.setFill(Color.YELLOW);
+            gc.fillPolygon(xCoordinates, yCoordinates, 4);       	
+        }
+        if (ll.getNeighbour(this, Direction.DOWN) == null) {
+        	int x1 = x*cw;
+        	int x2 = x1 + cw;
+        	int y1 = y * cw + cw;
+        	int y2 = y1 - 3;
+            double[] xCoordinates = {x1, x1, x2, x2};
+            double[] yCoordinates = {y1, y2, y2, y1};
+            gc.setFill(Color.YELLOW);
+            gc.fillPolygon(xCoordinates, yCoordinates, 4);       	
+        }
+
+        if (ll.getNeighbour(this, Direction.RIGHT) == null) {
+        	int x1 = x*cw + cw;
+        	int x2 = x1 - 3;
+        	int y1 = y * cw;
+        	int y2 = y1 + cw;
+            double[] xCoordinates = {x1, x1, x2, x2};
+            double[] yCoordinates = {y1, y2, y2, y1};
+            gc.setFill(Color.YELLOW);
+            gc.fillPolygon(xCoordinates, yCoordinates, 4);       	
+        }
+
     }
 } // end of class LandObject
