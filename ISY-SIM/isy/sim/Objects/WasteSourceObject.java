@@ -42,7 +42,7 @@ public class WasteSourceObject extends SimObject {
 
     @Override
     public void draw() {
-        int cw = WasteSourceLayer.cellWidth();
+        int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
         int x1 = x*cw;
         int x2 = x1+ cw;
         int y1 = y * cw;

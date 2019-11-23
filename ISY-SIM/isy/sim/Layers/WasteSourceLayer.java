@@ -32,14 +32,31 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class WasteSourceLayer extends MatrixLayer {
 
-    protected static int cellWidth;
 
-    public WasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+    protected static WasteSourceLayer instance = null;
+    protected int cellWidth;
+
+    public static WasteSourceLayer getWasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+    	if (instance == null) {
+    		instance = new WasteSourceLayer(gContext, width, height, cellWidth);
+    	}
+    	return instance;
+	} // end Singleton getWasteSourceLayer
+    
+    // This method should only be used if the layer has been created otherwise it will return null 
+    public static WasteSourceLayer getWasteSourceLayer() {
+    	if (instance == null) {
+    		throw new NullPointerException("LandLayer not instansiated");
+    	}
+    	return instance;
+	} // end Singleton getWasteSourceLayer
+
+    private WasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
         super(gContext, width, height, cellWidth);
-        WasteSourceLayer.cellWidth = cellWidth;
+        this.cellWidth = cellWidth;
     }
 
-    public static int cellWidth() {
+    public int cellWidth() {
         return cellWidth;
     }
 

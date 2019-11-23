@@ -249,12 +249,16 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 wasteToggled = true;
                 if (wasteSourceLayer == null) {
-                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
+                    wasteSourceLayer = WasteSourceLayer.getWasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    int i = (int)event.getX()/minorGL;
-                    int j = (int) event.getY()/minorGL;
-                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j, size, type));
+                    int x = (int)event.getX()/minorGL;
+                    int y = (int) event.getY()/minorGL;
+                    if (wasteSourceLayer.hasObject(x,y)){
+                    	wasteSourceLayer.removeObject(x, y);
+                    } else {
+                    	wasteSourceLayer.addObject(new WasteSourceObject(gc, x, y, size, type));
+                    }
                     draw();
                 });
                 btnLand.setSelected(false);
@@ -331,8 +335,12 @@ public class FXMLSetUpController implements Initializable {
                 sldHorizontal.setDisable(false);
                 txtVertical.setDisable(false);
                 txtHorizontal.setDisable(false);
-                landLayer=null;
-                wasteSourceLayer=null;
+                if (landLayer != null) {
+                	landLayer.clear();
+                }
+                if (wasteSourceLayer != null) {
+                	wasteSourceLayer.clear();
+                }
                 draw();
             }
         }));
@@ -364,10 +372,6 @@ public class FXMLSetUpController implements Initializable {
         int landAmt = 0; // TODO Get this from LandLayer
         int wasteAmt = 0;// TODO Get this from WasteLayer
         statusBar.setText("Action: " + action + "\t Size: "+s+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
-    }
-//
-    private void initializeWasteSourceLayer() {
-        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
     }
 
     private void disableSliders() {

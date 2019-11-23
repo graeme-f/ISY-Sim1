@@ -30,11 +30,7 @@ import javafx.scene.canvas.GraphicsContext;
  * @author gfoster
  */
 public class LandLayer extends MatrixLayer {
-	
-	/* 
-	 * The cellWidth is static so that we don't need to store a reference
-	 * with each SimObject back to the layer that the SimObject belongs to 
-	 */
+
     protected static LandLayer instance = null;
     protected int cellWidth;
     
