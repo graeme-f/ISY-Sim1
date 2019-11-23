@@ -67,7 +67,11 @@ public abstract class MatrixLayer  extends Layer {
         }
         return object;
     }
-
+    
+    public void clear() {
+    	m.clear();
+    }
+    
     public boolean isEdge(SimObject object, Direction d) {
         switch (d) {
 	        case UP:
