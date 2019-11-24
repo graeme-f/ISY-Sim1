@@ -57,7 +57,7 @@ public class FXMLSetUpController implements Initializable {
     @FXML private Button btnPlay;
     @FXML private ToggleButton btnWaste;
     @FXML private ToggleButton btnLand;
-    @FXML private ToggleButton btnCurrent;
+    @FXML private ToggleButton btnCurrent; // TODO disable when it can't be used
     @FXML private MenuButton wastePref;
     @FXML private Label statusBar;
     @FXML private ToggleButton btnClear; // TODO why a toggle button
@@ -76,10 +76,6 @@ public class FXMLSetUpController implements Initializable {
     private boolean landToggle = false;
     private boolean wasteToggle = false;
     private boolean wastePrefToggle = false;
-    private boolean landToggled = false;
-    private boolean wasteToggled = false;
-    private boolean placingLand = false;
-    private boolean placingWaste = false;
     private GraphicsContext gc;
     private double oceanWidth = 500;
     private double oceanHeight = 500;
@@ -87,13 +83,10 @@ public class FXMLSetUpController implements Initializable {
     private double verticalSpeed = 2;
     private final int minorGL = 5;
     public  final int majorGL = 20;
-    private boolean[][] landArray;
-    private boolean[][] wasteArray;
     public enum sourceSize {SMALL, MEDIUM, LARGE}
     public enum sourceType {OIL, PLASTIC, MISC}
     private sourceType type = sourceType.PLASTIC;
     private sourceSize size = sourceSize.MEDIUM;
-    private String s = "500x500";
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -222,7 +215,6 @@ public class FXMLSetUpController implements Initializable {
             landToggle = !landToggle;
             if (landToggle) {
                 disableSliders();
-                landToggled = true;
                 if (landLayer == null) {
                 	landLayer = LandLayer.getLandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
                 }
@@ -247,7 +239,6 @@ public class FXMLSetUpController implements Initializable {
             landToggle = !landToggle;
             if (wasteToggle) {
                 disableSliders();
-                wasteToggled = true;
                 if (wasteSourceLayer == null) {
                     wasteSourceLayer = WasteSourceLayer.getWasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
                 }
@@ -328,8 +319,6 @@ public class FXMLSetUpController implements Initializable {
     private void clearAll() {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
-                landToggled=false;
-                wasteToggled=false;
                 btnLand.setSelected(false);
                 sldVertical.setDisable(false);
                 sldHorizontal.setDisable(false);
@@ -357,6 +346,7 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void updateStatus() {
+        String s = "500x500";
         String action;
         if (landToggle) {
             action = "Placing Land";
