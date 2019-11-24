@@ -56,15 +56,14 @@ public class FXMLRunController implements Initializable {
 		r = new Rectangle(5,5,10,10);
 		speed = Duration.millis(10);
 		draw();
-		setTimeline();
-        timeline.play();
+		startTimeline();
 	}
 
-	private void setTimeline() {
+	private void startTimeline() {
         timeline = new Timeline();
-        timeline.setAutoReverse(true);
         timeline.getKeyFrames().add(new KeyFrame(speed, e -> {draw();}));
         timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
 	}
 
     
@@ -73,8 +72,7 @@ public class FXMLRunController implements Initializable {
     	if (r.getX()%10==0) {
     		timeline.stop();
     		speed = Duration.millis(r.getX()%100+1);
-    		setTimeline();
-            timeline.play();
+    		startTimeline();
     	}
     	// Clear Move and then Draw the block on the screen
     	gc.clearRect(r.getX()-40, r.getY(), r.getWidth(), r.getHeight());
