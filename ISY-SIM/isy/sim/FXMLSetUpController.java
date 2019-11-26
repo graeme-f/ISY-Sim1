@@ -254,7 +254,15 @@ public class FXMLSetUpController implements Initializable {
                 cnvOcean.setOnMouseClicked(event -> {
                     int i = (int)event.getX()/majorGL;
                     int j = (int) event.getY()/majorGL;
-                    wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
+                    //wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
+                   // wasteSourceLayer.drawLayer();
+                    if (wasteSourceLayer.hasObject(i,j)){
+                        wasteSourceLayer.removeObject(i, j);
+
+                    } else {
+                        wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
+
+                    }
                     wasteSourceLayer.drawLayer();
                 });
                 btnLand.setSelected(false);

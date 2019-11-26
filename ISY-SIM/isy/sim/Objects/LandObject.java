@@ -49,5 +49,42 @@ public class LandObject extends SimObject{
         double[] yCoordinates = {y1, y2, y2, y1};
         gc.setFill(Color.GREEN);
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
+
+
+        int x1RB = x*cw + 15;
+        int x2RB = x1+ cw ;
+        int y1RB = y * cw;
+        int y2RB = y1 + cw;
+        double[] xCoordinatesRB = {x1RB, x1RB, x2RB, x2RB};
+        double[] yCoordinatesRB = {y1RB, y2RB, y2RB, y1RB};
+        gc.setFill(Color.YELLOW);
+        gc.fillPolygon(xCoordinatesRB, yCoordinatesRB, 4);
+
+        int x1BB = x*cw + 15;
+        int x2BB = x1+ cw ;
+        int y1BB = y * cw;
+        int y2BB = y1 + cw;
+        double[] xCoordinatesBB = {x1BB, x1BB, x2BB, x2BB};
+        double[] yCoordinatesBB = {y1BB, y2BB, y2RB, y1RB};
+        gc.setFill(Color.YELLOW);
+        gc.fillPolygon(xCoordinatesRB, yCoordinatesRB, 4);
+
+        int x1RB = x*cw + 15;
+        int x2RB = x1+ cw ;
+        int y1RB = y * cw;
+        int y2RB = y1 + cw;
+        double[] xCoordinatesRB = {x1RB, x1RB, x2RB, x2RB};
+        double[] yCoordinatesRB = {y1RB, y2RB, y2RB, y1RB};
+        gc.setFill(Color.YELLOW);
+        gc.fillPolygon(xCoordinatesRB, yCoordinatesRB, 4);
+
+        int x1RB = x*cw + 15;
+        int x2RB = x1+ cw ;
+        int y1RB = y * cw;
+        int y2RB = y1 + cw;
+        double[] xCoordinatesRB = {x1RB, x1RB, x2RB, x2RB};
+        double[] yCoordinatesRB = {y1RB, y2RB, y2RB, y1RB};
+        gc.setFill(Color.YELLOW);
+        gc.fillPolygon(xCoordinatesRB, yCoordinatesRB, 4);
     }
 } // end of class LandObject
