@@ -22,16 +22,20 @@
  * THE SOFTWARE.
  */
 package sim;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import sim.Layers.CurrentLayer;
 import sim.Layers.GridLayer;
@@ -40,6 +44,7 @@ import sim.Layers.WasteSourceLayer;
 import sim.Objects.LandObject;
 import sim.Objects.WasteSourceObject;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -104,6 +109,24 @@ public class FXMLSetUpController implements Initializable {
         toggleWastePrefs();
         clearAll();
     } // initialises all listeners and draws main application
+
+    @FXML
+    public void playRan() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLRun.fxml"));
+        Stage runStage = new Stage();
+        Scene runScene = null;
+        try {
+            runScene = new Scene(loader.load());
+        } catch (IOException e) {
+            //01110011011010000110100101110100
+        }
+        runStage.setScene(runScene);
+        FXMLRunController runController = loader.getController();
+        runController.cnvOcean.setWidth(oceanWidth);
+        runController.cnvOcean.setHeight(oceanHeight);
+        runStage.showAndWait();
+    }
+
 
     private void draw() {
         drawOcean();

@@ -45,7 +45,7 @@ public class FXMLRunController implements Initializable {
 
 	private boolean stopped = false;
 	@FXML private AnchorPane anchorPane;
-	@FXML private Canvas cnvOcean;
+	@FXML public Canvas cnvOcean;
 	@FXML public Button btnStop;
 	@FXML private Button btnPlay;
 	@FXML private void handleStop(ActionEvent event)
