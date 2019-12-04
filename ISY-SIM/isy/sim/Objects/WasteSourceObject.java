@@ -45,6 +45,15 @@ public class WasteSourceObject extends SimObject {
 
     @Override
     public void draw() {
+        if (type == FXMLSetUpController.sourceType.MISC) {
+            gc.setFill(Color.web("0x57350f"));
+        }
+        else if (type == FXMLSetUpController.sourceType.OIL) {
+            gc.setFill(Color.BLACK);
+        }
+        else {
+            gc.setFill(Color.GREY);
+        }
         if (size == FXMLSetUpController.sourceSize.MEDIUM) {
             int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
             int x1 = x * cw;
@@ -53,7 +62,6 @@ public class WasteSourceObject extends SimObject {
             int y2 = y1 + cw + 5;
             double[] xCoordinates = {x1, x1, x2, x2};
             double[] yCoordinates = {y1, y2, y2, y1};
-            gc.setFill(Color.web("0x57350f"));
             gc.fillPolygon(xCoordinates, yCoordinates, 4);
         }
         else if (size == FXMLSetUpController.sourceSize.LARGE) {
@@ -64,7 +72,6 @@ public class WasteSourceObject extends SimObject {
             int y2 = y1 + cw + 15;
             double[] xCoordinates = {x1, x1, x2, x2};
             double[] yCoordinates = {y1, y2, y2, y1};
-            gc.setFill(Color.web("0x57350f"));
             gc.fillPolygon(xCoordinates, yCoordinates, 4);
         }
         else {
@@ -75,7 +82,6 @@ public class WasteSourceObject extends SimObject {
             int y2 = y1 + cw;
             double[] xCoordinates = {x1, x1, x2, x2};
             double[] yCoordinates = {y1, y2, y2, y1};
-            gc.setFill(Color.web("0x57350f"));
             gc.fillPolygon(xCoordinates, yCoordinates, 4);
         }
     }
