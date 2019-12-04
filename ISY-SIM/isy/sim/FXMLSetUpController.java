@@ -87,7 +87,7 @@ public class FXMLSetUpController implements Initializable {
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
     private final int minorGL = 5;
-    public  final int majorGL = 20;
+    public final int majorGL = 20;
     public enum sourceSize {SMALL, MEDIUM, LARGE}
     public enum sourceType {OIL, PLASTIC, MISC}
     private sourceType type = sourceType.PLASTIC;
