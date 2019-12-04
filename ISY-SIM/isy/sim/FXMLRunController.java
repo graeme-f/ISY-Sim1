@@ -45,7 +45,7 @@ public class FXMLRunController implements Initializable {
 
 	private boolean stopped = false;
 	@FXML private AnchorPane anchorPane;
-	@FXML private Canvas cnvOcean;
+	@FXML public Canvas cnvOcean;
 	@FXML public Button btnStop;
 	@FXML private Button btnPlay;
 	@FXML private void handleStop(ActionEvent event)
@@ -63,7 +63,7 @@ public class FXMLRunController implements Initializable {
 
 
 
-	private GraphicsContext gc;
+	public GraphicsContext gc;
 	private Rectangle r;
 	private Duration speed;
 	private Timeline timeline;
@@ -73,6 +73,8 @@ public class FXMLRunController implements Initializable {
 		gc = cnvOcean.getGraphicsContext2D();
 		gc.fillRect(5, 5, 10, 10);
 		r = new Rectangle(5,5,10,10);
+        gc.setFill(Color.AQUAMARINE);
+        gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
 		speed = Duration.millis(10);
 		draw();
 		startTimeline();
@@ -97,11 +99,13 @@ public class FXMLRunController implements Initializable {
     		startTimeline();
     	}
 		// Clear Move and then Draw the block on the scree
-    	gc.clearRect(r.getX()-40, r.getY(), r.getWidth(), r.getHeight());
-    	gc.setFill(Color.CORAL);
+        gc.setFill(Color.AQUAMARINE);
+    	gc.fillRect(r.getX()-40, r.getY(), r.getWidth(), r.getHeight());
+        gc.setFill(Color.CORAL);
     	gc.fillRect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+        gc.setFill(Color.RED);
     	r.setX(r.getX()+1);
-    	gc.setFill(Color.RED);
     	gc.fillRect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+
     }
 }
