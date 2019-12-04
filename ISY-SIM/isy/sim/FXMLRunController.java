@@ -24,11 +24,9 @@
 
 package sim;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -37,18 +35,39 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import javafx.scene.control.*;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class FXMLRunController implements Initializable {
 
+
+	private boolean stopped = false;
 	@FXML private AnchorPane anchorPane;
 	@FXML private Canvas cnvOcean;
-	
+	@FXML public Button btnStop;
+	@FXML private Button btnPlay;
+	@FXML private void handleStop(ActionEvent event)
+	{
+		stopped = true;
+		speed = Duration.ZERO;
+	}
+	@FXML private void handlePlay(ActionEvent event)
+	{
+		stopped = false;
+		timeline.stop();
+		speed = Duration.millis(r.getX() % 100 + 1);
+		startTimeline();
+	}
 
-    private GraphicsContext gc;
+
+
+	private GraphicsContext gc;
 	private Rectangle r;
 	private Duration speed;
 	private Timeline timeline;
-	
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		gc = cnvOcean.getGraphicsContext2D();
@@ -66,15 +85,18 @@ public class FXMLRunController implements Initializable {
         timeline.play();
 	}
 
-    
+
+
     private void draw() {
     	// Readjusts the update speed of the animation
     	if (r.getX()%10==0) {
-    		timeline.stop();
-    		speed = Duration.millis(r.getX()%100+1);
+			timeline.stop();
+			if (!stopped){
+				speed = Duration.millis(r.getX() % 100 + 1);
+			}
     		startTimeline();
     	}
-    	// Clear Move and then Draw the block on the screen
+		// Clear Move and then Draw the block on the scree
     	gc.clearRect(r.getX()-40, r.getY(), r.getWidth(), r.getHeight());
     	gc.setFill(Color.CORAL);
     	gc.fillRect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
