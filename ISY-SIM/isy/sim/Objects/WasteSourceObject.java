@@ -26,6 +26,7 @@ package sim.Objects;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import sim.FXMLSetUpController;
 import sim.Layers.WasteSourceLayer;
 
 /**
@@ -35,20 +36,20 @@ import sim.Layers.WasteSourceLayer;
 public class WasteSourceObject extends SimObject {
 
 
-    public WasteSourceObject(GraphicsContext graphicsContext, int locationX, int locationY) {
+    public WasteSourceObject(GraphicsContext graphicsContext, int locationX, int locationY, FXMLSetUpController.sourceSize size, FXMLSetUpController.sourceType type) {
         super(graphicsContext, locationX, locationY);
     }
 
     @Override
     public void draw() {
-        int cw = WasteSourceLayer.cellWidth();
+        int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
         int x1 = x*cw;
         int x2 = x1+ cw;
         int y1 = y * cw;
         int y2 = y1 + cw;
         double[] xCoordinates = {x1, x1, x2, x2};
         double[] yCoordinates = {y1, y2, y2, y1};
-        gc.setFill(Color.LIGHTGRAY);
+        gc.setFill(Color.web("0x57350f"));
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
     }
 } // end of class WasteSourceObject

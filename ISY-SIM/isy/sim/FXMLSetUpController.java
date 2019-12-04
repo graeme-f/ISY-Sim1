@@ -22,9 +22,6 @@
  * THE SOFTWARE.
  */
 package sim;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
@@ -34,11 +31,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
 import sim.Layers.CurrentLayer;
@@ -47,6 +39,9 @@ import sim.Layers.LandLayer;
 import sim.Layers.WasteSourceLayer;
 import sim.Objects.LandObject;
 import sim.Objects.WasteSourceObject;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -62,7 +57,7 @@ public class FXMLSetUpController implements Initializable {
     @FXML private Button btnPlay;
     @FXML private ToggleButton btnWaste;
     @FXML private ToggleButton btnLand;
-    @FXML private ToggleButton btnCurrent;
+    @FXML private ToggleButton btnCurrent; // TODO disable when it can't be used
     @FXML private MenuButton wastePref;
     @FXML private Label statusBar;
     @FXML private ToggleButton btnClear; // TODO why a toggle button
@@ -81,10 +76,6 @@ public class FXMLSetUpController implements Initializable {
     private boolean landToggle = false;
     private boolean wasteToggle = false;
     private boolean wastePrefToggle = false;
-    private boolean landToggled = false;
-    private boolean wasteToggled = false;
-    private boolean placingLand = false;
-    private boolean placingWaste = false;
     private GraphicsContext gc;
     private double oceanWidth = 500;
     private double oceanHeight = 500;
@@ -92,9 +83,10 @@ public class FXMLSetUpController implements Initializable {
     private double verticalSpeed = 2;
     private final int minorGL = 5;
     public  final int majorGL = 20;
-    private boolean[][] landArray;
-    private boolean[][] wasteArray;
-    private String size = "500x500";
+    public enum sourceSize {SMALL, MEDIUM, LARGE}
+    public enum sourceType {OIL, PLASTIC, MISC}
+    private sourceType type = sourceType.PLASTIC;
+    private sourceSize size = sourceSize.MEDIUM;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -187,6 +179,7 @@ public class FXMLSetUpController implements Initializable {
         arrowLayer.setWidth(oWidth);
         draw();
     }
+
     private void setOceanHeight(double height) {
         double scale = sldVertical.getHeight() / 900;
         double oHeight = (height-100)*scale+50;
@@ -222,9 +215,8 @@ public class FXMLSetUpController implements Initializable {
             landToggle = !landToggle;
             if (landToggle) {
                 disableSliders();
-                landToggled = true;
                 if (landLayer == null) {
-                	landLayer = new LandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
+                	landLayer = LandLayer.getLandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
                     int x = (int)event.getX()/majorGL;
@@ -247,23 +239,18 @@ public class FXMLSetUpController implements Initializable {
             landToggle = !landToggle;
             if (wasteToggle) {
                 disableSliders();
-                wasteToggled = true;
                 if (wasteSourceLayer == null) {
-                    wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), majorGL);
+                    wasteSourceLayer = WasteSourceLayer.getWasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    int i = (int)event.getX()/majorGL;
-                    int j = (int) event.getY()/majorGL;
-                    //wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
-                   // wasteSourceLayer.drawLayer();
-                    if (wasteSourceLayer.hasObject(i,j)){
-                        wasteSourceLayer.removeObject(i, j);
-
+                    int x = (int)event.getX()/minorGL;
+                    int y = (int) event.getY()/minorGL;
+                    if (wasteSourceLayer.hasObject(x,y)){
+                    	wasteSourceLayer.removeObject(x, y);
                     } else {
-                        wasteSourceLayer.addObject(new WasteSourceObject(gc, i, j));
-
+                    	wasteSourceLayer.addObject(new WasteSourceObject(gc, x, y, size, type));
                     }
-                    wasteSourceLayer.drawLayer();
+                    draw();
                 });
                 btnLand.setSelected(false);
                 wastePref.setVisible(false);
@@ -287,36 +274,42 @@ public class FXMLSetUpController implements Initializable {
                     if (newValue1) {
                         medItem.selectedProperty().set(false);
                         largeItem.selectedProperty().set(false);
+                        size = sourceSize.SMALL;
                     }
                 });
                 medItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         smallItem.selectedProperty().set(false);
                         largeItem.selectedProperty().set(false);
+                        size = sourceSize.MEDIUM;
                     }
                 });
                 largeItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         medItem.selectedProperty().set(false);
                         smallItem.selectedProperty().set(false);
+                        size = sourceSize.LARGE;
                     }
                 });
                 oilItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         plasticItem.selectedProperty().set(false);
                         miscItem.selectedProperty().set(false);
+                        type = sourceType.OIL;
                     }
                 });
                 plasticItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         oilItem.selectedProperty().set(false);
                         miscItem.selectedProperty().set(false);
+                        type = sourceType.PLASTIC;
                     }
                 });
                 miscItem.selectedProperty().addListener((observable1, oldValue1, newValue1) -> {
                     if (newValue1) {
                         oilItem.selectedProperty().set(false);
                         plasticItem.selectedProperty().set(false);
+                        type = sourceType.MISC;
                     }
                 });
             }
@@ -326,15 +319,17 @@ public class FXMLSetUpController implements Initializable {
     private void clearAll() {
         btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (btnClear.selectedProperty().getValue()){
-                landToggled=false;
-                wasteToggled=false;
                 btnLand.setSelected(false);
                 sldVertical.setDisable(false);
                 sldHorizontal.setDisable(false);
                 txtVertical.setDisable(false);
                 txtHorizontal.setDisable(false);
-                landLayer=null;
-                wasteSourceLayer=null;
+                if (landLayer != null) {
+                	landLayer.clear();
+                }
+                if (wasteSourceLayer != null) {
+                	wasteSourceLayer.clear();
+                }
                 draw();
             }
         }));
@@ -351,25 +346,22 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void updateStatus() {
+        String s = "500x500";
         String action;
         if (landToggle) {
             action = "Placing Land";
-            size = txtHorizontal.getText() + "x" + txtVertical.getText();
+            s = txtHorizontal.getText() + "x" + txtVertical.getText();
         } else if (wasteToggle) {
             action = "Placing waste";
         } else if (currentToggle) {
             action = "Changing Current";
         } else {
             action = "Changing Size";
-            size = txtHorizontal.getText() + "x" + txtVertical.getText();
+            s = txtHorizontal.getText() + "x" + txtVertical.getText();
         }
         int landAmt = 0; // TODO Get this from LandLayer
         int wasteAmt = 0;// TODO Get this from WasteLayer
-        statusBar.setText("Action: " + action + "\t Size: "+size+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
-    }
-
-    private void initializeWasteSourceLayer() {
-        wasteSourceLayer = new WasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
+        statusBar.setText("Action: " + action + "\t Size: "+s+ "\nCurrent Speed:" + (int)horizontalSpeed+" x "+(int)verticalSpeed + "Land amount:"+landAmt/121 + "\tWaste amount:" + wasteAmt/121);
     }
 
     private void disableSliders() {
