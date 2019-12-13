@@ -34,12 +34,23 @@ public class LandLayer extends MatrixLayer {
     protected static LandLayer instance = null;
     protected int cellWidth;
     
-    public static LandLayer getLandLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+    public static LandLayer getLandLayer(GraphicsContext gContext
+                                        ,double width
+                                        ,double height
+                                        ,double horizScale
+                                        ,double vertScale
+                                        ,int cellWidth) {
     	if (instance == null) {
-    		instance = new LandLayer(gContext, width, height, cellWidth);
+    		instance = new LandLayer(gContext
+                                        ,width
+                                        ,height
+                                        ,horizScale
+                                        ,vertScale
+                                        ,cellWidth
+                                        );
     	}
     	return instance;
-	} // end Singleton getLandLayer
+    } // end Singleton getLandLayer
     
     // This method should only be used if the layer has been created otherwise it will return null 
     public static LandLayer getLandLayer() {
@@ -47,10 +58,15 @@ public class LandLayer extends MatrixLayer {
     		throw new NullPointerException("LandLayer not instansiated");
     	}
     	return instance;
-	} // end Singleton getLandLayer
+    } // end Singleton getLandLayer
 
-    private LandLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
-        super(gContext, width, height, cellWidth);
+    private LandLayer(GraphicsContext gContext
+                     ,double width
+                     ,double height
+                     ,double horizScale
+                     ,double vertScale
+                     ,int cellWidth) {
+        super(gContext, width, height, horizScale, vertScale, cellWidth);
         this.cellWidth = cellWidth;
     }
     
