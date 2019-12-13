@@ -31,7 +31,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
@@ -39,66 +38,83 @@ import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import sim.Layers.LandLayer;
+import sim.Layers.WasteSourceLayer;
 
 public class FXMLRunController implements Initializable {
 
 
-	private boolean stopped = false;
-	@FXML private AnchorPane anchorPane;
-	@FXML public Canvas cnvOcean;
-	@FXML public Button btnStop;
-	@FXML private Button btnPlay;
-	@FXML private void handleStop(ActionEvent event)
-	{
-		stopped = true;
-		speed = Duration.ZERO;
-	}
-	@FXML private void handlePlay(ActionEvent event)
-	{
-		stopped = false;
-		timeline.stop();
-		speed = Duration.millis(r.getX() % 100 + 1);
-		startTimeline();
-	}
+    private boolean stopped = false;
+    @FXML private Slider sldSpeed;
+    @FXML public Canvas cnvOcean;
+    @FXML public Button btnStop;
+    @FXML private Button btnPlay;
+    @FXML private Button btnAnalysis;
+    @FXML private void handleStop(ActionEvent event)
+    {
+            stopped = true;
+            speed = Duration.ZERO;
+    }
+    @FXML private void handlePlay(ActionEvent event)
+    {
+            stopped = false;
+            timeline.stop();
+            speed = Duration.millis((11-sldSpeed.getValue())*10);
+            startTimeline();
+    }
 
 
 
-	public GraphicsContext gc;
-	private Rectangle r;
-	private Duration speed;
-	private Timeline timeline;
+    public GraphicsContext gc;
+    private LandLayer landLayer;
+    private WasteSourceLayer wasteSourceLayer;
 
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		gc = cnvOcean.getGraphicsContext2D();
-		gc.fillRect(5, 5, 10, 10);
-		r = new Rectangle(5,5,10,10);
+    private Rectangle r;
+    private Duration speed;
+    private Timeline timeline;
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        gc = cnvOcean.getGraphicsContext2D();
+        gc.fillRect(5, 5, 10, 10);
+        r = new Rectangle(5,5,10,10);
+        setSlider();
+        speed = Duration.millis(100);
+        draw();
+        startTimeline();
+    }
+    
+    public void setup(LandLayer land, WasteSourceLayer wasteSource){
+        landLayer = land;
+        landLayer.setActiveGC(gc);
+        wasteSourceLayer = wasteSource;
+        wasteSourceLayer.setActiveGC(gc);
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
-		speed = Duration.millis(10);
-		draw();
-		startTimeline();
-	}
+        landLayer.drawLayer();
+        wasteSourceLayer.drawLayer();
+    }
 
-	private void startTimeline() {
+    private void startTimeline() {
         timeline = new Timeline();
         timeline.getKeyFrames().add(new KeyFrame(speed, e -> {draw();}));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-	}
+    }
 
 
+    private void setSlider(){
+        sldSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
+            timeline.stop();
+            if (!stopped){
+                speed = Duration.millis((11-newValue.doubleValue())*10);
+            }
+            startTimeline();
+        });
+    } // end of method setSlider()
 
     private void draw() {
-    	// Readjusts the update speed of the animation
-    	if (r.getX()%10==0) {
-			timeline.stop();
-			if (!stopped){
-				speed = Duration.millis(r.getX() % 100 + 1);
-			}
-    		startTimeline();
-    	}
-		// Clear Move and then Draw the block on the scree
+        // Clear Move and then Draw the block on the screen
         gc.setFill(Color.AQUAMARINE);
     	gc.fillRect(r.getX()-40, r.getY(), r.getWidth(), r.getHeight());
         gc.setFill(Color.CORAL);

@@ -13,5 +13,9 @@ public abstract class Layer {
         layerHeight = height;
     }
     
+    public void setActiveGC(GraphicsContext gc){
+        this.gc = gc;
+    }
+    
     public abstract void drawLayer();
 }

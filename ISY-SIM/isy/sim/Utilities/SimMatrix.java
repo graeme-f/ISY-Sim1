@@ -23,6 +23,7 @@
  */
 
 package sim.Utilities;
+import javafx.scene.canvas.GraphicsContext;
 import sim.Objects.SimObject;
 
 /**
@@ -40,11 +41,11 @@ public class SimMatrix {
         matrix = new SimObject[width][height];
     }
 
-    public void drawMatrix() {
+    public void drawMatrix(GraphicsContext gc) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
             	if (matrix[i][j]!=null) {
-            		matrix[i][j].draw();
+            		matrix[i][j].draw(gc);
             	}
             }
         }

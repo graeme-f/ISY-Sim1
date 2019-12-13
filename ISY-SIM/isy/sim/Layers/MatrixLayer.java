@@ -43,7 +43,7 @@ public abstract class MatrixLayer  extends Layer {
     }
     
     public void drawLayer() {
-        m.drawMatrix();
+        m.drawMatrix(gc);
     }
     
     public void addObject(SimObject object) {

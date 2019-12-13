@@ -37,44 +37,29 @@ public class WasteSourceObject extends SimObject {
 
     private FXMLSetUpController.sourceSize size;
     private FXMLSetUpController.sourceType type;
-    public WasteSourceObject(GraphicsContext graphicsContext, int locationX, int locationY, FXMLSetUpController.sourceSize size, FXMLSetUpController.sourceType type) {
-        super(graphicsContext, locationX, locationY);
+    public WasteSourceObject(int locationX, int locationY, FXMLSetUpController.sourceSize size, FXMLSetUpController.sourceType type) {
+        super(locationX, locationY);
         this.size = size;
         this.type = type;
     }
 
     @Override
-    public void draw() {
-        if (type == FXMLSetUpController.sourceType.MISC) {
-            gc.setFill(Color.web("0x57350f"));
-        }
-        else if (type == FXMLSetUpController.sourceType.OIL) {
-            gc.setFill(Color.BLACK);
-        }
-        else {
+    public void draw(GraphicsContext gc) {
+        if (null == type) {
             gc.setFill(Color.GREY);
         }
-        if (size == FXMLSetUpController.sourceSize.MEDIUM) {
-            int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
-            int x1 = x * cw;
-            int x2 = x1 + cw + 5;
-            int y1 = y * cw;
-            int y2 = y1 + cw + 5;
-            double[] xCoordinates = {x1, x1, x2, x2};
-            double[] yCoordinates = {y1, y2, y2, y1};
-            gc.fillPolygon(xCoordinates, yCoordinates, 4);
+        else switch (type) {
+            case MISC:
+                gc.setFill(Color.web("0x57350f"));
+                break;
+            case OIL:
+                gc.setFill(Color.BLACK);
+                break;
+            default:
+                gc.setFill(Color.GREY);
+                break;
         }
-        else if (size == FXMLSetUpController.sourceSize.LARGE) {
-            int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
-            int x1 = x * cw;
-            int x2 = x1 + cw + 15;
-            int y1 = y * cw;
-            int y2 = y1 + cw + 15;
-            double[] xCoordinates = {x1, x1, x2, x2};
-            double[] yCoordinates = {y1, y2, y2, y1};
-            gc.fillPolygon(xCoordinates, yCoordinates, 4);
-        }
-        else {
+        if (null == size) {
             int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
             int x1 = x * cw;
             int x2 = x1 + cw;
@@ -83,6 +68,44 @@ public class WasteSourceObject extends SimObject {
             double[] xCoordinates = {x1, x1, x2, x2};
             double[] yCoordinates = {y1, y2, y2, y1};
             gc.fillPolygon(xCoordinates, yCoordinates, 4);
+        }
+        else switch (size) {
+            case MEDIUM:
+                {
+                    int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
+                    int x1 = x * cw;
+                    int x2 = x1 + cw + 5;
+                    int y1 = y * cw;
+                    int y2 = y1 + cw + 5;
+                    double[] xCoordinates = {x1, x1, x2, x2};
+                    double[] yCoordinates = {y1, y2, y2, y1};
+                    gc.fillPolygon(xCoordinates, yCoordinates, 4);
+                    break;
+                }
+            case LARGE:
+                {
+                    int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
+                    int x1 = x * cw;
+                    int x2 = x1 + cw + 15;
+                    int y1 = y * cw;
+                    int y2 = y1 + cw + 15;
+                    double[] xCoordinates = {x1, x1, x2, x2};
+                    double[] yCoordinates = {y1, y2, y2, y1};
+                    gc.fillPolygon(xCoordinates, yCoordinates, 4);
+                    break;
+                }
+            default:
+                {
+                    int cw = WasteSourceLayer.getWasteSourceLayer().cellWidth();
+                    int x1 = x * cw;
+                    int x2 = x1 + cw;
+                    int y1 = y * cw;
+                    int y2 = y1 + cw;
+                    double[] xCoordinates = {x1, x1, x2, x2};
+                    double[] yCoordinates = {y1, y2, y2, y1};
+                    gc.fillPolygon(xCoordinates, yCoordinates, 4);
+                    break;
+                }
         }
     }
 

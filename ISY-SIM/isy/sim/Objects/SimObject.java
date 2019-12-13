@@ -31,18 +31,16 @@ import javafx.scene.canvas.GraphicsContext;
  * @author gfoster
  */
 public abstract class SimObject {
-    GraphicsContext gc;
     int x;
     int y;
 
-    public SimObject(GraphicsContext graphicsContext, int locationX, int locationY) {
-        gc = graphicsContext;
+    public SimObject(int locationX, int locationY) {
         x = locationX;
         y = locationY;
     }
 
     public int getx() {return x;}
     public int gety() {return y;}
-    public abstract void draw();
+    public abstract void draw(GraphicsContext gc);
 
 } // end of class SimObject
