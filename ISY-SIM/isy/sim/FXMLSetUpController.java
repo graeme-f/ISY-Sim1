@@ -99,7 +99,7 @@ public class FXMLSetUpController implements Initializable {
         updateStatus();
 //        toggleWaste();
         gc = cnvOcean.getGraphicsContext2D();
-        gridLayer = new GridLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 5, 20);
+        gridLayer = new GridLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), minorGL, majorGL);
         arrowLayer = new CurrentLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 2, 2);
         draw();
         initializeSliders();
@@ -111,7 +111,7 @@ public class FXMLSetUpController implements Initializable {
     } // initialises all listeners and draws main application
 
     @FXML
-    public void playRan() {
+    public void playRun() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLRun.fxml"));
         Stage runStage = new Stage();
         Scene runScene = null;
@@ -124,6 +124,7 @@ public class FXMLSetUpController implements Initializable {
         FXMLRunController runController = loader.getController();
         runController.cnvOcean.setWidth(oceanWidth);
         runController.cnvOcean.setHeight(oceanHeight);
+        runController.setup(landLayer, wasteSourceLayer);
         runStage.showAndWait();
     }
 
@@ -247,7 +248,7 @@ public class FXMLSetUpController implements Initializable {
                     if (landLayer.hasObject(x,y)){
                         landLayer.removeObject(x, y);
                     } else {
-                        landLayer.addObject(new LandObject(gc, x, y));
+                        landLayer.addObject(new LandObject(x, y));
                     }
                     draw();
                 });
@@ -271,7 +272,7 @@ public class FXMLSetUpController implements Initializable {
                     if (wasteSourceLayer.hasObject(x,y)){
                     	wasteSourceLayer.removeObject(x, y);
                     } else {
-                    	wasteSourceLayer.addObject(new WasteSourceObject(gc, x, y, size, type));
+                    	wasteSourceLayer.addObject(new WasteSourceObject(x, y, size, type));
                     }
                     draw();
                 });

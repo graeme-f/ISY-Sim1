@@ -35,12 +35,12 @@ import sim.Layers.MatrixLayer.Direction;
  */
 public class LandObject extends SimObject{
 
-    public LandObject(GraphicsContext graphicsContext, int locationX, int locationY) {
-        super(graphicsContext, locationX, locationY);
+    public LandObject(int locationX, int locationY) {
+        super(locationX, locationY);
     }
 
     @Override
-    public void draw() {
+    public void draw(GraphicsContext gc) {
     	LandLayer ll = LandLayer.getLandLayer(); 
     	int cw = ll.cellWidth();
     	{
