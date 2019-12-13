@@ -31,8 +31,8 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class WasteLayer extends MatrixLayer {
 
-    public WasteLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
-        super(gContext, width, height, cellWidth);
+    public WasteLayer(GraphicsContext gContext, double width, double height, double horizScale, double vertScale, int cellWidth) {
+        super(gContext, width, height, horizScale, vertScale, cellWidth);
     }
 
 } // end of class WasteLayer

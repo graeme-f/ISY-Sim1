@@ -37,13 +37,13 @@ public abstract class MatrixLayer  extends Layer {
     public enum Direction {UP, LEFT, DOWN, RIGHT}
     protected SimMatrix m;
 
-    public MatrixLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
-    	super(gContext, width, height);
+    public MatrixLayer(GraphicsContext gContext, double width, double height, double horizScale, double vertScale, int cellWidth) {
+    	super(gContext, width, height, horizScale, vertScale);
         m = new SimMatrix((int)width/cellWidth+1, (int)height/cellWidth+1);
     }
     
     public void drawLayer() {
-        m.drawMatrix(gc);
+        m.drawMatrix();
     }
     
     public void addObject(SimObject object) {

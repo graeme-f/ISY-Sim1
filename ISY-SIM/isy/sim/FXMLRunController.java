@@ -87,8 +87,10 @@ public class FXMLRunController implements Initializable {
     public void setup(LandLayer land, WasteSourceLayer wasteSource){
         landLayer = land;
         landLayer.setActiveGC(gc);
+        landLayer.setScale(1, 1);
         wasteSourceLayer = wasteSource;
         wasteSourceLayer.setActiveGC(gc);
+        wasteSourceLayer.setScale(1,1);
         gc.setFill(Color.AQUAMARINE);
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
         landLayer.drawLayer();

@@ -8,8 +8,8 @@ public class CurrentLayer extends ResizeableLayer {
 	private double verticalWidth;
 	private double horizontalWidth;
 	
-	public CurrentLayer(GraphicsContext gContext, double width, double height, double vw, double hw) {
-		super(gContext, width, height);
+	public CurrentLayer(GraphicsContext gContext, double width, double height, double horizScale, double vertScale, double vw, double hw) {
+		super(gContext, width, height, horizScale, vertScale);
 		verticalWidth = vw;
 		horizontalWidth = hw;
 	}

@@ -98,11 +98,23 @@ public class FXMLSetUpController implements Initializable {
         initializeWastePrefs();
         updateStatus();
 //        toggleWaste();
-        gc = cnvOcean.getGraphicsContext2D();
-        gridLayer = new GridLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), minorGL, majorGL);
-        arrowLayer = new CurrentLayer(gc, (int) cnvOcean.getWidth(), (int) cnvOcean.getHeight(), 2, 2);
-        draw();
         initializeSliders();
+        gc = cnvOcean.getGraphicsContext2D();
+        gridLayer = new GridLayer(gc
+                                 ,(int) cnvOcean.getWidth()
+                                 ,(int) cnvOcean.getHeight()
+                                 ,cnvOcean.getWidth() / sldHorizontal.getValue()
+                                 ,cnvOcean.getHeight() / sldVertical.getValue()
+                                 ,minorGL
+                                 ,majorGL);
+        arrowLayer = new CurrentLayer(gc
+                                     ,(int) cnvOcean.getWidth()
+                                     ,(int) cnvOcean.getHeight()
+                                     ,cnvOcean.getWidth() / sldHorizontal.getValue()
+                                     ,cnvOcean.getHeight() / sldVertical.getValue()
+                                     ,2
+                                     ,2);
+        draw();
         toggleCurrent();
         toggleLand();
         toggleWaste();
@@ -240,11 +252,16 @@ public class FXMLSetUpController implements Initializable {
             if (landToggle) {
                 disableSliders();
                 if (landLayer == null) {
-                	landLayer = LandLayer.getLandLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(),majorGL);
+                	landLayer = LandLayer.getLandLayer(gc
+                                                          ,sldHorizontal.getValue()
+                                                          ,sldVertical.getValue()
+                                                          ,cnvOcean.getWidth() / sldHorizontal.getValue()
+                                                          ,cnvOcean.getHeight() / sldVertical.getValue()
+                                                          ,majorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    int x = (int)event.getX()/majorGL;
-                    int y = (int) event.getY()/majorGL;
+                    int x = (int)(event.getX()/landLayer.getHScale()/majorGL);
+                    int y = (int)(event.getY()/landLayer.getVScale()/majorGL);
                     if (landLayer.hasObject(x,y)){
                         landLayer.removeObject(x, y);
                     } else {
@@ -264,11 +281,16 @@ public class FXMLSetUpController implements Initializable {
             if (wasteToggle) {
                 disableSliders();
                 if (wasteSourceLayer == null) {
-                    wasteSourceLayer = WasteSourceLayer.getWasteSourceLayer(gc, cnvOcean.getWidth(), cnvOcean.getHeight(), minorGL);
+                    wasteSourceLayer = WasteSourceLayer.getWasteSourceLayer(gc
+                                                                           ,sldHorizontal.getValue()
+                                                                           ,sldVertical.getValue()
+                                                                           ,cnvOcean.getWidth() / sldHorizontal.getValue()
+                                                                           ,cnvOcean.getHeight() / sldVertical.getValue()
+                                                                           ,minorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
-                    int x = (int)event.getX()/minorGL;
-                    int y = (int) event.getY()/minorGL;
+                    int x = (int)(event.getX()/landLayer.getHScale()/minorGL);
+                    int y = (int)(event.getY()/landLayer.getVScale()/minorGL);
                     if (wasteSourceLayer.hasObject(x,y)){
                     	wasteSourceLayer.removeObject(x, y);
                     } else {

@@ -41,6 +41,6 @@ public abstract class SimObject {
 
     public int getx() {return x;}
     public int gety() {return y;}
-    public abstract void draw(GraphicsContext gc);
+    public abstract void draw();
 
 } // end of class SimObject

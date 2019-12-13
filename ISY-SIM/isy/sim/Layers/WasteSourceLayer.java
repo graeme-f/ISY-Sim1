@@ -36,9 +36,9 @@ public class WasteSourceLayer extends MatrixLayer {
     protected static WasteSourceLayer instance = null;
     protected int cellWidth;
 
-    public static WasteSourceLayer getWasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
+    public static WasteSourceLayer getWasteSourceLayer(GraphicsContext gContext, double width, double height, double horizScale, double vertScale, int cellWidth) {
     	if (instance == null) {
-    		instance = new WasteSourceLayer(gContext, width, height, cellWidth);
+    		instance = new WasteSourceLayer(gContext, width, height, horizScale, vertScale, cellWidth);
     	}
     	return instance;
 	} // end Singleton getWasteSourceLayer
@@ -51,8 +51,8 @@ public class WasteSourceLayer extends MatrixLayer {
     	return instance;
 	} // end Singleton getWasteSourceLayer
 
-    private WasteSourceLayer(GraphicsContext gContext, double width, double height, int cellWidth) {
-        super(gContext, width, height, cellWidth);
+    private WasteSourceLayer(GraphicsContext gContext, double width, double height, double horizScale, double vertScale, int cellWidth) {
+        super(gContext, width, height, horizScale, vertScale, cellWidth);
         this.cellWidth = cellWidth;
     }
 

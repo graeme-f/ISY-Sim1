@@ -41,11 +41,11 @@ public class SimMatrix {
         matrix = new SimObject[width][height];
     }
 
-    public void drawMatrix(GraphicsContext gc) {
+    public void drawMatrix() {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
             	if (matrix[i][j]!=null) {
-            		matrix[i][j].draw(gc);
+            		matrix[i][j].draw();
             	}
             }
         }

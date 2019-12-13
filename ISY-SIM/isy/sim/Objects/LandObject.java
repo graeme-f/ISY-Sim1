@@ -40,25 +40,28 @@ public class LandObject extends SimObject{
     }
 
     @Override
-    public void draw(GraphicsContext gc) {
+    public void draw() {
     	LandLayer ll = LandLayer.getLandLayer(); 
-    	int cw = ll.cellWidth();
-    	{
-	    	int x1 = x*cw;
-	    	int x2 = x1+ cw;
-	    	int y1 = y * cw;
-	    	int y2 = y1 + cw;
-	        double[] xCoordinates = {x1, x1, x2, x2};
-	        double[] yCoordinates = {y1, y2, y2, y1};
-	        gc.setFill(Color.GREEN);
-	        gc.fillPolygon(xCoordinates, yCoordinates, 4);
-    	}
+        GraphicsContext gc = ll.getActiveGC();
+    	double cw = ll.cellWidth()*ll.getHScale();
+        double ch = ll.cellWidth()*ll.getVScale();
+
+        {
+            double x1 = x*cw;
+            double x2 = x1+ cw;
+            double y1 = y * ch;
+            double y2 = y1 + ch;
+            double[] xCoordinates = {x1, x1, x2, x2};
+            double[] yCoordinates = {y1, y2, y2, y1};
+            gc.setFill(Color.GREEN);
+            gc.fillPolygon(xCoordinates, yCoordinates, 4);
+        }
     	
         if (ll.getNeighbour(this, Direction.UP) == null && !ll.isEdge(this, Direction.UP)) {
-        	int x1 = x*cw;
-        	int x2 = x1 + cw;
-        	int y1 = y * cw;
-        	int y2 = y1 + 3;
+            double x1 = x*cw;
+            double x2 = x1 + cw;
+            double y1 = y * ch;
+            double y2 = y1 + 3;
             double[] xCoordinates = {x1, x1, x2, x2};
             double[] yCoordinates = {y1, y2, y2, y1};
             gc.setFill(Color.YELLOW);
@@ -66,20 +69,20 @@ public class LandObject extends SimObject{
         }
 
         if (ll.getNeighbour(this, Direction.LEFT) == null && !ll.isEdge(this, Direction.LEFT)) {
-        	int x1 = x*cw;
-        	int x2 = x1 + 3;
-        	int y1 = y * cw;
-        	int y2 = y1 + cw;
+            double x1 = x*cw;
+            double x2 = x1 + 3;
+            double y1 = y * ch;
+            double y2 = y1 + ch;
             double[] xCoordinates = {x1, x1, x2, x2};
             double[] yCoordinates = {y1, y2, y2, y1};
             gc.setFill(Color.YELLOW);
             gc.fillPolygon(xCoordinates, yCoordinates, 4);       	
         }
         if (ll.getNeighbour(this, Direction.DOWN) == null && !ll.isEdge(this, Direction.DOWN)) {
-        	int x1 = x*cw;
-        	int x2 = x1 + cw;
-        	int y1 = y * cw + cw;
-        	int y2 = y1 - 3;
+            double x1 = x*cw;
+            double x2 = x1 + cw;
+            double y1 = y * ch + ch;
+            double y2 = y1 - 3;
             double[] xCoordinates = {x1, x1, x2, x2};
             double[] yCoordinates = {y1, y2, y2, y1};
             gc.setFill(Color.YELLOW);
@@ -87,10 +90,10 @@ public class LandObject extends SimObject{
         }
 
         if (ll.getNeighbour(this, Direction.RIGHT) == null && !ll.isEdge(this, Direction.RIGHT)) {
-        	int x1 = x*cw + cw;
-        	int x2 = x1 - 3;
-        	int y1 = y * cw;
-        	int y2 = y1 + cw;
+            double x1 = x*cw + cw;
+            double x2 = x1 - 3;
+            double y1 = y * ch;
+            double y2 = y1 + ch;
             double[] xCoordinates = {x1, x1, x2, x2};
             double[] yCoordinates = {y1, y2, y2, y1};
             gc.setFill(Color.YELLOW);
