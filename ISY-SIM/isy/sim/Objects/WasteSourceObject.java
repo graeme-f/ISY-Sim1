@@ -47,10 +47,7 @@ public class WasteSourceObject extends SimObject {
     public void draw() {
         WasteSourceLayer wsl = WasteSourceLayer.getWasteSourceLayer();
         GraphicsContext gc = wsl.getActiveGC();
-        if (null == type) {
-            gc.setFill(Color.GREY);
-        }
-        else switch (type) {
+        switch (type) {
             case MISC:
                 gc.setFill(Color.web("0x57350f"));
                 break;
@@ -61,52 +58,37 @@ public class WasteSourceObject extends SimObject {
                 gc.setFill(Color.GREY);
                 break;
         }
+        
     	double cw = wsl.cellWidth()*wsl.getHScale();
         double ch = wsl.cellWidth()*wsl.getVScale();
-        if (null == size) {
-            double x1 = x * cw;
-            double x2 = x1 + cw;
-            double y1 = y * ch;
-            double y2 = y1 + ch;
-            double[] xCoordinates = {x1, x1, x2, x2};
-            double[] yCoordinates = {y1, y2, y2, y1};
-            gc.fillPolygon(xCoordinates, yCoordinates, 4);
-        }
-        else switch (size) {
+        double x1;
+        double x2;
+        double y1;
+        double y2;
+
+        switch (size) {
+            case SMALL:
+                x1 = x * cw;
+                x2 = x1 + cw;
+                y1 = y * ch;
+                y2 = y1 + ch;
+                break;
             case MEDIUM:
-                {
-                    double x1 = x * cw;
-                    double x2 = x1 + cw + 5;
-                    double y1 = y * ch;
-                    double y2 = y1 + ch + 5;
-                    double[] xCoordinates = {x1, x1, x2, x2};
-                    double[] yCoordinates = {y1, y2, y2, y1};
-                    gc.fillPolygon(xCoordinates, yCoordinates, 4);
-                    break;
-                }
-            case LARGE:
-                {
-                    double x1 = x * cw;
-                    double x2 = x1 + cw + 15;
-                    double y1 = y * ch;
-                    double y2 = y1 + ch + 15;
-                    double[] xCoordinates = {x1, x1, x2, x2};
-                    double[] yCoordinates = {y1, y2, y2, y1};
-                    gc.fillPolygon(xCoordinates, yCoordinates, 4);
-                    break;
-                }
+                x1 = x * cw;
+                x2 = x1 + cw * 1.5;
+                y1 = y * ch;
+                y2 = y1 + ch*1.5;
+                break;
             default:
-                {
-                    double x1 = x * cw;
-                    double x2 = x1 + cw;
-                    double y1 = y * ch;
-                    double y2 = y1 + ch;
-                    double[] xCoordinates = {x1, x1, x2, x2};
-                    double[] yCoordinates = {y1, y2, y2, y1};
-                    gc.fillPolygon(xCoordinates, yCoordinates, 4);
-                    break;
-                }
+                x1 = x * cw;
+                x2 = x1 + cw*2;
+                y1 = y * ch;
+                y2 = y1 + ch*2;
+                break;
         }
+        double[] xCoordinates = {x1, x1, x2, x2};
+        double[] yCoordinates = {y1, y2, y2, y1};
+        gc.fillPolygon(xCoordinates, yCoordinates, 4);
     }
 
 
