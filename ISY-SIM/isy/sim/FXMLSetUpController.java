@@ -136,7 +136,10 @@ public class FXMLSetUpController implements Initializable {
         FXMLRunController runController = loader.getController();
         runController.cnvOcean.setWidth(oceanWidth);
         runController.cnvOcean.setHeight(oceanHeight);
-        runController.setup(landLayer, wasteSourceLayer);
+        runController.setup(landLayer
+                           ,wasteSourceLayer
+                           ,horizontalSpeed
+                           ,verticalSpeed);
         runStage.showAndWait();
         if (landLayer != null){
             landLayer.setActiveGC(gc);
