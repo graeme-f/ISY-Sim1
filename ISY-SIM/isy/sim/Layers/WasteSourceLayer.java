@@ -36,29 +36,47 @@ public class WasteSourceLayer extends MatrixLayer {
     protected static WasteSourceLayer instance = null;
     protected int cellWidth;
 
-    public static WasteSourceLayer getWasteSourceLayer(GraphicsContext gContext, double width, double height, double horizScale, double vertScale, int cellWidth) {
+    public static WasteSourceLayer getWasteSourceLayer(GraphicsContext gContext
+                                                      ,double width
+                                                      ,double height
+                                                      ,double horizScale
+                                                      ,double vertScale
+                                                      ,int cellWidth
+                                                      ) {
     	if (instance == null) {
-    		instance = new WasteSourceLayer(gContext, width, height, horizScale, vertScale, cellWidth);
+            instance = new WasteSourceLayer(gContext
+                                           ,width
+                                           ,height
+                                           ,horizScale
+                                           ,vertScale
+                                           ,cellWidth
+                                           );
     	}
     	return instance;
-	} // end Singleton getWasteSourceLayer
+    } // end Singleton getWasteSourceLayer
     
-    // This method should only be used if the layer has been created otherwise it will return null 
+    // This method should only be used if the layer has been created
+    // If the layer has not be created it will throw an exception
     public static WasteSourceLayer getWasteSourceLayer() {
     	if (instance == null) {
-    		throw new NullPointerException("LandLayer not instansiated");
+    		throw new NullPointerException("WasteSourceLayer not instansiated");
     	}
     	return instance;
-	} // end Singleton getWasteSourceLayer
+    } // end Singleton getWasteSourceLayer
 
-    private WasteSourceLayer(GraphicsContext gContext, double width, double height, double horizScale, double vertScale, int cellWidth) {
+    private WasteSourceLayer(GraphicsContext gContext
+                            ,double width
+                            ,double height
+                            ,double horizScale
+                            ,double vertScale
+                            ,int cellWidth
+                            ) {
         super(gContext, width, height, horizScale, vertScale, cellWidth);
         this.cellWidth = cellWidth;
-    }
+    } // end private constructor
 
     public int cellWidth() {
         return cellWidth;
     }
-
 
 } // end of class WasteSourceLayer

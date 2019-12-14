@@ -138,6 +138,17 @@ public class FXMLSetUpController implements Initializable {
         runController.cnvOcean.setHeight(oceanHeight);
         runController.setup(landLayer, wasteSourceLayer);
         runStage.showAndWait();
+        if (landLayer != null){
+            landLayer.setActiveGC(gc);
+            landLayer.setScale(cnvOcean.getWidth() / sldHorizontal.getValue()
+                              ,cnvOcean.getHeight() / sldVertical.getValue());
+        }
+        if (wasteSourceLayer != null){
+            wasteSourceLayer.setActiveGC(gc);
+            wasteSourceLayer.setScale(cnvOcean.getWidth() / sldHorizontal.getValue()
+                                     ,cnvOcean.getHeight() / sldVertical.getValue());
+        }
+
     }
 
 
