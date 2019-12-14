@@ -45,6 +45,7 @@ public class FXMLRunController implements Initializable {
 
 
     private boolean stopped = false;
+    private static final int TIMESLICE = 100;
     @FXML private Slider sldSpeed;
     @FXML public Canvas cnvOcean;
     @FXML public Button btnStop;
@@ -53,13 +54,14 @@ public class FXMLRunController implements Initializable {
     @FXML private void handleStop(ActionEvent event)
     {
             stopped = true;
+            timeline.stop();
             speed = Duration.ZERO;
     }
     @FXML private void handlePlay(ActionEvent event)
     {
             stopped = false;
             timeline.stop();
-            speed = Duration.millis((11-sldSpeed.getValue())*10);
+            speed = Duration.millis((11-sldSpeed.getValue())*TIMESLICE);
             startTimeline();
     }
 
@@ -68,10 +70,17 @@ public class FXMLRunController implements Initializable {
     public GraphicsContext gc;
     private LandLayer landLayer;
     private WasteSourceLayer wasteSourceLayer;
+    private double hSpeed;
+    private double vSpeed;
 
     private Rectangle r;
     private Duration speed;
     private Timeline timeline;
+    
+    @FXML private Label lblTime;
+    private int time = 0;
+    @FXML private Label lblWasteCount;
+    private int wasteCount = 0;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -79,13 +88,16 @@ public class FXMLRunController implements Initializable {
         gc.fillRect(5, 5, 10, 10);
         r = new Rectangle(5,5,10,10);
         setSlider();
-        speed = Duration.millis(100);
+        speed = Duration.millis(10 * TIMESLICE);
         draw();
         startTimeline();
     }
     
-    public void setup(LandLayer land, WasteSourceLayer wasteSource){
-        gc.setFill(Color.AQUAMARINE);
+    public void setup(LandLayer land
+                     ,WasteSourceLayer wasteSource
+                     ,double horizontalSpeed
+                     , double verticalSpeed){
+        gc.setFill(Color.web("#2cd5c4"));
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
         landLayer = land;
         if (landLayer != null){
@@ -99,6 +111,8 @@ public class FXMLRunController implements Initializable {
             wasteSourceLayer.setScale(1,1);
             wasteSourceLayer.drawLayer();
         }
+        hSpeed = horizontalSpeed;
+        vSpeed = verticalSpeed;
     }
 
     private void startTimeline() {
@@ -113,21 +127,20 @@ public class FXMLRunController implements Initializable {
         sldSpeed.valueProperty().addListener((observable, oldValue, newValue) -> {
             timeline.stop();
             if (!stopped){
-                speed = Duration.millis((11-newValue.doubleValue())*10);
+                speed = Duration.millis((11-newValue.doubleValue())*TIMESLICE);
             }
             startTimeline();
         });
     } // end of method setSlider()
 
     private void draw() {
-        // Clear Move and then Draw the block on the screen
-        gc.setFill(Color.AQUAMARINE);
-    	gc.fillRect(r.getX()-40, r.getY(), r.getWidth(), r.getHeight());
-        gc.setFill(Color.CORAL);
-    	gc.fillRect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-        gc.setFill(Color.RED);
-    	r.setX(r.getX()+1);
-    	gc.fillRect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+        // Generate waste from sources
+        
+        // Move waste around ocean
 
+        // Merge ocean
+        
+        // Draw ocean
+        lblTime.setText("Time: " + ++time);
     }
 }
