@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.scene.canvas.GraphicsContext;
 import sim.Objects.WasteObject;
+import sim.Utilities.Posn;
 
 /**
  *
@@ -34,19 +35,6 @@ import sim.Objects.WasteObject;
  */
 public class WasteLayer extends Layer{
 
-    public class Posn{
-        int x;
-        int y;
-        
-        Posn (int x, int y){
-            this.x = x;
-            this.y = y;
-        }
-        
-        public int getX(){return x;}
-        public int getY(){return y;}
-        boolean isAt (int x, int y){ return (this.x == x && this.y == y);}
-    }
     protected static WasteLayer instance = null;
     private ArrayList<WasteObject> cell; // which Waste Objects are in the cell
     private HashMap<Posn, ArrayList<WasteObject>> layer; // where is the cell
@@ -127,6 +115,12 @@ public class WasteLayer extends Layer{
     
     @Override public void drawLayer() {
         if (currentTime > -1){
+            for(Posn key : time.get(currentTime).keySet()){
+                cell = time.get(currentTime).get(key);
+                for (WasteObject wo: cell){
+                    wo.draw(key);
+                }
+            }
             // TODO add drawing code here
         }
     }

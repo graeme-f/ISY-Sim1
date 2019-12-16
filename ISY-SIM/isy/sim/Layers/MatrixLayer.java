@@ -26,6 +26,7 @@ package sim.Layers;
 
 import javafx.scene.canvas.GraphicsContext;
 import sim.Objects.SimObject;
+import sim.Utilities.Posn;
 import sim.Utilities.SimMatrix;
 
 /**
@@ -106,4 +107,38 @@ public abstract class MatrixLayer  extends Layer {
         }
     }
 
+    public Posn toScreenCoordiantes(Posn p){
+        return toScreenCoordiantes(p.getX(), p.getY());
+    }
+
+    public Posn toScreenCoordiantes(double x, double y){
+        return new Posn(x*layerWidth/m.getHeight(), y*layerHeight/m.getHeight());
+    }
+    
+    public Posn toLayerCoordinates(Posn p){
+        return toLayerCoordinates((int)p.getX(), (int)p.getY());
+    }
+    public Posn toLayerCoordinates(int x, int y){
+        return new Posn(x*m.getHeight()/layerWidth, y*m.getHeight()/layerHeight);
+    }
+
+    public Posn getVacantArea(int x, int y){
+        if (m.matrix[x][y] == null){
+            return new Posn(x,y);
+        }
+        if (y > 0 && m.matrix[x][y-1] == null){
+            return new Posn(x,y-1);
+        }
+        if (y < m.getHeight()-1 && m.matrix[x][y+1] == null){
+            return new Posn(x,y+1);
+        }
+        if (x > 0 && m.matrix[x-1][y] == null){
+            return new Posn(x-1,y);
+        }
+        if (x < m.getWidth()-1 && m.matrix[x+1][y] == null){
+            return new Posn(x+1,y);
+        }
+        return null;
+    }
+    
 } // end of class Layer
