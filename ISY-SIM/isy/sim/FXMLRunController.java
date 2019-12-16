@@ -43,7 +43,6 @@ import sim.Layers.WasteSourceLayer;
 
 public class FXMLRunController implements Initializable {
 
-
     private boolean stopped = false;
     private static final int TIMESLICE = 100;
     @FXML private Slider sldSpeed;
@@ -64,8 +63,6 @@ public class FXMLRunController implements Initializable {
             speed = Duration.millis((11-sldSpeed.getValue())*TIMESLICE);
             startTimeline();
     }
-
-
 
     public GraphicsContext gc;
     private LandLayer landLayer;
@@ -135,7 +132,7 @@ public class FXMLRunController implements Initializable {
 
     private void draw() {
         // Generate waste from sources
-        
+        generateWaste();
         // Move waste around ocean
 
         // Merge ocean
@@ -143,4 +140,9 @@ public class FXMLRunController implements Initializable {
         // Draw ocean
         lblTime.setText("Time: " + ++time);
     }
-}
+    
+    private void generateWaste(){
+        
+    } // end of method generateWaste
+    
+} // end of class FXMLRunController
