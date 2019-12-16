@@ -40,7 +40,7 @@ public abstract class MatrixLayer  extends Layer {
 
     public MatrixLayer(GraphicsContext gContext, double width, double height, double horizScale, double vertScale, int cellWidth) {
     	super(gContext, width, height, horizScale, vertScale);
-        m = new SimMatrix((int)width/cellWidth+1, (int)height/cellWidth+1);
+        m = new SimMatrix((int)width/cellWidth, (int)height/cellWidth);
     }
     
     public void drawLayer() {
@@ -122,9 +122,38 @@ public abstract class MatrixLayer  extends Layer {
         return new Posn(x*m.getHeight()/layerWidth, y*m.getHeight()/layerHeight);
     }
 
-    public Posn getVacantArea(int x, int y){
+    public Posn getVacantArea(double d_x, double d_y){
+        int x = (int)(d_x+.5);
+        int y = (int)(d_y+0.5);
         if (m.matrix[x][y] == null){
             return new Posn(x,y);
+        }
+        double dx = d_x - x;
+        double dy = d_y - y;
+        if (dx >= 0 && dy >= 0){ // this means the sources are on the top or left edge of the land
+            if (dx < dy){
+                // Try left first
+                if (x > 0 && m.matrix[x-1][y] == null){
+                    return new Posn(x-1,y);
+                }
+            } else {
+                // try up first
+                if (y > 0 && m.matrix[x][y-1] == null){
+                    return new Posn(x,y-1);
+                }
+            }
+        } else {
+            if (dx < 0){
+                // try right first
+                if (x < m.getWidth()-1 && m.matrix[x+1][y] == null){
+                    return new Posn(x+1,y);
+                }
+            } else {
+                // try down first
+                if (y < m.getHeight()-1 && m.matrix[x][y+1] == null){
+                    return new Posn(x,y+1);
+                }
+            }
         }
         if (y > 0 && m.matrix[x][y-1] == null){
             return new Posn(x,y-1);

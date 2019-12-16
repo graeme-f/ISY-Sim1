@@ -84,13 +84,13 @@ public class WasteSourceLayer extends MatrixLayer {
             	if (m.matrix[i][j]!=null) {
                     Posn ps = toScreenCoordiantes(i,j);
                     Posn pl = ll.toLayerCoordinates(ps);
-                        Posn posn = ll.getVacantArea((int)pl.getX(), (int)pl.getY());
-                        if (posn != null){
-                            WasteSourceObject wso = (WasteSourceObject)m.matrix[i][j];
-                            WasteObject wo = new WasteObject(wso.getSize());
-                            ps = ll.toScreenCoordiantes(posn);
-                            wl.addWaste((int)ps.getX(), (int)ps.getY(), wo);
-                        }
+                    Posn posn = ll.getVacantArea(pl.getX(), pl.getY());
+                    if (posn != null){
+                        WasteSourceObject wso = (WasteSourceObject)m.matrix[i][j];
+                        WasteObject wo = new WasteObject(wso.getSize());
+                        ps = ll.toScreenCoordiantes(posn);
+                        wl.addWaste((int)ps.getX(), (int)ps.getY(), wo);
+                    }
             	} // end cell exists in matrix 
             } // end inner loop
         } // end outer loop
