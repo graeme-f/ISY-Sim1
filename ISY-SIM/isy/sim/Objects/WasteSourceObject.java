@@ -43,6 +43,17 @@ public class WasteSourceObject extends SimObject {
         this.type = type;
     }
 
+    public int getSize(){
+        switch (size) {
+            case SMALL:
+                return 1;
+            case MEDIUM:
+                return 6;
+            default:
+                return 36;
+        }
+    }
+    
     @Override
     public void draw() {
         WasteSourceLayer wsl = WasteSourceLayer.getWasteSourceLayer();
@@ -89,7 +100,7 @@ public class WasteSourceObject extends SimObject {
         double[] xCoordinates = {x1, x1, x2, x2};
         double[] yCoordinates = {y1, y2, y2, y1};
         gc.fillPolygon(xCoordinates, yCoordinates, 4);
-    }
+    } // end of draw method
 
 
 } // end of class WasteSourceObject

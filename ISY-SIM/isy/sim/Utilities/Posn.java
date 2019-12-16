@@ -22,35 +22,27 @@
  * THE SOFTWARE.
  */
 
-package sim.Objects;
-
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import sim.Layers.WasteLayer;
-import sim.Utilities.Posn;
+package sim.Utilities;
 
 /**
  *
  * @author gfoster
  */
-public class WasteObject {
-    int size;
-    
-    public WasteObject (int size){
-        this.size = size;
+public class Posn{
+    double x;
+    double y;
+
+    public Posn (double x, double y){
+        this.x = x;
+        this.y = y;
     }
-    
-    public void setSize(int size){
-        this.size = size;
+
+    public Posn (int x, int y){
+        this.x = x;
+        this.y = y;
     }
-    public int getSize(){
-        return size;
-    }
-    
-    public void draw(Posn p){
-        WasteLayer wl = WasteLayer.getWasteLayer();
-        GraphicsContext gc = wl.getActiveGC();
-        gc.setFill(Color.BLACK);
-        gc.fillOval(p.getX(), p.getY(), 5, 5);
-    }
-} // end of class WasteObject
+
+    public double getX(){return x;}
+    public double getY(){return y;}
+    public boolean isAt (double x, double y){ return (this.x == x && this.y == y);}
+} // end of class Posn

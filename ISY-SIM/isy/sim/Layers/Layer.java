@@ -1,6 +1,7 @@
 package sim.Layers;
 
 import javafx.scene.canvas.GraphicsContext;
+import sim.Utilities.Posn;
 
 public abstract class Layer {
 	protected GraphicsContext gc;

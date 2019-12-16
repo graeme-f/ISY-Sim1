@@ -32,13 +32,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 import sim.Layers.LandLayer;
+import sim.Layers.WasteLayer;
 import sim.Layers.WasteSourceLayer;
 
 public class FXMLRunController implements Initializable {
@@ -67,10 +67,10 @@ public class FXMLRunController implements Initializable {
     public GraphicsContext gc;
     private LandLayer landLayer;
     private WasteSourceLayer wasteSourceLayer;
+    private WasteLayer wasteLayer;
     private double hSpeed;
     private double vSpeed;
 
-    private Rectangle r;
     private Duration speed;
     private Timeline timeline;
     
@@ -82,11 +82,16 @@ public class FXMLRunController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         gc = cnvOcean.getGraphicsContext2D();
-        gc.fillRect(5, 5, 10, 10);
-        r = new Rectangle(5,5,10,10);
+        wasteLayer = WasteLayer.getWasteLayer(gc
+                                             ,cnvOcean.getWidth()
+                                             ,cnvOcean.getHeight()
+                                             ,1
+                                             ,1
+                                             ,1
+        );
         setSlider();
         speed = Duration.millis(10 * TIMESLICE);
-        draw();
+        //draw();
         startTimeline();
     }
     
@@ -110,6 +115,7 @@ public class FXMLRunController implements Initializable {
         }
         hSpeed = horizontalSpeed;
         vSpeed = verticalSpeed;
+        draw();
     }
 
     private void startTimeline() {
@@ -131,18 +137,16 @@ public class FXMLRunController implements Initializable {
     } // end of method setSlider()
 
     private void draw() {
+        wasteLayer.addTime();
         // Generate waste from sources
-        generateWaste();
+        wasteSourceLayer.generate(landLayer, wasteLayer);
         // Move waste around ocean
 
         // Merge ocean
         
         // Draw ocean
+        wasteLayer.drawLayer();
         lblTime.setText("Time: " + ++time);
     }
-    
-    private void generateWaste(){
         
-    } // end of method generateWaste
-    
 } // end of class FXMLRunController
