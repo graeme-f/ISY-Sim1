@@ -50,7 +50,8 @@ public class WasteObject {
     public void draw(Posn p){
         WasteLayer wl = WasteLayer.getWasteLayer();
         GraphicsContext gc = wl.getActiveGC();
-        gc.setFill(Color.BLACK);
-        gc.fillOval(p.getX(), p.getY(), 5, 5);
+        double weight = size/10.0;
+        gc.setFill(Color.web("#000000", Math.min(weight,1.0)));
+        gc.fillOval(p.getX(), p.getY(), weight, weight);
     }
 } // end of class WasteObject

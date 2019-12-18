@@ -42,6 +42,33 @@ public class Posn{
         this.y = y;
     }
 
+    @Override
+    public int hashCode()
+    {
+        return (int)(x*1000+y);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Posn other = (Posn) obj;
+        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
+            return false;
+        }
+        return true;
+    }
+    
     public double getX(){return x;}
     public double getY(){return y;}
     public boolean isAt (double x, double y){ return (this.x == x && this.y == y);}

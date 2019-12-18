@@ -26,6 +26,7 @@ package sim.Layers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.scene.canvas.GraphicsContext;
+import sim.Objects.WasteMergeObject;
 import sim.Objects.WasteObject;
 import sim.Utilities.Posn;
 
@@ -113,6 +114,62 @@ public class WasteLayer extends Layer{
     
     public void addTime(){currentTime++;}
     
+    public void circulate(double hSpeed, double vSpeed, LandLayer ll){
+        // Check that there is a  previous layer to move
+        if (currentTime > 0){
+            // Get each cell from the previous layer
+            for(Posn key : time.get(currentTime-1).keySet()){
+                cell = time.get(currentTime-1).get(key);
+                for (WasteObject wo: cell){
+                    wo.draw(key);
+                    double newX = key.getX() + vSpeed*(layerWidth-2*key.getX())/layerWidth;
+                    newX += getRandomDoubleBetweenRange(vSpeed*-0.5, vSpeed*0.5);
+                    double newY = key.getY() + hSpeed*(layerHeight-2*key.getY())/layerHeight;
+                    newY += getRandomDoubleBetweenRange(hSpeed*-0.5, hSpeed*0.5);
+                    addWaste((int)newX, (int)newY, wo);
+                }
+            }
+        }
+    }
+    
+    public int currentLayerWasteCount(){
+        int total = 0;
+        if (currentTime > -1){
+            for(Posn key : time.get(currentTime).keySet()){
+                cell = time.get(currentTime).get(key);
+                total += cellCount();
+            }
+        }
+        return total;
+    }
+    
+    public int cellCount(){
+        int total = 0;
+        for (WasteObject wo: cell){
+            total += wo.getSize();
+        }
+        return total;
+    }
+    
+    public void merge(){
+        if (currentTime > -1){
+            for(Posn key : time.get(currentTime).keySet()){
+                cell = time.get(currentTime).get(key);
+                int total = cellCount();
+                if (total > 100){
+                    WasteMergeObject wmo = new WasteMergeObject();
+                    for (WasteObject wo: cell){
+                        wmo.merge(wo);
+                    }
+                }
+            }
+        }
+    }
+    
+    public static double getRandomDoubleBetweenRange(double min, double max){
+        double x = (Math.random()*((max-min)+1))+min;
+        return x;
+    }
     @Override public void drawLayer() {
         if (currentTime > -1){
             for(Posn key : time.get(currentTime).keySet()){
@@ -121,7 +178,6 @@ public class WasteLayer extends Layer{
                     wo.draw(key);
                 }
             }
-            // TODO add drawing code here
         }
     }
 } // end of class WasteLayer
