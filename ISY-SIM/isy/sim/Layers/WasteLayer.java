@@ -122,9 +122,13 @@ public class WasteLayer extends Layer{
                 cell = time.get(currentTime-1).get(key);
                 for (WasteObject wo: cell){
                     wo.draw(key);
-                    double newX = key.getX() + vSpeed*(layerWidth-2*key.getX())/layerWidth;
+                    int dirnX = 1;
+                    int dirnY = 1;
+                    if (key.getX()*2 < layerWidth) {dirnY = -1;}
+                    if (key.getY()*2 > layerHeight) {dirnX = -1;}
+                    double newX = key.getX() + (1-Math.abs(1-2*key.getX()/layerWidth))*vSpeed*dirnX;
+                    double newY = key.getY() + (1-Math.abs(1-2*key.getY()/layerHeight))*hSpeed*dirnY;
                     newX += getRandomDoubleBetweenRange(vSpeed*-0.5, vSpeed*0.5);
-                    double newY = key.getY() + hSpeed*(layerHeight-2*key.getY())/layerHeight;
                     newY += getRandomDoubleBetweenRange(hSpeed*-0.5, hSpeed*0.5);
                     addWaste((int)newX, (int)newY, wo);
                 }
