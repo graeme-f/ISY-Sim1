@@ -98,7 +98,7 @@ public class FXMLRunController implements Initializable {
     public void setup(LandLayer land
                      ,WasteSourceLayer wasteSource
                      ,double horizontalSpeed
-                     , double verticalSpeed){
+                     ,double verticalSpeed){
         gc.setFill(Color.web("#2cd5c4"));
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
         landLayer = land;
@@ -137,16 +137,25 @@ public class FXMLRunController implements Initializable {
     } // end of method setSlider()
 
     private void draw() {
+        gc.setFill(Color.web("#2cd5c4"));
+        gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
+        if (landLayer != null){
+            landLayer.drawLayer();
+        }
+        if (wasteSourceLayer != null){
+            wasteSourceLayer.drawLayer();
+        }
         wasteLayer.addTime();
         // Generate waste from sources
         wasteSourceLayer.generate(landLayer, wasteLayer);
         // Move waste around ocean
-
+        wasteLayer.circulate(hSpeed, vSpeed, landLayer);
         // Merge ocean
-        
+        wasteLayer.merge();
         // Draw ocean
         wasteLayer.drawLayer();
         lblTime.setText("Time: " + ++time);
+        lblWasteCount.setText("Waste Count: " + wasteLayer.currentLayerWasteCount());
     }
         
 } // end of class FXMLRunController

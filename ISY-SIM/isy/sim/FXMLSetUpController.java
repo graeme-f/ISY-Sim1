@@ -267,10 +267,10 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 if (landLayer == null) {
                 	landLayer = LandLayer.getLandLayer(gc
-                                                          ,sldHorizontal.getValue()
-                                                          ,sldVertical.getValue()
-                                                          ,cnvOcean.getWidth() / sldHorizontal.getValue()
-                                                          ,cnvOcean.getHeight() / sldVertical.getValue()
+                                                          ,oceanWidth
+                                                          ,oceanHeight
+                                                          ,cnvOcean.getWidth() / oceanWidth
+                                                          ,cnvOcean.getHeight() / oceanHeight
                                                           ,majorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
@@ -296,10 +296,10 @@ public class FXMLSetUpController implements Initializable {
                 disableSliders();
                 if (wasteSourceLayer == null) {
                     wasteSourceLayer = WasteSourceLayer.getWasteSourceLayer(gc
-                                                                           ,sldHorizontal.getValue()
-                                                                           ,sldVertical.getValue()
-                                                                           ,cnvOcean.getWidth() / sldHorizontal.getValue()
-                                                                           ,cnvOcean.getHeight() / sldVertical.getValue()
+                                                                           ,oceanWidth
+                                                                           ,oceanHeight
+                                                                           ,cnvOcean.getWidth() / oceanWidth
+                                                                           ,cnvOcean.getHeight() / oceanHeight
                                                                            ,minorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {

@@ -33,14 +33,17 @@ import java.util.ArrayList;
 public class WasteMergeObject  extends WasteObject{
     ArrayList<WasteDischargeObject> merge;
     
-    WasteMergeObject(int size, WasteDischargeObject wdo1, WasteDischargeObject wdo2){
-        super(size);
+    public WasteMergeObject(){
+        super(0);
         merge = new ArrayList();
-        merge.add(wdo1);
-        merge.add(wdo2);
     }
 
+    public void merge(WasteObject wo){
+        System.out.print(wo);
+    }
+    
     public void merge(WasteDischargeObject wdo){
+        size += wdo.getSize();
         merge.add(wdo);
     }
     public void merge(WasteMergeObject wmo){
