@@ -26,6 +26,7 @@ package sim.Layers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.scene.canvas.GraphicsContext;
+import sim.Objects.WasteDischargeObject;
 import sim.Objects.WasteMergeObject;
 import sim.Objects.WasteObject;
 import sim.Utilities.Posn;
@@ -39,7 +40,7 @@ public class WasteLayer extends Layer{
     protected static WasteLayer instance = null;
     private ArrayList<WasteObject> cell; // which Waste Objects are in the cell
     private HashMap<Posn, ArrayList<WasteObject>> layer; // where is the cell
-    private final ArrayList<HashMap<Posn, ArrayList<WasteObject>>> time; // when were they there
+    private HashMap<Posn, ArrayList<WasteObject>> oldLayer; // where is the cell
     private int currentTime;
     
     public static WasteLayer getWasteLayer(GraphicsContext gContext
@@ -79,19 +80,10 @@ public class WasteLayer extends Layer{
                       ) {
         super(gContext, width, height, horizScale, vertScale);
         this.currentTime = -1;
-        time = new ArrayList();
+        oldLayer = new HashMap();
+        layer = new HashMap();
     } // end private constructor
 
-    protected void grabCurrentLayer(){
-        // Has a layer been added for the currentTime
-        if (currentTime >= time.size()){
-            layer = new HashMap();
-            time.add(layer);
-        } else {
-            layer = time.get(currentTime);
-        }
-    } // end of method grabCurrentLayer
-    
     protected void grabCell(Posn posn){
         if (!layer.containsKey(posn)){
             cell = new ArrayList();
@@ -103,48 +95,54 @@ public class WasteLayer extends Layer{
     
     public void addWaste(int x, int y, WasteObject wo){
         // Time needs to be incremented before this is called
-        if (currentTime > -1){
-            grabCurrentLayer();
             // Does anything already exist in the current cell
             grabCell(new Posn(x,y));
             // add the waste object to the current cell
             cell.add(wo);
-        }
     }
     
-    public void addTime(){currentTime++;}
+    public void addTime(){
+        oldLayer = layer;
+        layer = new HashMap();
+        currentTime++;
+    }
     
     public void circulate(double hSpeed, double vSpeed, LandLayer ll){
-        // Check that there is a  previous layer to move
-        if (currentTime > 0){
-            // Get each cell from the previous layer
-            for(Posn key : time.get(currentTime-1).keySet()){
-                cell = time.get(currentTime-1).get(key);
-                for (WasteObject wo: cell){
-                    wo.draw(key);
-                    int dirnX = 1;
-                    int dirnY = 1;
-                    if (key.getX()*2 < layerWidth) {dirnY = -1;}
-                    if (key.getY()*2 > layerHeight) {dirnX = -1;}
-                    double newX = key.getX() + (1-Math.abs(1-2*key.getX()/layerWidth))*vSpeed*dirnX;
-                    double newY = key.getY() + (1-Math.abs(1-2*key.getY()/layerHeight))*hSpeed*dirnY;
-                    newX += getRandomDoubleBetweenRange(vSpeed*-0.5, vSpeed*0.5);
-                    newY += getRandomDoubleBetweenRange(hSpeed*-0.5, hSpeed*0.5);
-                    addWaste((int)newX, (int)newY, wo);
-                }
+        // Get each cell from the previous layer
+        for(Posn key : oldLayer.keySet()){
+            cell = oldLayer.get(key);
+            for (WasteObject wo: cell){
+                wo.draw(key);
+                int dirnX = 1;
+                int dirnY = 1;
+                if (key.getX()*2 < layerWidth) {dirnY = -1;}
+                if (key.getY()*2 > layerHeight) {dirnX = -1;}
+                double newX = key.getX() + (1-Math.abs(1-2*key.getX()/layerWidth))*vSpeed*dirnX;
+                double newY = key.getY() + (1-Math.abs(1-2*key.getY()/layerHeight))*hSpeed*dirnY;
+                newX += getRandomDoubleBetweenRange(vSpeed*-0.5, vSpeed*0.5);
+                newY += getRandomDoubleBetweenRange(hSpeed*-0.5, hSpeed*0.5);
+                addWaste((int)newX, (int)newY, wo);
             }
         }
     }
     
     public int currentLayerWasteCount(){
         int total = 0;
-        if (currentTime > -1){
-            for(Posn key : time.get(currentTime).keySet()){
-                cell = time.get(currentTime).get(key);
-                total += cellCount();
+        int max = 0;
+        for(Posn key : layer.keySet()){
+            cell = layer.get(key);
+            int count = cellCount();
+            if (count > max){
+                max = count;
             }
+            total += count;
         }
+        System.out.println(total + ":" + max);
         return total;
+    }
+    
+    public int pollutedSpace(){
+        return layer.size();
     }
     
     public int cellCount(){
@@ -156,16 +154,15 @@ public class WasteLayer extends Layer{
     }
     
     public void merge(){
-        if (currentTime > -1){
-            for(Posn key : time.get(currentTime).keySet()){
-                cell = time.get(currentTime).get(key);
-                int total = cellCount();
-                if (total > 100){
-                    WasteMergeObject wmo = new WasteMergeObject();
-                    for (WasteObject wo: cell){
-                        wmo.merge(wo);
-                    }
+        for(Posn key : layer.keySet()){
+            cell = layer.get(key);
+            if (cell.size() > 1){
+                WasteMergeObject wmo = new WasteMergeObject();
+                for (WasteObject wo: cell){
+                    wo.merge(wmo);
                 }
+                cell.clear();
+                cell.add(wmo);
             }
         }
     }
@@ -174,10 +171,11 @@ public class WasteLayer extends Layer{
         double x = (Math.random()*((max-min)+1))+min;
         return x;
     }
+    
     @Override public void drawLayer() {
         if (currentTime > -1){
-            for(Posn key : time.get(currentTime).keySet()){
-                cell = time.get(currentTime).get(key);
+            for(Posn key : layer.keySet()){
+                cell = layer.get(key);
                 for (WasteObject wo: cell){
                     wo.draw(key);
                 }

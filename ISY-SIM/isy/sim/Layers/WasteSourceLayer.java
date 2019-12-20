@@ -25,7 +25,7 @@
 package sim.Layers;
 
 import javafx.scene.canvas.GraphicsContext;
-import sim.Objects.WasteObject;
+import sim.Objects.WasteDischargeObject;
 import sim.Objects.WasteSourceObject;
 import sim.Utilities.Posn;
 
@@ -78,7 +78,8 @@ public class WasteSourceLayer extends MatrixLayer {
         this.cellWidth = cellWidth;
     } // end private constructor
 
-    public void generate(LandLayer ll, WasteLayer wl){
+    public int generate(LandLayer ll, WasteLayer wl){
+        int items = 0;
         for (int i = 0; i < m.matrix.length; i++) {
             for (int j = 0; j < m.matrix[i].length; j++) {
             	if (m.matrix[i][j]!=null) {
@@ -87,13 +88,15 @@ public class WasteSourceLayer extends MatrixLayer {
                     Posn posn = ll.getVacantArea(pl.getX(), pl.getY());
                     if (posn != null){
                         WasteSourceObject wso = (WasteSourceObject)m.matrix[i][j];
-                        WasteObject wo = new WasteObject(wso.getSize());
+                        WasteDischargeObject wdo = new WasteDischargeObject(wso.getSize(), wso);
                         ps = ll.toScreenCoordiantes(posn);
-                        wl.addWaste((int)ps.getX(), (int)ps.getY(), wo);
+                        wl.addWaste((int)ps.getX(), (int)ps.getY(), wdo);
+                        items ++;
                     }
             	} // end cell exists in matrix 
             } // end inner loop
         } // end outer loop
+        return items;
     } // end method generate
     
     public int cellWidth() {

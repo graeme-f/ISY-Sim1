@@ -31,11 +31,16 @@ package sim.Objects;
 public class WasteDischargeObject extends WasteObject{
     WasteSourceObject source;
     
-    WasteDischargeObject(int size, WasteSourceObject source){
+    public WasteDischargeObject(int size, WasteSourceObject source){
         super(size);
         this.source = source;
     }
     
     public WasteSourceObject getSource(){return source;}
     public boolean from(WasteSourceObject source){return source == this.source;}
+    
+    @Override
+    public void  merge(WasteMergeObject wmo){
+        wmo.merge(this);
+    }
 } // end of class WasteDischargeObject
