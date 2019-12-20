@@ -46,11 +46,11 @@ public class WasteSourceObject extends SimObject {
     public int getSize(){
         switch (size) {
             case SMALL:
-                return 1;
+                return 4;
             case MEDIUM:
-                return 6;
+                return 8;
             default:
-                return 36;
+                return 12;
         }
     }
     

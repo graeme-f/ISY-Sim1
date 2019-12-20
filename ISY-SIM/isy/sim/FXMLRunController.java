@@ -52,16 +52,20 @@ public class FXMLRunController implements Initializable {
     @FXML private Button btnAnalysis;
     @FXML private void handleStop(ActionEvent event)
     {
-            stopped = true;
-            timeline.stop();
-            speed = Duration.ZERO;
+        discharge = !discharge; 
     }
     @FXML private void handlePlay(ActionEvent event)
     {
+        if (stopped){
             stopped = false;
             timeline.stop();
             speed = Duration.millis((11-sldSpeed.getValue())*TIMESLICE);
             startTimeline();
+        } else {
+            stopped = true;
+            timeline.stop();
+            speed = Duration.ZERO;
+        }
     }
 
     public GraphicsContext gc;
@@ -73,6 +77,7 @@ public class FXMLRunController implements Initializable {
 
     private Duration speed;
     private Timeline timeline;
+    private boolean discharge;
     
     @FXML private Label lblTime;
     private int time = 0;
@@ -115,6 +120,7 @@ public class FXMLRunController implements Initializable {
         }
         hSpeed = horizontalSpeed;
         vSpeed = verticalSpeed;
+        discharge = true;
         draw();
     }
 
@@ -147,7 +153,9 @@ public class FXMLRunController implements Initializable {
         }
         wasteLayer.addTime();
         // Generate waste from sources
-        wasteSourceLayer.generate(landLayer, wasteLayer);
+        if (discharge){
+           wasteCount += wasteSourceLayer.generate(landLayer, wasteLayer);
+        }
         // Move waste around ocean
         wasteLayer.circulate(hSpeed, vSpeed, landLayer);
         // Merge ocean
@@ -155,7 +163,9 @@ public class FXMLRunController implements Initializable {
         // Draw ocean
         wasteLayer.drawLayer();
         lblTime.setText("Time: " + ++time);
-        lblWasteCount.setText("Waste Count: " + wasteLayer.currentLayerWasteCount());
+        lblWasteCount.setText("Waste Discharged: " + wasteCount 
+                             + " Waste mass: " + wasteLayer.currentLayerWasteCount() 
+                             + " Waste Count: " + wasteLayer.pollutedSpace());
     }
         
 } // end of class FXMLRunController

@@ -33,7 +33,7 @@ import sim.Utilities.Posn;
  *
  * @author gfoster
  */
-public class WasteObject {
+public abstract class WasteObject {
     int size;
     
     public WasteObject (int size){
@@ -50,8 +50,11 @@ public class WasteObject {
     public void draw(Posn p){
         WasteLayer wl = WasteLayer.getWasteLayer();
         GraphicsContext gc = wl.getActiveGC();
-        double weight = size/10.0;
+        double scale = 5.0;
+        double weight = size/scale;
         gc.setFill(Color.web("#000000", Math.min(weight,1.0)));
-        gc.fillOval(p.getX(), p.getY(), weight, weight);
+        gc.fillOval(p.getX(), p.getY(), Math.sqrt(size)/scale, Math.sqrt(size)/scale);
     }
+    
+    public abstract void merge(WasteMergeObject wmo);
 } // end of class WasteObject

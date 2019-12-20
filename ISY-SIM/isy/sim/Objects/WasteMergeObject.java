@@ -38,17 +38,14 @@ public class WasteMergeObject  extends WasteObject{
         merge = new ArrayList();
     }
 
-    public void merge(WasteObject wo){
-        System.out.print(wo);
-    }
-    
     public void merge(WasteDischargeObject wdo){
         size += wdo.getSize();
         merge.add(wdo);
     }
+    @Override
     public void merge(WasteMergeObject wmo){
-        for (WasteDischargeObject wdo : wmo.merge){
-            merge.add(wdo);
+        for (WasteDischargeObject wdo : this.merge){
+            wmo.merge.add(wdo);
         }
     }
 } // end of class WasteMergeObject
