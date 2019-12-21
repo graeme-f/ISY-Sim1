@@ -45,7 +45,7 @@ public class WasteMergeObject  extends WasteObject{
     @Override
     public void merge(WasteMergeObject wmo){
         for (WasteDischargeObject wdo : this.merge){
-            wmo.merge.add(wdo);
+            wmo.merge(wdo);
         }
     }
 } // end of class WasteMergeObject
