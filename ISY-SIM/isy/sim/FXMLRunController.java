@@ -163,8 +163,9 @@ public class FXMLRunController implements Initializable {
         // Draw ocean
         wasteLayer.drawLayer();
         lblTime.setText("Time: " + ++time);
+        int mass = wasteLayer.currentLayerWasteCount();
         lblWasteCount.setText("Waste Discharged: " + wasteCount 
-                             + " Waste mass: " + wasteLayer.currentLayerWasteCount() 
+                             + " Waste mass: " + mass
                              + " Waste Count: " + wasteLayer.pollutedSpace());
     }
         

@@ -42,6 +42,7 @@ public class WasteLayer extends Layer{
     private HashMap<Posn, ArrayList<WasteObject>> layer; // where is the cell
     private HashMap<Posn, ArrayList<WasteObject>> oldLayer; // where is the cell
     private int currentTime;
+    public int getTime(){return currentTime;}
     
     public static WasteLayer getWasteLayer(GraphicsContext gContext
                                            ,double width
@@ -137,7 +138,6 @@ public class WasteLayer extends Layer{
             }
             total += count;
         }
-        System.out.println(total + ":" + max);
         return total;
     }
     
@@ -173,12 +173,10 @@ public class WasteLayer extends Layer{
     }
     
     @Override public void drawLayer() {
-        if (currentTime > -1){
-            for(Posn key : layer.keySet()){
-                cell = layer.get(key);
-                for (WasteObject wo: cell){
-                    wo.draw(key);
-                }
+        for(Posn key : layer.keySet()){
+            cell = layer.get(key);
+            for (WasteObject wo: cell){
+                wo.draw(key);
             }
         }
     }

@@ -52,7 +52,8 @@ public abstract class WasteObject {
         GraphicsContext gc = wl.getActiveGC();
         double scale = 5.0;
         double weight = size/scale;
-        gc.setFill(Color.web("#000000", Math.min(weight,1.0)));
+        String colour = "#000000";
+        gc.setFill(Color.web(colour, Math.min(weight,1.0)));
         gc.fillOval(p.getX(), p.getY(), Math.sqrt(size)/scale, Math.sqrt(size)/scale);
     }
     
