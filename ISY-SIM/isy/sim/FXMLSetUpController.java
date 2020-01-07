@@ -54,18 +54,18 @@ import java.util.ResourceBundle;
  */
 public class FXMLSetUpController implements Initializable {
 
+
     @FXML private TextField txtHorizontal;
     @FXML private TextField txtVertical;
     @FXML private Slider sldHorizontal;
     @FXML private Slider sldVertical;
     @FXML private Canvas cnvOcean;
-    @FXML private Button btnPlay;
     @FXML private ToggleButton btnWaste;
     @FXML private ToggleButton btnLand;
     @FXML private ToggleButton btnCurrent; // TODO disable when it can't be used
     @FXML private MenuButton wastePref;
     @FXML private Label statusBar;
-    @FXML private ToggleButton btnClear; // TODO why a toggle button
+    @FXML private Button btnClear;
     @FXML private CheckMenuItem smallItem;
     @FXML private CheckMenuItem medItem;
     @FXML private CheckMenuItem largeItem;
@@ -87,11 +87,12 @@ public class FXMLSetUpController implements Initializable {
     private double horizontalSpeed = 2;
     private double verticalSpeed = 2;
     private final int minorGL = 5;
-    public final int majorGL = 20;
+    private final int majorGL = 20;
     public enum sourceSize {SMALL, MEDIUM, LARGE}
     public enum sourceType {OIL, PLASTIC, MISC}
     private sourceType type = sourceType.PLASTIC;
     private sourceSize size = sourceSize.MEDIUM;
+    public Button btnPlay;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -377,8 +378,10 @@ public class FXMLSetUpController implements Initializable {
     }
 
     private void clearAll() {
-        btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (btnClear.selectedProperty().getValue()){
+        //btnClear.selectedProperty().addListener(((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            //if (btnClear.selectedProperty().getValue()){
+        btnClear.pressedProperty().addListener((observable, oldValue, newValue) -> {
+            if (btnClear.pressedProperty().getValue()){
                 btnLand.setSelected(false);
                 sldVertical.setDisable(false);
                 sldHorizontal.setDisable(false);
@@ -392,7 +395,7 @@ public class FXMLSetUpController implements Initializable {
                 }
                 draw();
             }
-        }));
+        });
     }
 
     private void setSldVerMinMax(double min, double max) {
