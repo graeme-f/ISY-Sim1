@@ -28,13 +28,13 @@
                   <Canvas fx:id="cnvOcean" height="261.0" translateY="264.0" width="365.0" />
                </children>
             </HBox>
-            <HBox minHeight="25.0" prefHeight="30.0" prefWidth="740.0" translateX="60" translateY="0">
+            <HBox minHeight="25.0" prefHeight="30.0" prefWidth="740.0" translateX="60">
                <children>
                   <TextField fx:id="txtHorizontal" maxWidth="60.0" text="500" />
                   <Slider fx:id="sldHorizontal" max="1000.0" min="100.0" minWidth="680.0" translateY="4.0" value="500.0" />
                </children>
             </HBox>
-            <HBox minHeight="40.0" prefWidth="200.0" translateY="0">
+            <HBox minHeight="40.0" prefWidth="200.0">
                 <children>
                   <Label fx:id="statusBar" minWidth="305" prefWidth="305" />
                   <ToggleButton fx:id="btnCurrent" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" text="Current" />
@@ -51,7 +51,7 @@
                         <CheckMenuItem fx:id="miscItem" mnemonicParsing="false" text="Misc." />
                      </items>
                   </MenuButton>
-                  <ToggleButton fx:id="btnClear" minWidth="80" mnemonicParsing="false" text="Clear All" />
+                  <Button fx:id="btnClear" minWidth="80" mnemonicParsing="false" text="Clear All" />
                   <Button fx:id="btnPlay" layoutX="490.0" layoutY="10.0" minWidth="60.0" mnemonicParsing="false" onAction="#playRun" text="Play" />
                </children>
             </HBox>
