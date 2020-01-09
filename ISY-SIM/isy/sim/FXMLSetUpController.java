@@ -26,7 +26,6 @@ package sim;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -273,6 +272,12 @@ public class FXMLSetUpController implements Initializable {
                                                           ,cnvOcean.getWidth() / oceanWidth
                                                           ,cnvOcean.getHeight() / oceanHeight
                                                           ,majorGL);
+                    wasteSourceLayer = WasteSourceLayer.getWasteSourceLayer(gc
+                            ,oceanWidth
+                            ,oceanHeight
+                            ,cnvOcean.getWidth() / oceanWidth
+                            ,cnvOcean.getHeight() / oceanHeight
+                            ,minorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
                     int x = (int)(event.getX()/landLayer.getHScale()/majorGL);
@@ -302,6 +307,12 @@ public class FXMLSetUpController implements Initializable {
                                                                            ,cnvOcean.getWidth() / oceanWidth
                                                                            ,cnvOcean.getHeight() / oceanHeight
                                                                            ,minorGL);
+                    landLayer = LandLayer.getLandLayer(gc
+                            ,oceanWidth
+                            ,oceanHeight
+                            ,cnvOcean.getWidth() / oceanWidth
+                            ,cnvOcean.getHeight() / oceanHeight
+                            ,minorGL);
                 }
                 cnvOcean.setOnMouseClicked(event -> {
                     int x = (int)(event.getX()/landLayer.getHScale()/minorGL);
