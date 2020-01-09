@@ -87,13 +87,6 @@ public class FXMLRunController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         gc = cnvOcean.getGraphicsContext2D();
-        wasteLayer = WasteLayer.getWasteLayer(gc
-                                             ,cnvOcean.getWidth()
-                                             ,cnvOcean.getHeight()
-                                             ,1
-                                             ,1
-                                             ,1
-        );
         setSlider();
         speed = Duration.millis(10 * TIMESLICE);
         //draw();
@@ -104,7 +97,16 @@ public class FXMLRunController implements Initializable {
                      ,WasteSourceLayer wasteSource
                      ,double horizontalSpeed
                      ,double verticalSpeed){
+        wasteLayer = WasteLayer.getWasteLayer(gc
+                ,cnvOcean.getWidth()
+                ,cnvOcean.getHeight()
+                ,1
+                ,1
+                ,1
+        );
         gc.setFill(Color.web("#2cd5c4"));
+        System.out.println(cnvOcean.getWidth());
+        System.out.println(cnvOcean.getHeight());
         gc.fillRect(0, 0, cnvOcean.getWidth(), cnvOcean.getHeight());
         landLayer = land;
         if (landLayer != null){

@@ -67,7 +67,7 @@ public class WasteLayer extends Layer{
     // If the layer has not be created it will throw an exception
     public static WasteLayer getWasteLayer() {
     	if (instance == null) {
-    		throw new NullPointerException("WasteLayer not instansiated");
+    		throw new NullPointerException("WasteLayer not instantiated.");
     	}
     	return instance;
     } // end Singleton getWasteLayer
