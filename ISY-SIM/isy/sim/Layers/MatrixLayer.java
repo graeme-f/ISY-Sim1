@@ -123,10 +123,10 @@ public abstract class MatrixLayer  extends Layer {
     }
 
     public Posn getVacantArea(double d_x, double d_y){
-        int x = (int)(d_x+.5);
-        int y = (int)(d_y+0.5);
+        int x = (int)(d_x+0.5); // x is either equal to or greater than d_x
+        int y = (int)(d_y+0.5); // y is either equal to or greater than d_y
         if (m.matrix[x][y] == null){
-            return new Posn(x,y);
+            return new Posn(x,y); // if the waste is on a vacant space then release it at the vacant space
         }
         double dx = d_x - x;
         double dy = d_y - y;
@@ -134,38 +134,38 @@ public abstract class MatrixLayer  extends Layer {
             if (dx < dy){
                 // Try left first
                 if (x > 0 && m.matrix[x-1][y] == null){
-                    return new Posn(x-1,y);
+                    return new Posn(x-dx,y);
                 }
             } else {
                 // try up first
                 if (y > 0 && m.matrix[x][y-1] == null){
-                    return new Posn(x,y-1);
+                    return new Posn(x,y-dy);
                 }
             }
         } else {
             if (dx < 0){
                 // try right first
                 if (x < m.getWidth()-1 && m.matrix[x+1][y] == null){
-                    return new Posn(x+1,y);
+                    return new Posn(x+dx,y);
                 }
             } else {
                 // try down first
                 if (y < m.getHeight()-1 && m.matrix[x][y+1] == null){
-                    return new Posn(x,y+1);
+                    return new Posn(x,y+dy);
                 }
             }
         }
         if (y > 0 && m.matrix[x][y-1] == null){
-            return new Posn(x,y-1);
+            return new Posn(x,y-dy);
         }
         if (y < m.getHeight()-1 && m.matrix[x][y+1] == null){
-            return new Posn(x,y+1);
+            return new Posn(x,y+dy);
         }
         if (x > 0 && m.matrix[x-1][y] == null){
-            return new Posn(x-1,y);
+            return new Posn(x-dx,y);
         }
         if (x < m.getWidth()-1 && m.matrix[x+1][y] == null){
-            return new Posn(x+1,y);
+            return new Posn(x+dx,y);
         }
         return null;
     }
